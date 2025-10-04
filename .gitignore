@@ -50,3 +50,6 @@ rsconnect/
 
 #.Rproj files
 *.Rproj
+
+#private file where i keep secrets
+private/

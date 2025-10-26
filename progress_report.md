@@ -1,6 +1,6 @@
 # Progress Report
 
-### October 4, 2025
+## October 4, 2025
 
 At this point I have identified 5 games per Steam rating ranking (45 total games) and downloaded reviews for almost all of them (44/45). One game was later discovered to not meet my criteria and will be replaced. 
 
@@ -32,4 +32,36 @@ Some columns populated with emoji-style data that I would like to full replace w
 Negatively ranked games also have fewer total reviews in general. It's unlikley after a certain point, I suppose, that someone would see a game with a few hundred negative reviews and decide to give a game a shot anyway. 
 
 I don't know yet what this is going to mean for how many reviews I pull for each game rank, it's something to think about more in depth.
+
+
+## October 25, 2025
+
+Have downloaded reviews for my 45th game to replace the multiplayer game I'd previously included by accident. (Postal 3 (Mostly Negative))
+
+I solved the issue of naming the column that automatically populated with the game's unique Steam upload ID number by renaming by column number instead (it is always column number 2)
+   - I still want to preserve the steam ID number and will add it to the dfs with the games' basic information, just so it's saved. 
+   
+I'm working on building a function to read in every file in my data file collection (all .csv files). I want it to:
+
+1. read in all files (datafiles/*.csv)
+
+2. take steam ID # from column 2 and add it to a new column (it'll be repetitive but a good merge point if I decide to join my other game dfs)
+
+3. rename column 2 (to language)
+
+4. concatenate each file into one giant df of game data
+
+I think this is feasible but I've not successfully created a function before, so this is my big trial and error at this point. I could just do it manually one by one but this would be much smoother!
+
+Finally, I've been expanding on some plans thanks to our latest reads in the tidytext chapters. I already talked about tokenizing the reviews and looking at some information that way, but I have some more clearly defined ideas since then. 
+
+- I want to look at word types and word tokens (and TTR)
+- do some exploratory looks (avg review length, language used, maybe some others)
+- probably some quick stats (correlation at least)
+- tf-idf, are there non-stop words that are extremely common? some visualizations, all primarily looking at review type (positive or negative) 
+
+Then, of course, the classifier ultimately. 
+
+
+
 

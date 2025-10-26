@@ -41,6 +41,8 @@ Have downloaded reviews for my 45th game to replace the multiplayer game I'd pre
 I solved the issue of naming the column that automatically populated with the game's unique Steam upload ID number by renaming by column number instead (it is always column number 2)
    - I still want to preserve the steam ID number and will add it to the dfs with the games' basic information, just so it's saved. 
    
+I also solved the issue of the review_type column being completed with emojis (green check for positive red x for negative) with text (POS, NEG) using str-Replace_all(), quick and easy!
+   
 I'm working on building a function to read in every file in my data file collection (all .csv files). I want it to:
 
 1. read in all files (datafiles/*.csv)

@@ -1,0 +1,420 @@
+,46730,,,,,,Reviews,
+,,,,,,,,
+,,Reviews by languages,,,,,Positive reviews summary,Negative reviews summary
+,,,Total,Positive,Negative,Ratio,"The game is relaxing and enjoyable, perfect for those who love interior design and decorating.",The snapping and placement mechanics are frustrating and inaccurate.
+,,Total,51,11,40,22%,The game has a lot of potential and is expected to improve with future updates.,The game has numerous bugs and crashes frequently.
+,,english,41,9,32,22%,"There are some bugs and optimization issues, but they are manageable and expected in early access.","The game is not optimized well, leading to performance issues."
+,,schinese,1,0,1,0%,The game offers a variety of customization options for furniture and room design.,There is a lack of customization options for furniture and room dimensions.
+,,russian,5,2,3,40%,The story mode includes interesting puzzles and tasks that keep the gameplay fresh.,The controls and user interface are not intuitive or user-friendly.
+,,koreana,0,0,0,100%,The sandbox mode allows for creative freedom and extensive customization.,The game feels incomplete and lacks content.
+,,german,1,0,1,0%,The graphics and lighting are aesthetically pleasing and add to the overall experience.,The story mode and mini-games are not engaging or fun.
+,,japanese,0,0,0,100%,The game is compared favorably to other interior design games like The Sims and House Flipper.,The game is not suitable for realistic room planning due to restrictive mechanics.
+,,thai,0,0,0,100%,Players appreciate the ability to mod and the potential for future content through updates.,The graphics and visual design are not appealing to many players.
+,,spanish,0,0,0,100%,"Some players have experienced issues with controls and UI, but overall find the game intuitive and fun.",The game has potential but needs significant updates and improvements.
+,,brazilian,1,0,1,0%,,
+,,latam,0,0,0,100%,,
+,,polish,0,0,0,100%,,
+,,french,0,0,0,100%,,
+,,portuguese,1,0,1,0%,,
+,,italian,0,0,0,100%,,
+,,czech,0,0,0,100%,, 
+,,finnish,0,0,0,100%,,
+,,tchinese,0,0,0,100%,,
+,,,,,,,,
+,,,,,,,,english
+Review ID,Language,Created,Up,Purchased,Score,Upvotes,Review text (Original),Review text (Specifed above)
+114259482,english,2022.03.22 08:09,❌,✅,0.4901365638,0,"UPDATE: march 2025
+
+Sadly, after advancing in the game, it begins to crash to desktop in a couple minutes or whenever you try to save the game.
+
+Unplayable for me as it is.
+
+
+--------------------- WHAT FOLLOWS DOESNT APPLY ANYMORE: old, 2022
+I positively *loved* this game. 
+Finished it with a happy smile and will always remember it fondly, play it again sometime.
+
+Now, the not so fine disclosures and caveats: 
+1- From Pineville on, some saves can fail to load, *as least for me*, making me load an older save, and try to not quit the game till I arrived at a new place via teleport.
+
+Thanks the heaven I *always* backup the saves (when the game keeps only one) of all my games regularly as I play.
+
+So in a failure to load I just past over the last save I kept.
+C:\Users\your user name\Documents\Hazen\Profiles\you player name\saves.
+
+2- Being 67 y.o. and somewhat slow now, I hacked it to death. 
+
+As you can't use Cheat Engine (alt tab crashes the game), I use free HxD hex editor to look over the savegames in Documents, Hazen ... Save ... (Example, Darkvale.sav). Backup it first!.
+
+Found all the Potions and Spell Scrolls and gave me 9900 of each, and gold, gave me 983039.
+The Scroll of Exploding Trap is a wonder, works as grenades !
+Also the Scroll of Henchman helps to fight and distracts some enemies.
+
+If you are a mage as me, later on you can get the Spell of Ring of Fire: this is extremely useful as it makes short work of almost anything (including some bosses).
+
+For gold, just find the hex number of the gold you had when saving, change it to FF FF 0E.
+
+For Health, Magic, Experience and Stoneskin Potions and Scrolls, find and use only the *1st* occurrence  (found 3 or 2 always) of a text (always shown on the right side as you scroll the file). 
+
+Attention, must be the name *with an explanation -not a short version-, just as it appears in the inventory*.
+
+From the last letter or number of that explanation, count *always* 66 places, and you'll find the number of items on the inventory,  in hexadecimal of course. 
+If it isn't there, you are not in the right occurrence of the desired text.
+Replace it with AC 26 (9900). 
+
+Save and load the game with the modified save.
+
+Hopefully, enjoy it as much as me !","UPDATE: march 2025
+
+Sadly, after advancing in the game, it begins to crash to desktop in a couple minutes or whenever you try to save the game.
+
+Unplayable for me as it is.
+
+
+--------------------- WHAT FOLLOWS DOESNT APPLY ANYMORE: old, 2022
+I positively *loved* this game. 
+Finished it with a happy smile and will always remember it fondly, play it again sometime.
+
+Now, the not so fine disclosures and caveats: 
+1- From Pineville on, some saves can fail to load, *as least for me*, making me load an older save, and try to not quit the game till I arrived at a new place via teleport.
+
+Thanks the heaven I *always* backup the saves (when the game keeps only one) of all my games regularly as I play.
+
+So in a failure to load I just past over the last save I kept.
+C:\Users\your user name\Documents\Hazen\Profiles\you player name\saves.
+
+2- Being 67 y.o. and somewhat slow now, I hacked it to death. 
+
+As you can't use Cheat Engine (alt tab crashes the game), I use free HxD hex editor to look over the savegames in Documents, Hazen ... Save ... (Example, Darkvale.sav). Backup it first!.
+
+Found all the Potions and Spell Scrolls and gave me 9900 of each, and gold, gave me 983039.
+The Scroll of Exploding Trap is a wonder, works as grenades !
+Also the Scroll of Henchman helps to fight and distracts some enemies.
+
+If you are a mage as me, later on you can get the Spell of Ring of Fire: this is extremely useful as it makes short work of almost anything (including some bosses).
+
+For gold, just find the hex number of the gold you had when saving, change it to FF FF 0E.
+
+For Health, Magic, Experience and Stoneskin Potions and Scrolls, find and use only the *1st* occurrence  (found 3 or 2 always) of a text (always shown on the right side as you scroll the file). 
+
+Attention, must be the name *with an explanation -not a short version-, just as it appears in the inventory*.
+
+From the last letter or number of that explanation, count *always* 66 places, and you'll find the number of items on the inventory,  in hexadecimal of course. 
+If it isn't there, you are not in the right occurrence of the desired text.
+Replace it with AC 26 (9900). 
+
+Save and load the game with the modified save.
+
+Hopefully, enjoy it as much as me !"
+109281926,russian,2022.01.02 02:54,❌,✅,0.5,0,"Может быть лет 15 назад и зашла бы,но не сейчас...","Maybe 15 years ago I would have gone in, but not now..."
+93660682,schinese,2021.05.13 08:34,❌,✅,0.3970562518,6,"糟糕的ARPG
+作为对比，游戏的发行时间 2010年；Diablo 2的发布时间：2000年
+当然我觉得这个游戏去和暗黑做对比，那简直就是一种侮辱","A terrible ARPG.
+For comparison, this game was released in 2010; Diablo 2 was released in 2000.
+Of course, I think comparing this game to Diablo is an insult."
+92008172,english,2021.04.15 03:09,❌,❌,0.5601418018,5,"TL;DR : I would rate this game at 3/10, play it ONLY if you want to play ANY RPGs ever released.
+O.K. I went through this ordeal and actually finished it.
+Played with a mage. Completed in 9 hours with a lot of useless running around to check things out, out of curiosity. So you could finish it in 7 hours or even less if you don't waste time in (optional) dungeons and follow the main quest, all bosses (even the final one) have simple mechanics, you won't miss 1 level or 2 to beat them.
+Everything is mediocre to bad : graphics, sounds, settings, level design, very short field of view (fog at 20 meters), extremely weak character customization, very generic scenario (a villain archdemon wants to destroy the world), very generic dialogs (""you are a hero, you must follow the path to the darkest evil and follow the Light from your heart"").
+A lot of glitches, some bugs (lost interface a couple of times), crashed three times to desktop, you can't alt-tab, mispellt words (e.g. the Archangel's name in quest announcing you defeated the final boss, is Gabriel but text says ""Garbriel""). Some finished quests will stay in your log as unfinished. You'll sometimes feel the real ""game"" is about understanding what bad programming is expecting of you.
+Very low monster diversity. Monster skills sometimes don't make sense (ice mages are hurt with a normal damage by your ice attacks, and will attack you with... fire).
+Easy bosses, sometimes slow or barely reacting as if they were stuck, with +-2 attacks, AI is so weak, you'll ""exploit"" the game without even wanting it, you'll use basic mechanisms: block/spam attacks/block/spam attacks... Frustrated a lot by the spider boss, extremely hard to beat (it's the only hard boss of the game) because of unfair adds, nets, poisons, super attacks, you'll relive exactly where you die surrounded by the boss and adds, good luck to heal you and run away (or not... you can't -> nets and adds block you). But if you beat it and complete the quest, it'll respawn later (why ?) and EVERYTIME you go through the zone (even if the spider is blocked in a small corner of the map and can't get out) she'll glue and make you fall every 10 seconds even if you are like 2 kms away from her (you'll see her spit flying through the map to get you). It must have been one of the weirdest bug (pun intended) I've seen in a video game.
+Some annoying things: for instance you'll portal to a new zone but monsters will wait for you just beside it so they can knock you down before you can take control of your loading character.
+A grand total of 4 dungeons that are... exactly copy-pasted on 2 different zones. A dungeon will take you from 3 to 10 minutes max, you can't save in dungeons, they are optional and not linked to the story or any quest, the loot is common, the bosses are common, the XP is common, they are ugly (short pathways surrounded by abyss).
+You have 3 paths for your character: melee, magic and archery (yeah so original), it doesn't make sense to mix them up so you'll choose only one path. I took magic (6 predefined skills in total) but in the first 2 zones my melee staff hurt more than my spells (yeah I know, Gandalf fought with staff too!). You are limited to your path equipment: e.g. you must equip a staff to use magic skills. Loot is inconsistent (even after final boss, I never found a second ring for my mage), elite monsters will give you usual XP and not necessarily good loot. There are very few gear sets, attributes on good items didn't seem consistent or relevant to any path.
+You'll find the usual RPG/MMO nonsense: a spiderling dropping an armour. The exact same NPC in 2 zones at the same time, etc.
+One of the most annoying things: you'll often ""miss"" enemies in melee or they'll resist your distance attacks. Seriously when a spiderling resist 3 times in a row your magic attack or when you miss a giant standing 50 cms away from you, it feels like devs wanted to add stupid randomness to spice up and make boring fights longer to pretend there's a sort of complexity. Moving is painful (constant right-click on the ground), you can't hold down mouse button to move your character around.
+No initial nor final movies (at the end I was expecting at least something cool like a cutscene or credits, but nothing happens), you have no name, you can't customize anything at start for your character, you have no initial explanations of what you are doing here and who you are. No cutscenes, but camera moving around the zone in engine mode to show you where you are supposed to go (completely useless actually because zones are very small and you have like 2 paths to explore).
+Conclusion: if you were born for a sort of desperate mission on Earth to complete ALL RPG's, you can play this one (no game-breaking bug for me anyway), but if you don't like bad games or only want the good RPG's, avoid this at all cost.
+PS : it's titled ""Episode I"", and after final boss, archangels say there are other stones to destroy so it meant other episodes were coming. But they won't. I can quietly find another horrible RPG to complete.","TL;DR : I would rate this game at 3/10, play it ONLY if you want to play ANY RPGs ever released.
+O.K. I went through this ordeal and actually finished it.
+Played with a mage. Completed in 9 hours with a lot of useless running around to check things out, out of curiosity. So you could finish it in 7 hours or even less if you don't waste time in (optional) dungeons and follow the main quest, all bosses (even the final one) have simple mechanics, you won't miss 1 level or 2 to beat them.
+Everything is mediocre to bad : graphics, sounds, settings, level design, very short field of view (fog at 20 meters), extremely weak character customization, very generic scenario (a villain archdemon wants to destroy the world), very generic dialogs (""you are a hero, you must follow the path to the darkest evil and follow the Light from your heart"").
+A lot of glitches, some bugs (lost interface a couple of times), crashed three times to desktop, you can't alt-tab, mispellt words (e.g. the Archangel's name in quest announcing you defeated the final boss, is Gabriel but text says ""Garbriel""). Some finished quests will stay in your log as unfinished. You'll sometimes feel the real ""game"" is about understanding what bad programming is expecting of you.
+Very low monster diversity. Monster skills sometimes don't make sense (ice mages are hurt with a normal damage by your ice attacks, and will attack you with... fire).
+Easy bosses, sometimes slow or barely reacting as if they were stuck, with +-2 attacks, AI is so weak, you'll ""exploit"" the game without even wanting it, you'll use basic mechanisms: block/spam attacks/block/spam attacks... Frustrated a lot by the spider boss, extremely hard to beat (it's the only hard boss of the game) because of unfair adds, nets, poisons, super attacks, you'll relive exactly where you die surrounded by the boss and adds, good luck to heal you and run away (or not... you can't -> nets and adds block you). But if you beat it and complete the quest, it'll respawn later (why ?) and EVERYTIME you go through the zone (even if the spider is blocked in a small corner of the map and can't get out) she'll glue and make you fall every 10 seconds even if you are like 2 kms away from her (you'll see her spit flying through the map to get you). It must have been one of the weirdest bug (pun intended) I've seen in a video game.
+Some annoying things: for instance you'll portal to a new zone but monsters will wait for you just beside it so they can knock you down before you can take control of your loading character.
+A grand total of 4 dungeons that are... exactly copy-pasted on 2 different zones. A dungeon will take you from 3 to 10 minutes max, you can't save in dungeons, they are optional and not linked to the story or any quest, the loot is common, the bosses are common, the XP is common, they are ugly (short pathways surrounded by abyss).
+You have 3 paths for your character: melee, magic and archery (yeah so original), it doesn't make sense to mix them up so you'll choose only one path. I took magic (6 predefined skills in total) but in the first 2 zones my melee staff hurt more than my spells (yeah I know, Gandalf fought with staff too!). You are limited to your path equipment: e.g. you must equip a staff to use magic skills. Loot is inconsistent (even after final boss, I never found a second ring for my mage), elite monsters will give you usual XP and not necessarily good loot. There are very few gear sets, attributes on good items didn't seem consistent or relevant to any path.
+You'll find the usual RPG/MMO nonsense: a spiderling dropping an armour. The exact same NPC in 2 zones at the same time, etc.
+One of the most annoying things: you'll often ""miss"" enemies in melee or they'll resist your distance attacks. Seriously when a spiderling resist 3 times in a row your magic attack or when you miss a giant standing 50 cms away from you, it feels like devs wanted to add stupid randomness to spice up and make boring fights longer to pretend there's a sort of complexity. Moving is painful (constant right-click on the ground), you can't hold down mouse button to move your character around.
+No initial nor final movies (at the end I was expecting at least something cool like a cutscene or credits, but nothing happens), you have no name, you can't customize anything at start for your character, you have no initial explanations of what you are doing here and who you are. No cutscenes, but camera moving around the zone in engine mode to show you where you are supposed to go (completely useless actually because zones are very small and you have like 2 paths to explore).
+Conclusion: if you were born for a sort of desperate mission on Earth to complete ALL RPG's, you can play this one (no game-breaking bug for me anyway), but if you don't like bad games or only want the good RPG's, avoid this at all cost.
+PS : it's titled ""Episode I"", and after final boss, archangels say there are other stones to destroy so it meant other episodes were coming. But they won't. I can quietly find another horrible RPG to complete."
+87422898,turkish,2021.01.25 19:38,❌,✅,0.5,0,"Oyuna neden bukadar beğenilmemiş anlamıyorum bence oyun gayet güzel.Hadi ""güzel""i açalım,bence düşmanlar güzel gözüküyor zindanlar da öyle görüntü bakımından çok sıkıntı yok yani,görevler güzel bir hikaye var.Oynuyorum daha 3. dünyadayım şimdilik herşey yolunda.Öneriler:1)Düşmanlara tektek tıklamak yerine birtanesine tıkladığımızda etrafımızdaki düşmanlara da sırayla vurabilmek isterdim,o küçücük örümceklere tıklamak ne kadar zor bilemezsiniz :) 2)Oyun arada donup bilgisayarı kitliyor bu durum çok sıkıntılı çünkü oyundan herhangi bir tuşa basıp çıkamıyoruz bu da bilgisayarı kapatıp açmamızı gerekiriyor en sinir bozucu şey bu bence çok sık olmuyor lakin bana şimdilik 4 kez oldu oyunumu baltalayacak yerlerde değildi ama tam zindan sonunda olsaydı hiç hoş şeyler çıkmazdı azımdan (zindanlarda kaydetme yok ilerlemen yok olur bu hatada) kısacası oyun güzel indirimde alıp bir oynayın ilk dünya biraz sıkıcı ama sonrası güzelleşiyor.Sevgiler saygılar iyi oyunlar.
+Oyun 3.dünyadan sonra hata veriyor ben de diyorum neden buradan sonrasını hiç hatırlamıyorum(Küçükken oynamıştım) Yani bilmiyorum indirimde alıp bi bakılır sonra geri iyade edin sonuçta oyun bozuk :/",
+77590633,russian,2020.09.15 14:11,❌,✅,0.5600000024,4,"[h1] Не все разработчики одинаково добросовестны [/h1] 
+
+Есть такая народная забава - раз в год брать игру с дерьмовыми отзывами и смотреть, может быть все не так уж плохо? Но нет, не в этот раз. 
+
+ [code][b]Hazen[/b] - action/RPG от студии Dagger Games, выпущенная в 2010 году под руководством известного канадского издателя Strategy First, подарившего нам прекрасную серию Disciples. Игра имеет 42 отзыва Steam, 77% которых - отрицательные. И мой не станет исключением. Давайте разберем по полочкам, что же тут не так.[/code]
+
+[u] [b] ๑۩۩๑ СЮЖЕТ ๑۩۩๑ [/b] [/u]
+
+Исория в игре практически отсутствует. Я категорически отказываюсь считать то, что нам подкинули, как голодной собаке в качестве игровой затравки, но раз уж я отчаянно пытался эти крохи из игры выдавить, сам бог велел свести их все воедино тут - если не заинтересованы в местных ""хитросплетениях"", можете сразу спуститься к следующему абзацу. Некогда жил-был принц. Был он никчемен и бездарен, а еще было у него много братьев, каждый из коих был на голову его выше во всем. И не видать бы Хэйзену трона как своих ушей, если бы в один прекрасный миг на его пути не повстречался таинственный старец, с настойчивым намерением готовый помочь во всем. За небольшую плату, разумеется. Он создал для Хэйзена магический камень, который давал принцу огромную силу, с помощью которой последний, по всей видимости, сумел удержаться у власти. О больших подробностях история умалчивает, по всей видимости, ""интересное"" разработчики припасли на последующие части.  
+
+Мы начинаем игру от лица жителя одной из местных деревень, внезапно оказавшейся в осаде нежити разных мастей. Ну как разных - на самом деле одинаковых моделек скелетов, держащих разное оружие. Жители недоумевают, как такое могло произойти и попутно раздают нам кучу бесполезных поручений. И вот, после того как мы нашли всех потерявшихся грузовых ослов и надежно затворили все ворота, местный староста внезапно хлопает себя по лбу и вспоминает, дескать, здешний травник-лекарь что-то пропал, а до этого он чем-то странным у себя там занимался. Надо бы сходить его проведать. Впоследствии мы узнаем, что этот самый лекарь и станет корнем всех зол, ибо вместо лечения населения тот практиковал некромантию и прочую темную ересь, а еще в руки к нему неведомым образом попал тот самый камень, что когда-то вручили Хэйзену и тут уж сама Вселенная велела творить зло по полной. Впрочем, исходя из ""разнообразия"" здешних монстров - фантазия у главзлодея - не самое сильное место. 
+
+[u] [b] ๑۩۩๑ ГЕЙМПЛЕЙ ๑۩۩๑ [/b] [/u]
+
+Игровой процесс в сущности схож с любым другим диаблоидом. Если хотите в двух словах - эдакий очень сильно порезанный во всем Titan Quest. С некачественной даже по меркам 2010 года графикой - эти жуткие угловатые деревья и налезающие друг на друга текстуры выглядят ужасным приветом из прошлого. Отдельно хотелось бы упомянуть абсолютно одинаковые модельки монстров, переходящие из одной локации в другую. Бегаете по сельской местности - вот вам скелеты. Горящий город? Вот эти же скелеты, только с горящими глазами. Ледяная пустошь - и тут можно этих же скелетов, только теперь они будут вас морозить. Вместе с разработчиками. 
+
+Прокачка персонажа весьма стандартна и шаблонна. Есть три прокачиваемых параметра - сила (влияет на запас здоровья и наносимый урон), ловкость (скорость атаки и урон в дальнем бою) и интеллект (мана и сила магических заклинаний), а также три ветки умений - для ближнего и дальнего боя, а также магии соответственно. Прокачивать равномерно не получится - каждый предмет снаряжения будет требовать от вас по мере продвижения по сюжету все больших и больших значений конкретного параметра, и недокачивая его, вы рискуете в итоге остаться без какого-либо мало-мальски приличного шмота. В итоге так или иначе придется концентрироваться на чем-то одном. Ваш покорный слуга отдал предпочтение дальнему бою, и прогадал по всем фронтам - луки в игре не особо разнообразны, а учитывая скорость прицеливания - не особо полезны, но мне настолько ужасно не хотелось перепроходить это адище заново, что я решил смириться и выкручиваться тем, что есть. Эмпирическим путем было выяснено, что лучше всего брать воинское ремесло и прокачивать силу - одним параметром сразу же увеличиваете себе и урон, и здоровье. А в идеале - лучше взять Grim Dawn. 
+
+После смерти персонаж перерождается в том же месте, где и умер. В окружении все тех же убивших вас ваншотом противников. Зачистить локацию у вас не получится, как бы Вы ни старались - убитые монстры будут пачками появляться снова и снова, не пройдет и пары минут со смерти предшественников. И это ужасно раздражает, учитывая необходимость постоянно мотаться по всей карте туда-сюда. Забавно, что в ходе прохождения я вкачивал дальнобойный урон на максимум и покупал самые топовые вещи, но даже будучи 10+ уровня тратил несколько выстрелов, чтобы убить первоуровневого скелета. Но это все ерунда по сравнению с той безумной тратой времени, которую вы убьете на бесполезную битву с местным главным злом. Я всем сердцем желаю разработчикам на том свете попасть в бесконечный цикл прохождения финальной битвы с иступляющим обстрелом этих гребанных башен.    
+
+Музыка здесь местами как будто стибрена из Titan Quest, а иной раз выдает такую жуткую какофонию, что лучше бы её не было вовсе. Чтобы купить что-то у торговца, вам нужно самим в ручную перетаскивать это из одного инвентаря в другой - и это реальный гемор, особенно когда надо купить много зелий. Карта мира - бесполезный и неинформативный кусок пищепереработанных отходов, из которого можно понять лишь только то, что мы в полной жо*е. Но самая большая беда здесь - баги. Их много и они разные, но самый вредный среди прочих - внезапные вылеты. По мере прохождения я начал сохраняться буквально на каждом шагу - неизвестно, когда внезапно увидишь рабочий стол. Еще в игре отсутствует русская локализация, а на заморской мове цели и задачи порой формулируются от балды. Так, цель ""Восстановитесь после битвы с монстрами"" подразумевает что мы должны перейти через другой портал и найти там нового злодея, и все в таком духе.  
+
+[u] [b] ๑۩۩๑ СТОИТ ЛИ ИГРАТЬ? ๑۩۩๑ [/b] [/u]   
+
+По итогу получился эдакий очень обрезанный прототип Titan Quest, абсолютно по всем фронтам уступающий оригиналу. Игра выглядит и является очень сырой и недоработанной, и изначальные планы разработчиков выпустить еще несколько частей по этому миру звучат искренне смехотворно. Игра абсолютно не стоит своих денег - даже 10 рублей, за которые была мною куплена по местной скидке.
+
+[code] Ищете интересные игры, но боитесь выбрать то, что не понравится? Вступайте в [url=https://steamcommunity.com/groups/bythefireplace] Таверну ""У камина"" [/url] и подписывайтесь на [url=https://store.steampowered.com/curator/39473538/] страничку куратора. [/url] Выберем правильные игры вместе!  [/code]","[h1] Not all developers are equally conscientious [/h1]
+
+There's a popular pastime: once a year, pick up a game with shitty reviews and see if it's actually that bad. But no, not this time.
+
+[code][b]Hazen[/b] is an action/RPG from Dagger Games, released in 2010 under the supervision of the renowned Canadian publisher Strategy First, the creators of the excellent Disciples series. The game has 42 Steam reviews, 77% of which are negative. Mine is no exception. Let's break down what's wrong here.[/code]
+
+[u] [b] ๑۩۩๑ STORY ๑۩۩๑ [/b] [/u]
+
+The game has virtually no story. I categorically refuse to accept the information they fed us like a game bait, but since I was desperately trying to squeeze these crumbs out of the game, it was a godsend to put it all together here – if you're not interested in the local intricacies, you can skip to the next paragraph. Once upon a time, there lived a prince. He was worthless and untalented, and he had many brothers, each head and shoulders above him in every way. And Hazen would never have seen the throne if he hadn't encountered a mysterious old man one day, determined to help him in any way. For a small fee, of course. He created a magical stone for Hazen, which granted the prince immense power, which he apparently used to maintain his grip on power. The story is silent on more details; apparently, the developers saved the ""interesting"" ones for later installments.
+
+We begin the game as a resident of one of the local villages, suddenly besieged by undead of various kinds. Well, not different—in fact, identical skeleton models holding different weapons. The villagers are perplexed as to how this could have happened and give us a bunch of useless tasks. And then, after we've found all the lost cargo donkeys and securely locked all the gates, the local elder suddenly slaps his forehead and remembers that the local herbalist/healer has disappeared, and before that, he was up to something strange. We should go check on him. We later learn that this same healer will become the root of all evil, for instead of healing the populace, he practiced necromancy and other dark heresies, and somehow got his hands on the very stone that was once given to Heizen, and now the universe itself has commanded him to commit evil to the fullest. However, judging by the ""diversity"" of the monsters here, the main villain's imagination isn't his strong point.
+
+[u] [b] ๑۩۩๑ GAMEPLAY ๑۩۩๑ [/b] [/u]
+
+The gameplay is essentially similar to any other Diablo game. In short, it's a severely cut Titan Quest. With graphics that are poor quality even by 2010 standards, those creepy, angular trees and overlapping textures look like a terrifying blast from the past. I'd also like to mention the absolutely identical monster models that move from one location to another. Running through the countryside? There you have skeletons. A burning city? There are the same skeletons, only with glowing eyes. An icy wasteland? And here you can find the same skeletons, only now they'll freeze you. Along with the developers.
+
+Character progression is fairly standard and formulaic. There are three stats you can upgrade: Strength (affects health and damage), Agility (attack speed and ranged damage), and Intelligence (mana and spell power), as well as three skill trees: one for melee, one for ranged combat, and one for magic. Leveling up evenly isn't possible—each piece of equipment will require increasingly higher values ​​for a specific stat as you progress through the story, and if you under-level it, you risk ending up without any decent gear. Ultimately, you'll have to focus on one thing or another. Your humble servant chose ranged combat and failed on all fronts—the bows in the game aren't particularly diverse, and given the aiming speed, they're not particularly useful. But I was so reluctant to replay this hellish world that I decided to accept the challenge and make do with what I had. Empirically, I've found that it's best to take the Warrior craft and level up Strength—you'll instantly increase both damage and health with a single stat. Ideally, Grim Dawn is the best choice.
+
+After death, your character respawns in the same place where you died, surrounded by the same enemies who one-shot you. You won't be able to clear the location, no matter how hard you try—the monsters you killed will respawn in droves, within minutes of their death. This is incredibly annoying, considering you have to constantly run back and forth across the map. It's funny that during my playthrough, I maxed out my ranged damage and bought the best gear, but even at level 10+, it took me several shots to kill a level 1 skeleton. But all this is nothing compared to the insane amount of time you'll waste on a useless battle with the local main villain. I sincerely hope that the developers, in the afterlife, end up in an endless loop of the final battle, with the frenzied shelling of those damn towers.
+
+The music here sometimes feels like it was ripped from Titan Quest, and at other times it produces such a terrible cacophony that it would be better if it weren't there at all. To buy something from a merchant, you have to manually drag it from one inventory to another—and it's a real pain, especially when you need to buy a lot of potions. The world map is a useless and uninformative piece of processed food waste, from which you can only understand that we're completely fucked. But the biggest problem here is the bugs. There are many of them, and they vary, but the most annoying of all are sudden crashes. As I progressed, I started saving literally at every turn—you never know when you'll suddenly see the desktop. The game also lacks a Russian localization, and in the foreign language, goals and objectives are sometimes formulated haphazardly. So, the objective ""Recover after fighting monsters"" implies that we have to go through another portal and find a new villain there, and so on.
+
+[u] [b] ๑۩۩๑ IS IT WORTH PLAYING? ๑۩۩๑ [/b] [/u] 
+
+The result is a very truncated Titan Quest prototype, inferior to the original in every way. The game looks and feels very raw and unfinished, and the developers' original plans to release several more installments in this world sound genuinely laughable. The game is absolutely not worth the money—even the 10 rubles I bought it for at a local discount.
+
+[code] Looking for interesting games but afraid to choose one you won't like? Join [url=https://steamcommunity.com/groups/bythefireplace] By the Fireplace Tavern [/url] and follow [url=https://store.steampowered.com/curator/39473538/] the curator's page. [/url] Let's choose the right games together! [/code]"
+75485668,english,2020.08.05 17:41,✅,❌,0.5,0,"Another Action RPG? Why not.
+yet here are some nitpicks:
+Mouse pointer movement speed adjustment : false
+Enemy archers with homing arrows : true
+General game speed adjustment: false (well, many games portray slow-motion movies, so it is not specific for this game)
+Playability (in-game movement, interactions, attacking enemies) : below average
+I do recommend this game, but I also warn you, dear reader, do not set your expectations high, will ya?","Another Action RPG? Why not.
+yet here are some nitpicks:
+Mouse pointer movement speed adjustment : false
+Enemy archers with homing arrows : true
+General game speed adjustment: false (well, many games portray slow-motion movies, so it is not specific for this game)
+Playability (in-game movement, interactions, attacking enemies) : below average
+I do recommend this game, but I also warn you, dear reader, do not set your expectations high, will ya?"
+73829517,english,2020.07.05 23:41,❌,✅,0.5881142616,9,"* [i]Sigh[/i] * Me and the dark side of [b]Steam[/b] again... But well, if you know me at least a little, you know how much I like [b]ARPG[/b]s. Well, I like pretty much all genres (yes, I'm one of those people who like [i]everything[/i] as long as it wants you to press buttons), but there's something about [b]ARPG[/b]s I find especially pleasant. Not as pleasant as point-and-click adventures, but what matters here – I love the genre and I played tons and tons of games in it. Even those barely known by human beings in our part of the Galaxy. Naturally, I didn't want to miss this one. Just because it's an [b]ARPG[/b]. But as long as you're not like me and don't aim for beating each and every [b]ARPG[/b] out there? You shouldn't play this one. Seriously, you consider buying it? Just stop reading and remove it from your cart. It sucks. End of the story. But I'm getting ahead of myself. Let's take some time and go into some details.
+
+First of all – this game is bad. Wait, did I already say that? OK, I did. And still, this game is [i]bad[/i]. But no matter how bad it is, it's not a scam. In other words, it isn't [b]Grind Zones[/b]. Isn't one of those games that were supposed to look OK on screens but were never supposed to be a real deal, to provide you any real gameplay. [b]HAZEN[/b]? It was supposed to be played. You pay for a game – you get a game. Well... sort of. See, there are two things about [b]HAZEN[/b] (the game is called after its main villain, exactly the same way with [b]Diablo[/b]). And the first thing is – it was supposed to be episodic. We have only five small maps here and the story (if we can call this bunch of cheap nonsense a story) ends with a cliffhanger. You know how it is... They planned an episodic game, the first one failed, there were no more episodes ever made. And that's the first thing about [b]HAZEN[/b]. It's only a first episode of the series that was never made.
+
+And as for the second thing... Well, let's just say it was made by noobs. And it shows. The last time I saw something this noobish was in Ukrainian [b]ARPG[/b] called [b]Dark Tower Conspiracy[/b] (AKA [b]Dungeon Quest[/b], AKA [b]Заговор Тёмной Башни[/b]), back in [b]2006[/b]. And even though [b]HAZEN[/b] is Bulgarian game, it really does feel the same. But you can clearly see that it wasn't because the developers were scammers. It was just because some noobs with no experience decided that they are cool developers and can make their own [b]Torchlight[/b]. Here's a hint – they aren't and they can't.
+
+But OK, what exactly is so bad about [b]HAZEN[/b]? Well, everything. Everything about it is bad. Looking at core gameplay here you'll thank God for this game being too short. Things like balance, tactics and stuff like that? Forget about them. I mean, I know that the genre is all about them. Just... forget about them here. [b]HAZEN[/b] is not a game where you count numbers and make builds. It's a game, in which you run through some small maps by using the only character you can use, click on some generic enemies, die, respawn right under your enemies' feet, finish your job and continue. That's pretty much it. Painfully cheap and painfully random experience.
+
+So... yeah. [b]HAZEN[/b] is yet another disaster. The one where final product suffered from its makers having way too much ambitions without enough skill and talent to support them. You want a good game? Run as fast from here as you can. You don't mind something meh in the genre either? Nope, keep running. No matter how you look at [b]HAZEN[/b], it's a no-no product. But at least it wasn't supposed to be a scam, I can give it that.","* [i]Sigh[/i] * Me and the dark side of [b]Steam[/b] again... But well, if you know me at least a little, you know how much I like [b]ARPG[/b]s. Well, I like pretty much all genres (yes, I'm one of those people who like [i]everything[/i] as long as it wants you to press buttons), but there's something about [b]ARPG[/b]s I find especially pleasant. Not as pleasant as point-and-click adventures, but what matters here – I love the genre and I played tons and tons of games in it. Even those barely known by human beings in our part of the Galaxy. Naturally, I didn't want to miss this one. Just because it's an [b]ARPG[/b]. But as long as you're not like me and don't aim for beating each and every [b]ARPG[/b] out there? You shouldn't play this one. Seriously, you consider buying it? Just stop reading and remove it from your cart. It sucks. End of the story. But I'm getting ahead of myself. Let's take some time and go into some details.
+
+First of all – this game is bad. Wait, did I already say that? OK, I did. And still, this game is [i]bad[/i]. But no matter how bad it is, it's not a scam. In other words, it isn't [b]Grind Zones[/b]. Isn't one of those games that were supposed to look OK on screens but were never supposed to be a real deal, to provide you any real gameplay. [b]HAZEN[/b]? It was supposed to be played. You pay for a game – you get a game. Well... sort of. See, there are two things about [b]HAZEN[/b] (the game is called after its main villain, exactly the same way with [b]Diablo[/b]). And the first thing is – it was supposed to be episodic. We have only five small maps here and the story (if we can call this bunch of cheap nonsense a story) ends with a cliffhanger. You know how it is... They planned an episodic game, the first one failed, there were no more episodes ever made. And that's the first thing about [b]HAZEN[/b]. It's only a first episode of the series that was never made.
+
+And as for the second thing... Well, let's just say it was made by noobs. And it shows. The last time I saw something this noobish was in Ukrainian [b]ARPG[/b] called [b]Dark Tower Conspiracy[/b] (AKA [b]Dungeon Quest[/b], AKA [b]Заговор Тёмной Башни[/b]), back in [b]2006[/b]. And even though [b]HAZEN[/b] is Bulgarian game, it really does feel the same. But you can clearly see that it wasn't because the developers were scammers. It was just because some noobs with no experience decided that they are cool developers and can make their own [b]Torchlight[/b]. Here's a hint – they aren't and they can't.
+
+But OK, what exactly is so bad about [b]HAZEN[/b]? Well, everything. Everything about it is bad. Looking at core gameplay here you'll thank God for this game being too short. Things like balance, tactics and stuff like that? Forget about them. I mean, I know that the genre is all about them. Just... forget about them here. [b]HAZEN[/b] is not a game where you count numbers and make builds. It's a game, in which you run through some small maps by using the only character you can use, click on some generic enemies, die, respawn right under your enemies' feet, finish your job and continue. That's pretty much it. Painfully cheap and painfully random experience.
+
+So... yeah. [b]HAZEN[/b] is yet another disaster. The one where final product suffered from its makers having way too much ambitions without enough skill and talent to support them. You want a good game? Run as fast from here as you can. You don't mind something meh in the genre either? Nope, keep running. No matter how you look at [b]HAZEN[/b], it's a no-no product. But at least it wasn't supposed to be a scam, I can give it that."
+73463459,english,2020.06.29 16:35,❌,✅,0.4486788213,1,"What the heck is this garbage?
+No UI size adjustment option... cursor the size of a gnat.
+No mouse scroll speed option... gnat moves like a snail... takes lifting my mouse up 4 to 5 times to get it to scroll from 1 side of the screen to the other.  And in a game where precision is crucial...
+No camera controls: AT ALL
+No key layout control
+One button to move, one to attack... with no option to change.
+And the big one: You have to keep R-clicking over, and over, and over, and over again to move.  -_-
+
+I *tried* to give it a shot... I really did.  UI is just too terrible... not even barely functional with scroll speed so low.","What the heck is this garbage?
+No UI size adjustment option... cursor the size of a gnat.
+No mouse scroll speed option... gnat moves like a snail... takes lifting my mouse up 4 to 5 times to get it to scroll from 1 side of the screen to the other.  And in a game where precision is crucial...
+No camera controls: AT ALL
+No key layout control
+One button to move, one to attack... with no option to change.
+And the big one: You have to keep R-clicking over, and over, and over, and over again to move.  -_-
+
+I *tried* to give it a shot... I really did.  UI is just too terrible... not even barely functional with scroll speed so low."
+60268466,english,2019.11.22 00:57,❌,❌,0.4610887468,1,This is the 9/11 of aRPGs.,This is the 9/11 of aRPGs.
+56757376,russian,2019.10.08 17:12,✅,✅,0.5,0,Отличный диаблоид. Залип надолго!,Excellent Diabloid. Got me hooked for a long time!
+48926159,english,2019.01.11 17:40,❌,✅,0.4288510084,0,It's horrible....,It's horrible....
+45330003,english,2018.09.19 01:01,❌,✅,0.5,0,"Very crude arpg. Weak graphics, unstable - has crash issues; plot, characters & dialog don't really exist. Even if you get it on the cheap it is probably not worth spending your time on it.  Not the worst game I have played but there are plenty of better choices out these days.","Very crude arpg. Weak graphics, unstable - has crash issues; plot, characters & dialog don't really exist. Even if you get it on the cheap it is probably not worth spending your time on it.  Not the worst game I have played but there are plenty of better choices out these days."
+40731159,english,2018.02.11 08:58,✅,✅,0.5856013298,6,"Well I mostly bought this game because i played an early demo of it as a kid, now years later with a job and remembering the name I seen on the demo screen, I was able to get this cheaper than when it was released plus now it's good enough for low end spec pc, which for now i have a stinking all in 1 pc and the cpu kinda sucks since it's .60 less than 2.0 ghz but yet it has 2 cpu proccessors and 1 core on each... but anyways coming back to it and seeing harsh reviews, I thought to give it my honest and truthful opinion about this game. This game's graphic aren't too bad it's more slightly updated than Fate series graphic (but the Fate series is still a childhood good classic to me), and the mouse controls i had to get used to again but after 2 hours you'll get used to it and doing pretty darn good... but warning if you go to the big picture mode it'll shift the save game folder directory from c:/Program Files (x86)/Steam/Steamapps/common/Hazen: The Dark Whispers/Profiles (where it originally saves at) to c:/Users/(your user)/Documents/Hazen for who knows what reason it took me hours to figure it out because i'm not used to games saving in documents it's alsoways in appdata roaming, appdata local, or where the game is installed and stored at. Also there is a story mode if your iq is high enough to figure out at the start of the game... the story just starts when you talk to the first villager (small story but a story).","Well I mostly bought this game because i played an early demo of it as a kid, now years later with a job and remembering the name I seen on the demo screen, I was able to get this cheaper than when it was released plus now it's good enough for low end spec pc, which for now i have a stinking all in 1 pc and the cpu kinda sucks since it's .60 less than 2.0 ghz but yet it has 2 cpu proccessors and 1 core on each... but anyways coming back to it and seeing harsh reviews, I thought to give it my honest and truthful opinion about this game. This game's graphic aren't too bad it's more slightly updated than Fate series graphic (but the Fate series is still a childhood good classic to me), and the mouse controls i had to get used to again but after 2 hours you'll get used to it and doing pretty darn good... but warning if you go to the big picture mode it'll shift the save game folder directory from c:/Program Files (x86)/Steam/Steamapps/common/Hazen: The Dark Whispers/Profiles (where it originally saves at) to c:/Users/(your user)/Documents/Hazen for who knows what reason it took me hours to figure it out because i'm not used to games saving in documents it's alsoways in appdata roaming, appdata local, or where the game is installed and stored at. Also there is a story mode if your iq is high enough to figure out at the start of the game... the story just starts when you talk to the first villager (small story but a story)."
+40545962,english,2018.02.04 01:26,❌,✅,0.396715045,0,Graphics is nice but the gameplay is really boring,Graphics is nice but the gameplay is really boring
+32269720,russian,2017.05.08 20:16,❌,✅,0.5938932896,5,"Довольно посредственная RPG, очень сырая и баганутая, вылеты постоянны, оптимизация (если она есть) отдельная 
+песня. К покупке не рекомендую. И да все сохранения периодично стираются.
+
+
+3/10","A pretty mediocre RPG, very raw and buggy, crashes constantly, optimization (if any) is a whole other story.
+I don't recommend buying it. And yes, all saves are periodically erased.
+
+3/10"
+32182668,english,2017.05.04 22:49,❌,✅,0.4984208345,0,"Tags: Hack & Slash - Diabloesque
+Additional Tags: Delete Local Content & Remove from Library
+
+TLDR: Functions as intended but too low ambitions and low quality to warrant the time investment. Occasional crashing.
+
+Constant asset recycling. Many ease of use features like holding click to move do not work or items that you can wear keeping their names red despite meeting requirements. No exposition, world lore, goals or anything. Game boils down to a tedious slow paced clicker to dispatch uninspired skeletons that you can aggro in one by one. No voice acting. Sound design and to a lesser extend the 3D models were somewhat acceptable if generic. Level design is mostly corridor like.","Tags: Hack & Slash - Diabloesque
+Additional Tags: Delete Local Content & Remove from Library
+
+TLDR: Functions as intended but too low ambitions and low quality to warrant the time investment. Occasional crashing.
+
+Constant asset recycling. Many ease of use features like holding click to move do not work or items that you can wear keeping their names red despite meeting requirements. No exposition, world lore, goals or anything. Game boils down to a tedious slow paced clicker to dispatch uninspired skeletons that you can aggro in one by one. No voice acting. Sound design and to a lesser extend the 3D models were somewhat acceptable if generic. Level design is mostly corridor like."
+30796955,english,2017.02.28 20:51,❌,✅,0.3286683857,1,Booty Stank.,Booty Stank.
+29750486,english,2017.01.07 02:23,✅,✅,0.4626630843,3,"It's not good in any way, but not as horrible as some make it out to be. Graphics are OK for a Dungeon Siege Wannabee, but it feels slow-paced and clunky, loot distribution is uninspired, missions nowhere to be seen. There are so many games in this genre way better than this. Still, worth a try if you get it dirt-cheap and if you have played the better games already to death. Even though you probably cant't stand it for very long.","It's not good in any way, but not as horrible as some make it out to be. Graphics are OK for a Dungeon Siege Wannabee, but it feels slow-paced and clunky, loot distribution is uninspired, missions nowhere to be seen. There are so many games in this genre way better than this. Still, worth a try if you get it dirt-cheap and if you have played the better games already to death. Even though you probably cant't stand it for very long."
+26221960,english,2016.09.26 02:02,❌,✅,0.4500831962,0,This game has not aged well. Only play it if you are desperate.,This game has not aged well. Only play it if you are desperate.
+23032618,english,2016.04.17 09:12,❌,✅,0.5,0,"You know, if it was the last ARPG on Earth, I'd probably play it.  The art style is not bad for the time it was made and the mechanics work... to some extent.  Fun loot drops and you can feel yourself getting stronger and taking less damage as you get increasingly better armor.  In spite of all the complaints here, Hazen surprisingly ran fine on my Win7 x64 system with only one crash when entering a dungeon.  When reloaded, the game left me back where I was.
+
+Now for the bad parts:
+1. No saving allowed in a dungeon.  If the game crashes you may lose up to a half hour of progress.
+2. There is some kind of memory leak that slows down the game the longer you play.  Your melee swings and casts get slower and slower while the enemies rush you at the same speed.
+3. It takes a while to get used to the backwards controls.  You move with rt. click and everything else is left click.  No key rebinds.  
+
+Worst of all are the ungodly respawns that slow you down as you travel to your destination then back to your village.  No teleports or shortcuts, just the long, slow trek back while fighting the same enemies you fought on the way there.  The first two hours had me traveling the same path numerous times while fighting the same respawns.  It can be maddening.
+
+Compared to a far superior ARPG like Torchlight that came out a year earlier, Hazen: The Dark Whispers just can't compete.","You know, if it was the last ARPG on Earth, I'd probably play it.  The art style is not bad for the time it was made and the mechanics work... to some extent.  Fun loot drops and you can feel yourself getting stronger and taking less damage as you get increasingly better armor.  In spite of all the complaints here, Hazen surprisingly ran fine on my Win7 x64 system with only one crash when entering a dungeon.  When reloaded, the game left me back where I was.
+
+Now for the bad parts:
+1. No saving allowed in a dungeon.  If the game crashes you may lose up to a half hour of progress.
+2. There is some kind of memory leak that slows down the game the longer you play.  Your melee swings and casts get slower and slower while the enemies rush you at the same speed.
+3. It takes a while to get used to the backwards controls.  You move with rt. click and everything else is left click.  No key rebinds.  
+
+Worst of all are the ungodly respawns that slow you down as you travel to your destination then back to your village.  No teleports or shortcuts, just the long, slow trek back while fighting the same enemies you fought on the way there.  The first two hours had me traveling the same path numerous times while fighting the same respawns.  It can be maddening.
+
+Compared to a far superior ARPG like Torchlight that came out a year earlier, Hazen: The Dark Whispers just can't compete."
+23003844,english,2016.04.15 21:07,✅,✅,0.4799329042,1,"Like the music, the feeling of old RPG, it relaxas me, no need to rush anything. Cheers","Like the music, the feeling of old RPG, it relaxas me, no need to rush anything. Cheers"
+22923080,english,2016.04.12 11:51,❌,✅,0.4435071647,0,Is there a way to remove this game from my library? I'm so ashamed that all my friends can see I have bought this....,Is there a way to remove this game from my library? I'm so ashamed that all my friends can see I have bought this....
+20740924,english,2016.00.25 09:06,❌,✅,0.4822335243,0,It's a nasty stain on my Steam collection...   :(,It's a nasty stain on my Steam collection...   :(
+20478295,english,2016.00.12 03:52,❌,✅,0.5,0,"Thought this would be a good time waster. I was right.....wasted my time (and money).
+Game crashes occasionally. Could get no further than what i believe is the first round. The quest is to find Malestos, which i did, however he just stands there with a big monster beside him and tells his minions to kill me.
+Did the verify integrity...nothing, uninstalled and reinstalled....still nothing.","Thought this would be a good time waster. I was right.....wasted my time (and money).
+Game crashes occasionally. Could get no further than what i believe is the first round. The quest is to find Malestos, which i did, however he just stands there with a big monster beside him and tells his minions to kill me.
+Did the verify integrity...nothing, uninstalled and reinstalled....still nothing."
+20456220,english,2016.00.11 00:37,✅,✅,0.5320571065,5,"Win7 64bit start problem solution:
+
+Start menu > Control Panel > Hardware and Sound > Sound > Double-click on primary playback device > Advanced tab > Set format to 24-bit 44.1khz or 48khz","Win7 64bit start problem solution:
+
+Start menu > Control Panel > Hardware and Sound > Sound > Double-click on primary playback device > Advanced tab > Set format to 24-bit 44.1khz or 48khz"
+17213150,english,2015.06.25 04:50,❌,✅,0.5622766018,8,"Starting the game, you will go into an area with no plot. Just you standing there, 'corpsewalkers' swinging at you. Then jarring popups tell you basic controls then guide you to a town across a bridge. The graphics are not that great, the interface is a mishmashed diablo, and quite honestly I had no idea what was going on. Play this on a bet, while drunk, or when you need to feel confused. 
+
+You can't even alt+f4 out of it.
+
+Pros: Honestly cannot think of any. There are many more games out there that are dungeon splunks that do this better, for cheaper.
+
+Cons: To many to list.","Starting the game, you will go into an area with no plot. Just you standing there, 'corpsewalkers' swinging at you. Then jarring popups tell you basic controls then guide you to a town across a bridge. The graphics are not that great, the interface is a mishmashed diablo, and quite honestly I had no idea what was going on. Play this on a bet, while drunk, or when you need to feel confused. 
+
+You can't even alt+f4 out of it.
+
+Pros: Honestly cannot think of any. There are many more games out there that are dungeon splunks that do this better, for cheaper.
+
+Cons: To many to list."
+16134998,portuguese,2015.05.02 19:34,❌,✅,0.5,0,Não roda no Windoms Seven,Does not run on Windows Seven
+15791909,english,2015.04.12 00:16,❌,✅,0.3180613518,3,"No no no no no no no no no no no no no no no no no no no no no. Don't buy this game, even as a joke.","No no no no no no no no no no no no no no no no no no no no no. Don't buy this game, even as a joke."
+15740993,english,2015.04.08 19:08,❌,✅,0.4745298028,3,The dev's have gave up on this game as soon as it released I just wish there was a way to make a unsupported patch for this game to fix the many game breaking bugs.,The dev's have gave up on this game as soon as it released I just wish there was a way to make a unsupported patch for this game to fix the many game breaking bugs.
+15194221,english,2015.03.04 04:06,❌,✅,0.2333945334,6,Don't.,Don't.
+14890938,english,2015.02.15 01:50,❌,✅,0.8370830417,79,"Game starts with no story, no reason why you are there, just begins with you holding an axe outside of town with skeletons coming to attack you. 
+
+Click to attack, the character swings his arm instead of the axe. Skeletons dont seem to mind, they die anyway. 
+
+Go into town, no story at all, just asked to get some keys to lock a gate. The skeletons wont be able to get in if the door is locked. 
+
+As I walk around, scenery pops in everywhere. Graphical glitches are frequent. Ambient sound loops for abour 4 seconds before it repeats. 
+
+I spec to be a mage as I usually do in these Diablo clones. Find a basic staff, and start shooting ice bolts at skeletons. 45-50 dmg. I upgrade my INT and skill level, and start to do 65 dmg. I run out of mana, and start swinging my staff. 250 damage per hit, one shotting everything. 
+
+Find a donkey which gives you a quest. Nothing appears on the screen, I have to go into the quest log to find it. Apparently the town in which I came not only has a locked doors issue, but now needs flour. This donkey has flour. Time to save the day via bread. 
+
+Then it crashed. 
+
+Best part of the game in my opinion.","Game starts with no story, no reason why you are there, just begins with you holding an axe outside of town with skeletons coming to attack you. 
+
+Click to attack, the character swings his arm instead of the axe. Skeletons dont seem to mind, they die anyway. 
+
+Go into town, no story at all, just asked to get some keys to lock a gate. The skeletons wont be able to get in if the door is locked. 
+
+As I walk around, scenery pops in everywhere. Graphical glitches are frequent. Ambient sound loops for abour 4 seconds before it repeats. 
+
+I spec to be a mage as I usually do in these Diablo clones. Find a basic staff, and start shooting ice bolts at skeletons. 45-50 dmg. I upgrade my INT and skill level, and start to do 65 dmg. I run out of mana, and start swinging my staff. 250 damage per hit, one shotting everything. 
+
+Find a donkey which gives you a quest. Nothing appears on the screen, I have to go into the quest log to find it. Apparently the town in which I came not only has a locked doors issue, but now needs flour. This donkey has flour. Time to save the day via bread. 
+
+Then it crashed. 
+
+Best part of the game in my opinion."
+10166704,brazilian,2014.04.19 08:38,❌,✅,0.536423862,2,"Jogo inacabado, com diversos bugs onde alguns até mesmo impedem de continuar o jogo e obrigam a recomeçar tudo de novo. Jogabilidade muito travada e ineficiente.","An unfinished game with numerous bugs, some of which prevent you from continuing the game and force you to start over. The gameplay is very clunky and inefficient."
+10153939,russian,2014.04.18 04:37,✅,❌,0.6533461809,20,"Почитал чужие отзывы, но всё же купил сию игру (а отзывов преимущественно больше отрицательных). 
+Игра мне очень понравилась, хотя некоторых нововведений сделать всё же не мешало бы. Например, более привычную систему управления, выбор и кастомизацию персонажей, более понятную карту местности и цели квестов на карте.
+В остальном игра хороша. Не знаю, почему многие жаловались на графику, ведь она для игры и так отличная.
+В общем, игра стоит своих денег. Для тех, кому нравится жанр РПГ, игра придётся в самый раз.","I read other reviews, but I still bought this game (and the reviews are mostly negative).
+I really liked the game, although some improvements would have been nice. For example, a more familiar control system, character selection and customization, a clearer map and quest objectives on the map.
+Otherwise, the game is good. I don't know why so many people complained about the graphics, because they are already excellent for the game.
+Overall, the game is worth the money. For those who enjoy RPGs, this game is perfect."
+10102501,english,2014.04.13 21:13,❌,✅,0.5489781499,10,"So many bugs that if it doesnt insta crash on you, its unplayable either way! not worth a penny.","So many bugs that if it doesnt insta crash on you, its unplayable either way! not worth a penny."
+9817474,english,2014.03.14 20:52,✅,✅,0.5102531314,10,"Okay, I initially classified this game in my ""This Game Sucks""-category (only after spending a few hours on it).  I actually reloaded this game and forced myself to learn and play the game.  Objectively, it's pretty sound - as most hack-n-slash follow similar key-binding layouts and mouse-behaviours of well-known games of this genre (i.e. Diablo).  I think the majority of the negative reviews come from those that have played Diablo or similar hack-n-slash games as Hazen introduces a differing layout for control movement and attack.  I played this game with the notion - ""this is not Diablo, don't expect it to be Diablo"".  Looking beyond that, the game does quench the hack-n-slash thirst for those willing to overlook it's unique default control layout.","Okay, I initially classified this game in my ""This Game Sucks""-category (only after spending a few hours on it).  I actually reloaded this game and forced myself to learn and play the game.  Objectively, it's pretty sound - as most hack-n-slash follow similar key-binding layouts and mouse-behaviours of well-known games of this genre (i.e. Diablo).  I think the majority of the negative reviews come from those that have played Diablo or similar hack-n-slash games as Hazen introduces a differing layout for control movement and attack.  I played this game with the notion - ""this is not Diablo, don't expect it to be Diablo"".  Looking beyond that, the game does quench the hack-n-slash thirst for those willing to overlook it's unique default control layout."
+9795402,english,2014.03.12 15:26,❌,✅,0.5391552448,6,"poor hack'n slash game.
+nothing new under the hood, some settings are good but the overall impression is that is a bad diablo copy.
+avoid it even if you like the genre, there are beter things around","poor hack'n slash game.
+nothing new under the hood, some settings are good but the overall impression is that is a bad diablo copy.
+avoid it even if you like the genre, there are beter things around"
+9785115,english,2014.03.11 12:47,❌,✅,0.643633604,14,"I played this game to its crappy completion and all I can say is don't buy it. Not even if it is a dollar, too many good games out to play this garbage.","I played this game to its crappy completion and all I can say is don't buy it. Not even if it is a dollar, too many good games out to play this garbage."
+9492058,german,2014.02.16 01:00,❌,✅,0.5523076653,5,"Was soll ich sagen? Die Grafik haut einen nicht um. Das Skillsystem ist Standart und es kommt einfach kein Spaß auf. Ich habe es 2 mal Angefangen, quasi 2 mal dem Spiel eine Chance gegeben, allerdings schafft dieses Spiel es wirklich nicht, eine packende oder spielenswerte Atmosphäre aufzubauen. Es ist einfach Langweilig und bietet weitaus weniger als zB. Titan Quest, Torchlicht oder andere Teile dieses Genres.
+
+Nicht Kaufen!","What can I say? The graphics aren't mind-blowing. The skill system is standard and simply not fun. I've started it twice, basically given it two chances, but this game really fails to create a gripping or playable atmosphere. It's simply boring and offers far less than, for example, Titan Quest, Torchlight, or other games in this genre.
+
+Don't buy it!"
+8424567,english,2013.11.30 15:17,❌,✅,0.4890876412,13,"Buy any of the following games instead
+Diablo 2
+Torchlight 2
+
+If cannnot afford,
+Path of Exile","Buy any of the following games instead
+Diablo 2
+Torchlight 2
+
+If cannnot afford,
+Path of Exile"
+7849525,english,2013.10.30 23:28,❌,✅,0.7919464707,56,"This is the worst ARPG I've ever played.
+Broken, abandoned junk. There is no part 2 for a reason.
+
+The game play is slow, unresponsive and ganky, the 3D graphics look like they were pulled from a Game Cube.
+If you must buy an ARPG get ether Torchlight 1/2, Van Hellsing, Titan quest, Grim Dawn or any other less known ARPGs.
+
+Or go for gold just get 'Path of Exile' and never look back.
+ Look on Youtube for videos of Hazen, it's plain broken and bad.","This is the worst ARPG I've ever played.
+Broken, abandoned junk. There is no part 2 for a reason.
+
+The game play is slow, unresponsive and ganky, the 3D graphics look like they were pulled from a Game Cube.
+If you must buy an ARPG get ether Torchlight 1/2, Van Hellsing, Titan quest, Grim Dawn or any other less known ARPGs.
+
+Or go for gold just get 'Path of Exile' and never look back.
+ Look on Youtube for videos of Hazen, it's plain broken and bad."
+7835406,english,2013.10.30 06:02,❌,✅,0.7335994244,30,"This game is awful. I cannot recommend it at all. The gameplay is frustrating, the fun factor is non-existent and you'll wish you'd  never heard of it after spending 20 minutes playing it. There are no more episodes for this game as the first one was so bad, the company that made it went under. Avoid this game as much as possible.","This game is awful. I cannot recommend it at all. The gameplay is frustrating, the fun factor is non-existent and you'll wish you'd  never heard of it after spending 20 minutes playing it. There are no more episodes for this game as the first one was so bad, the company that made it went under. Avoid this game as much as possible."
+7813840,english,2013.10.29 01:51,✅,✅,0.2914277017,4,"cheap, good time waster...","cheap, good time waster..."
+66374,english,2012.00.03 02:20,❌,✅,0.530207634,9,"Standard Diablo clone. Looks cheap, plays cheap, dont remember what I paid for it but it was probably too much.","Standard Diablo clone. Looks cheap, plays cheap, dont remember what I paid for it but it was probably too much."
+2208587,english,2011.06.01 12:49,❌,✅,0.4501155317,4,"i play only for several minutes because when i saw that there's no ""bubble"" telling you the differences between currently equiped item and item you hover your mouse onto, it was a game breaker for me (i guess i'm that lazy :)).","i play only for several minutes because when i saw that there's no ""bubble"" telling you the differences between currently equiped item and item you hover your mouse onto, it was a game breaker for me (i guess i'm that lazy :))."
+811312,english,2011.05.14 22:07,✅,✅,0.5157641768,11,"An ok action RPG if you ask me. It has graphics that are cartoony (similar to Torchlight) and somewhat realistic. It mixes both of them really. I'm not that far in, but I really haven't seen much a story so far. Gameplay is like any other action RPG, so, lots of combat and a bit of quest solving while doing that. For a cheap game it's not that bad. Bit unpolished maybe. And I've been told it's pretty short (since it's an episode). My advice ? Hmm, I don't know... But I'm sure you can find out on your own if this is the game for you.
+
+[quote]If you enjoyed this review please consider following me: [url=https://store.steampowered.com/curator/41144728-markdj/]curator page[/url] [/quote]","An ok action RPG if you ask me. It has graphics that are cartoony (similar to Torchlight) and somewhat realistic. It mixes both of them really. I'm not that far in, but I really haven't seen much a story so far. Gameplay is like any other action RPG, so, lots of combat and a bit of quest solving while doing that. For a cheap game it's not that bad. Bit unpolished maybe. And I've been told it's pretty short (since it's an episode). My advice ? Hmm, I don't know... But I'm sure you can find out on your own if this is the game for you.
+
+[quote]If you enjoyed this review please consider following me: [url=https://store.steampowered.com/curator/41144728-markdj/]curator page[/url] [/quote]"
+3261876,english,2011.00.25 09:38,✅,✅,0.3448566496,2,"THIS GAME IS HORRIBLE, I'M NOT KIDDING DON'T BUY THIS BUGGY PIECE OF CRAP!!!!!","THIS GAME IS HORRIBLE, I'M NOT KIDDING DON'T BUY THIS BUGGY PIECE OF CRAP!!!!!"
+738365,english,2010.11.25 06:21,❌,✅,0.4207789302,2,"A éviter  hack and slash pas suffisament intéressant pour être accrocheur.
+
+Avoid it, it's a hack and slash game but not interesting enough.","A éviter  hack and slash pas suffisament intéressant pour être accrocheur.
+
+Avoid it, it's a hack and slash game but not interesting enough."
+1182057,english,2010.11.19 01:28,❌,✅,0.5439616442,8,"Recommended if you want to cry yourself to sleep at how you spent money on something that crashes when you use a basic feature. Plus, it's a short ""episode 1"" of an episodic thing that never came about, so the plot basically doesn't go anywhere.
+
+Also it's just not a good game.","Recommended if you want to cry yourself to sleep at how you spent money on something that crashes when you use a basic feature. Plus, it's a short ""episode 1"" of an episodic thing that never came about, so the plot basically doesn't go anywhere.
+
+Also it's just not a good game."
+1719386,english,2010.10.30 15:45,❌,✅,0.3768462837,5,Hazen sucks monkey balls. It's terrible,Hazen sucks monkey balls. It's terrible
+1773631,english,2010.10.20 08:19,❌,✅,0.5,0,Pure trash.,Pure trash.

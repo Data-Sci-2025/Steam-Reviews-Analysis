@@ -1,0 +1,46 @@
+game,rank,perc_positive,year,total_reviews,eng_reviews,price,steam_id
+Outer wilds,Overwhelmingly Positive,95%,2020,"75,534","45,703",$25,753640
+Stardew Valley,Overwhelmingly Positive,98%,2016,"797,573","363,715",$15,413150
+Hades,Overwhelmingly Positive,98%,2020,"264,668","133,152",$25,1145360
+Chants of Sennaar,Overwhelmingly Positive,98%,2023,"22,874","10,464",$20,1931770
+The Case of the Golden Idol,Overwhelmingly Positive,98%,2022,"8,107","5,778",$18,1677770
+Disco Elysium,Very Positive,92%,2019,"105,914","52,174",$40,632470
+Superliminal,Very Positive,94%,2020,"25,549","13,202",$20,1049410
+The Stanley Parable: Ultra Deluxe,Very Positive,94%,2022,"30,300","22,192",$25,1703340
+Dead Space 2,Very Positive,94%,2011,"22,870","10,723",$20,47780
+Night in the Woods,Very Positive,94%,2017,"16,570","12,697",$20,481510
+Powerful Courses,Positive,100%,2023,49,37,$15,2092330
+Bike Ride 3D,Positive,100%,2024,49,43,$4,2607330
+Tomorrow is my Birthday,Positive,100%,2024,48,42,$3,2940020
+Hyper Space,Positive,100%,2024,33,15,$5,2444290
+Ascending Inferno,Positive,100%,2024,48,53,$15,2442820
+Ranch Simulator,Mostly Positive,80%,2023,"32,194","9,373",$25,1119730
+Resident Evil 6,Mostly Positive,79%,2013,"41,151","12,266",$20,221040
+Dark Pictures Anthology: Little Hope,Mostly Positive,73%,2020,"6,068","2,713",$20,1194630
+Blair Witch,Mostly Positive,78%,2019,"5,898","2,761",$30,1092660
+Final Fantasy VIII Remastered,Mostly Positive,73%,2019,"4,174","2,421",$20,1026680
+Deadly Premonition: The Director's Cut,Mixed,66%,2013,"3,072","1,976",$25,247660
+Silent Hill Homecoming,Mixed,47%,2008,"2,379","1,099",$40,19000
+Redfall,Mixed,41%,2023,"2,380","1,629",$40,1294810
+Amneisa: A Machine for Pigs,Mixed,68%,2013,"6,807","4,178",$20,239200
+Vampire: The Masquerade - Coteries of New York,Mixed,69%,2019,"2,113","1,266",$20,1096410
+Roller Coaster Tycoon World,Mostly Negative,25%,2016,"3,179","1,944",$15,282560
+Urban Empire,Mostly Negative,34%,2017,"1,902",892,$30,352550
+Postal 3,Mostly Negative,39%,2011,"4,328","1,984",$6,10220
+Towns,Mostly Negative,27%,2012,"2,381","2,058",$15,221020
+Edge of Space,Mostly Negative,32%,2015,"1,945","2,428",$15,238240
+Bridge!,Negative,12%,2011,47,31,$5,300160
+Damned Nation Reborn,Negative,10%,2015,83,48,$13,345710
+Hazen: The Dark Whispers,Negative,20%,2010,48,41,$9,46730
+At Home,Negative,18%,2019,44,26,$5,1048640
+Girl with a big SWORD,Negative,16%,2018,43,35,$2,946600
+Lords of the Black Sun,Very Negative,18%,2014,328,300,$25,246940
+Skyscraper Simulator,Very Negative,14%,2010,266,479,$3,252910
+Citadels,Very Negative,13%,2013,490,276,$15,238870
+Construction Machines 2014,Very Negative,7%,2014,239,156,$7,252050
+Bhop Pro,Very Negative,17%,2020,244,69,$10,1308950
+Kinetic Void,Overwhelmingly Negative,17%,2014,"1,553","1,346",$10,227160
+Spacebase DF9,Overwhelmingly Negative,17%,2014,"4,313","3,675",$10,246090
+FlatOut 3 Chaos & Destruction,Overwhelmingly Negative,17%,2011,"4,079","1,606",$10,201510
+Command & Conquer 4 Tiberian Twilight,Overwhelmingly Negative,16%,2010,"4,711","2,625",$20,47700
+Superpower 3,Overwhelmingly Negative,10%,2022,"4,713","2,626",$30,1563130

@@ -15,14 +15,14 @@ library(stringr)
 
 ```{r}
 #| label: amnesia
-amnesia <- read_csv("data/amnesia.csv")
+amnesia <- read_csv("../data/amnesia.csv")
 amnesia
 ```
 
 
 ```{r}
 #| label: dloop
-deathloop <- read_csv("data/deathloop.csv")
+deathloop <- read_csv("../data/deathloop.csv")
 deathloop
 ```
 
@@ -191,16 +191,16 @@ So this is where I've been noodling around trying to get all my data read in. It
 
 ```{r}
 #| label: list-files
-filenames <- list.files("data", pattern="*.csv", full.names=TRUE)
+filenames <- list.files("../data", pattern="*.csv", full.names=TRUE)
 filenames
 ```
 
 
 ```{r}
 #| label: dupe-check
-file1 <- readLines("data/command.csv")
+file1 <- readLines("../data/command.csv")
 
-file2 <- readLines("data/athome.csv")
+file2 <- readLines("../data/athome.csv")
 
 are_identical_nearly <- all.equal(file1, file2)
 print(paste("Nearly identical:", are_identical_nearly))
@@ -209,10 +209,10 @@ print(paste("Nearly identical:", are_identical_nearly))
 
 ```{r}
 #| label: dupe-check2
-check_c <- read_csv("data/command.csv")
+check_c <- read_csv("../data/command.csv")
 check_c
 
-check_d <- read_csv("data/bigsword.csv")
+check_d <- read_csv("../data/bigsword.csv")
 check_d
 ```
 
@@ -255,7 +255,8 @@ testing
 
 ```{r}
 #| label: vampires
-read.csv("data/vampires.csv")
+#| eval: FALSE
+read.csv("../data/vampires.csv")
 ```
 
 
@@ -311,6 +312,7 @@ amnesia
 
 ```{r}
 #| label: mod-readlines
+#| eval: FALSE
 lines <- read_lines(filenames)
 data <- read_csv(filenames, lines[25:length((lines))])
 
@@ -349,7 +351,7 @@ games_df
 
 ```{r}
 #| label: reviews-csv
-#write_csv(games_df, file="private/reviews.csv")
+#write_csv(games_df, file="../private/reviews.csv")
 ```
 
 
@@ -371,7 +373,7 @@ games_df |>
 
 ```{r}
 #| label: sample-df
-dlooplines <- read_lines("data/amnesia.csv")
+dlooplines <- read_lines("../data/amnesia.csv")
 flatlines <- str_flatten(dlooplines, "\n")
 colid <- read_csv(flatlines)
 steam_id <- colid |> select(2) |> colnames()

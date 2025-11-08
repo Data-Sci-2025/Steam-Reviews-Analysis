@@ -50,11 +50,6 @@ Thinking about future column names! Not yet thinking deeply about what columns I
 
 Note: Think about how to rename cols using iteration for ease.... the language column name comes from the game url id number used to pull the reviews. 
 
-```{r}
-#| label: dloop
-deathloop
-```
-
 
 ### str replace
 
@@ -96,7 +91,7 @@ verypos
 
 ```{r}
 #| label: pos
-pos <- tibble(game = c("Powerful Courses", "Bike Ride 3D", "Tomorrow is my Birthday", "Hyper Space", "Ascending Inferno"), rank = "Positive", perc_positive = c("100%", "100%", "100%", "100%", "100%"), year = c("2023", "2024", "2024", "2024", "2024"), total_reviews = c("49", "49", "48", "33", "48"), eng_reviews = c("NA", "NA", "NA","NA", "NA"), price = c("$15", "$4", "$3", "$5", "$15"), steam_id = c("2092330", "2607330", "2940020", "2444290", "2442820"))
+pos <- tibble(game = c("Powerful Courses", "Bike Ride 3D", "Tomorrow is my Birthday", "Hyper Space", "Ascending Inferno"), rank = "Positive", perc_positive = c("100%", "100%", "100%", "100%", "100%"), year = c("2023", "2024", "2024", "2024", "2024"), total_reviews = c("49", "49", "48", "33", "48"), eng_reviews = c("37", "43", "42","15", "53"), price = c("$15", "$4", "$3", "$5", "$15"), steam_id = c("2092330", "2607330", "2940020", "2444290", "2442820"))
 pos
 ```
 
@@ -117,30 +112,32 @@ mixed
 
 ```{r}
 #| label: mostlyneg
-mostlyneg <- tibble(game = c("Roller Coaster Tycoon World", "Urban Empire", "Postal 3", "Towns", "Edge of Space"), rank = "Mostly Negative", perc_positive = c("25%", "34%", "39%", "27%", "32%"), year = c("2016", "2017", "2011", "2012", "2015"), total_reviews = c("3,179", "1,902", "4,328", "2,381", "1,945"), eng_reviews = c("1,944", "NA", "1,984","2,058", "NA"), price = c("$15", "$30", "$6", "$15", "$15"), steam_id = c("282560", "352550", "10220", "221020", "238240"))
+mostlyneg <- tibble(game = c("Roller Coaster Tycoon World", "Urban Empire", "Postal 3", "Towns", "Edge of Space"), rank = "Mostly Negative", perc_positive = c("25%", "34%", "39%", "27%", "32%"), year = c("2016", "2017", "2011", "2012", "2015"), total_reviews = c("3,179", "1,902", "4,328", "2,381", "1,945"), eng_reviews = c("1,944", "892", "1,984","2,058", "2,428"), price = c("$15", "$30", "$6", "$15", "$15"), steam_id = c("282560", "352550", "10220", "221020", "238240"))
 mostlyneg
 ```
 
 
 ```{r}
 #| label: neg
-neg <- tibble(game = c("Bridge!", "Damned Nation Reborn", "Hazen: The Dark Whispers", "At Home", "Girl with a big SWORD"), rank = "Negative", perc_positive = c("12%", "10%", "20%", "18%", "16%"), year = c("2011", "2015", "2010", "2019", "2018"), total_reviews = c("47", "46", "48", "44", "43"), eng_reviews = c("NA", "NA", "NA","NA", "NA"), price = c("$5", "$13", "$9", "$5", "$2"), steam_id = c("300160", "345710", "46730", "1048640", "946600"))
+neg <- tibble(game = c("Bridge!", "Damned Nation Reborn", "Hazen: The Dark Whispers", "At Home", "Girl with a big SWORD"), rank = "Negative", perc_positive = c("12%", "10%", "20%", "18%", "16%"), year = c("2011", "2015", "2010", "2019", "2018"), total_reviews = c("47", "83", "48", "44", "43"), eng_reviews = c("31", "48", "41","26", "35"), price = c("$5", "$13", "$9", "$5", "$2"), steam_id = c("300160", "345710", "46730", "1048640", "946600"))
 neg
 ```
 
 
 ```{r}
 #| label: veryneg
-veryneg <- tibble(game = c("Lords of the Black Sun", "Skyscraper Simulator", "Citadels", "Construction Machines 2014", "Bhop Pro"), rank = "Very Negative", perc_positive = c("18%", "14%", "13%", "7%", "17%"), year = c("2014", "2010", "2013", "2014", "2020"), total_reviews = c("328", "266", "375", "239", "222"), eng_reviews = c("NA", "NA", "NA","NA", "NA"), price = c("$25", "$3", "$15", "$7", "$10"), steam_id = c("246940", "252910", "238870", "252050", "1308950"))
+veryneg <- tibble(game = c("Lords of the Black Sun", "Skyscraper Simulator", "Citadels", "Construction Machines 2014", "Bhop Pro"), rank = "Very Negative", perc_positive = c("18%", "14%", "13%", "7%", "17%"), year = c("2014", "2010", "2013", "2014", "2020"), total_reviews = c("328", "266", "490", "239", "244"), eng_reviews = c("300", "479", "276","156", "69"), price = c("$25", "$3", "$15", "$7", "$10"), steam_id = c("246940", "252910", "238870", "252050", "1308950"))
 veryneg
 ```
 
 
+
 ```{r}
 #| label: overneg
-overneg <- tibble(game = c("Kinetic Void", "Spacebase DF9", "FlatOut 3 Chaos & Destruction", "Command & Conquer 4 Tiberian Twilight", "Superpower 3"), rank = "Overwhelmingly Negative", perc_positive = c("17%", "17%", "17%", "16%", "10%"), year = c("2014", "2014", "2011", "2010", "2022"), total_reviews = c("1,381", "3,335", "3,419", "4,462", "973"), eng_reviews = c("NA", "2,852", "1,302","2,484", "NA"), price = c("$10", "$10", "$10", "$20", "$30"), steam_id = c("227160", "246090", "201510", "47700", "1563130"))
+overneg <- tibble(game = c("Kinetic Void", "Spacebase DF9", "FlatOut 3 Chaos & Destruction", "Command & Conquer 4 Tiberian Twilight", "Superpower 3"), rank = "Overwhelmingly Negative", perc_positive = c("17%", "17%", "17%", "16%", "10%"), year = c("2014", "2014", "2011", "2010", "2022"), total_reviews = c("1,553", "4,313", "4,079", "4,711", "4,713"), eng_reviews = c("1,346", "3,675", "1,606","2,625", "2,626"), price = c("$10", "$10", "$10", "$20", "$30"), steam_id = c("227160", "246090", "201510", "47700", "1563130"))
 overneg
 ```
+
 
 
 ```{r}
@@ -148,6 +145,14 @@ overneg
 allgames <- bind_rows(overpos, verypos, pos, mostlypos, mixed, mostlyneg, neg, veryneg, overneg)
 allgames
 ```
+
+
+```{r}
+#write_csv(allgames, file="0-gameinfo.csv")
+```
+
+
+
 
 ### Some quick stats
 
@@ -190,10 +195,35 @@ filenames <- list.files("data", pattern="*.csv", full.names=TRUE)
 filenames
 ```
 
+
+```{r}
+#| label: dupe-check
+file1 <- readLines("data/command.csv")
+
+file2 <- readLines("data/athome.csv")
+
+are_identical_nearly <- all.equal(file1, file2)
+print(paste("Nearly identical:", are_identical_nearly))
+
+```
+
+```{r}
+#| label: dupe-check2
+check_c <- read_csv("data/command.csv")
+check_c
+
+check_d <- read_csv("data/bigsword.csv")
+check_d
+```
+
+
+
+
 There we go, the failure caused by dreaded column 2
 
 ```{r}
 #| label: readfiles
+#| eval: FALSE
 read_csv(filenames)
 ```
 
@@ -203,6 +233,7 @@ Here's where I was experimenting with a for loop to go through each file, add it
 
 ```{r}
 #| label: file-loop
+#| eval: FALSE
 datalist <- list()
 
 for (file in filenames) {
@@ -216,6 +247,7 @@ The loop is obviously working, but the dfs aren't being added to the list. Looki
 
 ```{r}
 #| label: boundgames
+#| eval: FALSE
 testing <- rbind(datalist)
 
 testing
@@ -223,7 +255,7 @@ testing
 
 ```{r}
 #| label: vampires
-read.csv("data/vampires.csv", header=FALSE)
+read.csv("data/vampires.csv")
 ```
 
 
@@ -257,10 +289,107 @@ map(\(x))
     
     
     |> mutate(steam_id = steam_id)
+    
+
+```{r}
+#| label: find-colname
+numtest <- amnesia |> 
+  select(2) |>
+  colnames()
+
+numtest
+```
+
+```{r}
+#| label: id-col
+amnesia <- amnesia |>
+  mutate(steam_id = numtest)
+
+amnesia
+```
 
 
 ```{r}
-#| label: newloop
+#| label: mod-readlines
+lines <- read_lines(filenames)
+data <- read_csv(filenames, lines[25:length((lines))])
+
+
+data
+```
+
+
+
+
+
+## Building function
+
+
+```{r}
+#| label: df-function
+build_df <- function(x){
+  gamelines <- read_lines(x)
+  flatlines <- str_flatten(gamelines, "\n")
+  games_df <- read_csv(flatlines)
+  steam_id <- games_df |> select(2) |> colnames()
+  games_df <- games_df |> mutate(steam_id = steam_id)
+  games_df <- games_df |>
+    rename(review_id = 1, language = 2, date = 3, review_type = 4, purchased = 5, score = 6, upvotes = 7, review = 8, engtxt = 9) |>
+  filter(language == 'english')
+}
+```
+
+
+```{r}
+#| label: build-df
+games_df <- build_df(filenames)
+games_df
+```
+
+
+```{r}
+#| label: reviews-csv
+#write_csv(games_df, file="private/reviews.csv")
+```
+
+
+
+
+
+
+```{r}
+#| label: id-verify
+games_df |>
+  distinct(steam_id)
+```
+
+
+
+
+
+
+
+```{r}
+#| label: sample-df
+dlooplines <- read_lines("data/amnesia.csv")
+flatlines <- str_flatten(dlooplines, "\n")
+colid <- read_csv(flatlines)
+steam_id <- colid |> select(2) |> colnames()
+colid <- colid |> mutate(steam_id = steam_id)
+colid <- colid |>
+  rename(review_id = ...1, language = 2, date = ...3, review_type = ...4, purchased = ...5, score = ...6, upvotes = ...7, review = Reviews, engtxt = ...9) |>
+  filter(language == 'english')
+
+colid
+```
+
+
+
+
+
+```{r}
+#| label: scratch
+#| eval: FALSE
 filenames |>
       map(\(x) read_csv(x, show_col_types=FALSE, col_names = c("A", "B", "C", "D", "E", "F", "G", "H", "I"))) |>
       map(\(x) 
@@ -269,6 +398,14 @@ filenames |>
           rename(review_lang = 2) 
       ) |>
  head(2)
+
+
+#colid[-(1:24),] |>
+
+
+#dlooplines2 <- dlooplines[24:length((dlooplines))]
+#dloopstr <- str_flatten(dlooplines2, "\n")
+#dloopdata <- read_csv(dloopstr)
 ```
 
 

@@ -34,7 +34,7 @@ Negatively ranked games also have fewer total reviews in general. It's unlikley 
 I don't know yet what this is going to mean for how many reviews I pull for each game rank, it's something to think about more in depth.
 
 
-## October 25, 2025
+## October 25, 2025 - Progress Report 1
 
 Have downloaded reviews for my 45th game to replace the multiplayer game I'd previously included by accident. (Postal 3 (Mostly Negative))
 
@@ -68,5 +68,17 @@ Finally, I've been expanding on some plans thanks to our latest reads in the tid
 Then, of course, the classifier ultimately. 
 
 
+## November 11, 2025 - Progress Report 2
 
+First, I fixed my output for my "data exploration" .qmd file. Sorry to Sarah for making you read through that instead of a nice tidy .md on github! It's working properly now and looks nicer. 
+
+Another note from Sarah's comment in my guestbook was about how I got the information about a game's review ranking on the positive/negative scale and I hadn't even thought about that! I added a [notes and info](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/tree/main/notes_and_info) folder in my github (subject to change) with the output df of all the games I have reviews for and my projnotes.md file. Projnotes was really just for me to keep track of everything as I was working and thinking, but all of the information came directly from the Steam app which lists the number of reviews (total and in English if there are enough reviews), the % positive of of those reviews, the game's ranking, etc. The date listed is the date I downloaded the reviews just so I knew it, since new reviews are being posted constantly.
+
+My final report will have notes about how these rankings are decided based on reviews, it's not as straightforward as I imagined it going into this project!
+
+I got a dataframe built with my review data, though my steam_id column is still not populating correctly. I think it's related to my order of operations in my df building function, but I have to talk to Dan about it this week to puzzle it out.
+
+I've moved ahead in the meantime and I'm knee deep in data cleanup. This process can be found in the "data cleanup" file in my [data_processing](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/tree/main/data_processing) sub-folder in github. It's in early stages, but I have my cleanup plans detailed in there as a checklist for me to follow step-by-step. Once I get the steam_id column corrected, it won't affect the cleanup pipeline in any way, it will just affect the 9th column in the dataframe (it's already there, just not populated correctly). With column 9 corrected, I'll overwrite the reviews_df.csv and it will read into the pipeline just the same. 
+
+Once my data is cleaned up it'll be early analysis time!
 

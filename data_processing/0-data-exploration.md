@@ -168,6 +168,13 @@ think POS and NEG are easier to quickly tell apart.
 
 ## Game Info DFs
 
+I go into some more detail about these in my
+[projnotes](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/projnotes.md)
+file there. All this information comes directly from the Steam app. The
+app only shows English reviews as a separate metric from all reviews at
+a certain number of reviews. In those cases, I had to check the total
+number of English reviews from the csv files individually.
+
 ``` r
 overpos <- tibble(game = c("Outer wilds", "Stardew Valley", "Hades", "Chants of Sennaar", "The Case of the Golden Idol"), rank = "Overwhelmingly Positive", perc_positive = c("95%", "98%", "98%", "98%", "98%"), year = c("2020", "2016", "2020", "2023", "2022"), total_reviews = c("75,534", "797,573", "264,668", "22,874", "8,107"), eng_reviews = c("45,703", "363,715", "133,152", "10,464", "5,778"), price = c("$25", "$15", "$25", "$20", "$18"),  steam_id = c("753640", "413150", "1145360", "1931770", "1677770"))
 overpos
@@ -345,21 +352,17 @@ sum(allgames$eng_reviews, na.rm=TRUE)
     [1] 732317
 
 I only plan to look at english reviews, but it took some work to
-transform both columns into something sum-able. Take note that, at this
-time, some of the english reviews rows are NA because steam did not list
-a difference between “total” and “english”, I get the feeling this
-happens when there aren’t many reviews total (since it mostly appears
-with the less well-reviewed games).
-
-I’ll have to import the datasets myself, get a count of how many rows
-are noted to be in English, and come back here to update the dataframes
-for later.
+transform both columns into something sum-able.
 
 ## Getting the Data read in
 
 So this is where I’ve been noodling around trying to get all my data
-read in. It’s still very much a work in progress, but here’s the scraps
+read in. It’s still very much a work in progress, but here’s the parts
 of what I’ve been putting together and working on here and there.
+
+There are still some scratch-y notes in here because my reading in of
+the steam ID number is still not working properly, but I’ll clean that
+up later once it’s all in working condition.
 
 ``` r
 filenames <- list.files("../data", pattern="*.csv", full.names=TRUE)
@@ -390,118 +393,6 @@ filenames
     [43] "../data/superliminal.csv"    "../data/superpower.csv"     
     [45] "../data/towns.csv"           "../data/urbanemp.csv"       
     [47] "../data/vampires.csv"       
-
-``` r
-file1 <- readLines("../data/command.csv")
-```
-
-    Warning in readLines("../data/command.csv"): incomplete final line found on
-    '../data/command.csv'
-
-``` r
-file2 <- readLines("../data/athome.csv")
-```
-
-    Warning in readLines("../data/athome.csv"): incomplete final line found on
-    '../data/athome.csv'
-
-``` r
-are_identical_nearly <- all.equal(file1, file2)
-print(paste("Nearly identical:", are_identical_nearly))
-```
-
-    [1] "Nearly identical: Lengths (16029, 565) differ (string compare on first 565)"
-    [2] "Nearly identical: 531 string mismatches"                                    
-
-``` r
-check_c <- read_csv("../data/command.csv")
-```
-
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 4735 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 47700, ...3, ...4, ...5, ...7, Reviews, ...9
-    dbl (2): ...1, ...6
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
-check_c
-```
-
-    # A tibble: 4,735 × 9
-        ...1 `47700` ...3                 ...4  ...5      ...6 ...7  Reviews   ...9 
-       <dbl> <chr>   <chr>                <chr> <chr>    <dbl> <chr> <chr>     <chr>
-     1    NA <NA>    <NA>                 <NA>  <NA>        NA <NA>  <NA>      <NA> 
-     2    NA <NA>    Reviews by languages <NA>  <NA>        NA <NA>  Positive… Nega…
-     3    NA <NA>    <NA>                 Total Positive    NA Ratio The game… The …
-     4    NA <NA>    Total                4711  779       3932 17%   The game… The …
-     5    NA <NA>    english              2625  400       2225 15%   There ar… The …
-     6    NA <NA>    schinese             594   83         511 14%   The game… Ther…
-     7    NA <NA>    russian              345   111        234 32%   The stor… The …
-     8    NA <NA>    koreana              10    4            6 40%   The sand… The …
-     9    NA <NA>    german               357   47         310 13%   The grap… The …
-    10    NA <NA>    japanese             1     0            1 0%    The game… The …
-    # ℹ 4,725 more rows
-
-``` r
-check_d <- read_csv("../data/bigsword.csv")
-```
-
-    New names:
-    Rows: 71 Columns: 9
-    ── Column specification
-    ──────────────────────────────────────────────────────── Delimiter: "," chr
-    (9): ...1, 946600, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-``` r
-check_d
-```
-
-    # A tibble: 71 × 9
-       ...1  `946600` ...3                 ...4  ...5     ...6   ...7  Reviews ...9 
-       <chr> <chr>    <chr>                <chr> <chr>    <chr>  <chr> <chr>   <chr>
-     1 <NA>  <NA>     <NA>                 <NA>  <NA>     <NA>   <NA>  <NA>    <NA> 
-     2 <NA>  <NA>     Reviews by languages <NA>  <NA>     <NA>   <NA>  Positi… Nega…
-     3 <NA>  <NA>     <NA>                 Total Positive Negat… Ratio The ga… The …
-     4 <NA>  <NA>     Total                47    10       37     21%   The ga… The …
-     5 <NA>  <NA>     english              35    10       25     29%   There … The …
-     6 <NA>  <NA>     schinese             2     0        2      0%    The ga… Ther…
-     7 <NA>  <NA>     russian              3     0        3      0%    The st… The …
-     8 <NA>  <NA>     koreana              1     0        1      0%    The sa… The …
-     9 <NA>  <NA>     german               2     0        2      0%    The gr… The …
-    10 <NA>  <NA>     japanese             2     0        2      0%    The ga… The …
-    # ℹ 61 more rows
-
-There we go, the failure caused by dreaded column 2
-
-``` r
-read_csv(filenames)
-```
 
 Here’s where I was experimenting with a for loop to go through each
 file, add it into an empty list, and then I could bind that list

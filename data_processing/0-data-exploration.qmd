@@ -73,6 +73,7 @@ For now, going with POS and NEG for easy visual differences. I found "positive" 
 
 ## Game Info DFs
 
+I go into some more detail about these in my [projnotes](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/projnotes.md) file there. All this information comes directly from the Steam app. The app only shows English reviews as a separate metric from all reviews at a certain number of reviews. In those cases, I had to check the total number of English reviews from the csv files individually. 
 
 ```{r}
 #| label: overpos
@@ -179,52 +180,20 @@ allgames <- allgames |>
 sum(allgames$eng_reviews, na.rm=TRUE)
 ```
 
-I only plan to look at english reviews, but it took some work to transform both columns into something sum-able. Take note that, at this time, some of the english reviews rows are NA because steam did not list a difference between "total" and "english", I get the feeling this happens when there aren't many reviews total (since it mostly appears with the less well-reviewed games). 
-
-I'll have to import the datasets myself, get a count of how many rows are noted to be in English, and come back here to update the dataframes for later. 
+I only plan to look at english reviews, but it took some work to transform both columns into something sum-able.
 
 
 ## Getting the Data read in
 
-So this is where I've been noodling around trying to get all my data read in. It's still very much a work in progress, but here's the scraps of what I've been putting together and working on here and there.
+So this is where I've been noodling around trying to get all my data read in. It's still very much a work in progress, but here's the parts of what I've been putting together and working on here and there.
+
+There are still some scratch-y notes in here because my reading in of the steam ID number is still not working properly, but I'll clean that up later once it's all in working condition.
 
 
 ```{r}
 #| label: list-files
 filenames <- list.files("../data", pattern="*.csv", full.names=TRUE)
 filenames
-```
-
-
-```{r}
-#| label: dupe-check
-file1 <- readLines("../data/command.csv")
-
-file2 <- readLines("../data/athome.csv")
-
-are_identical_nearly <- all.equal(file1, file2)
-print(paste("Nearly identical:", are_identical_nearly))
-
-```
-
-```{r}
-#| label: dupe-check2
-check_c <- read_csv("../data/command.csv")
-check_c
-
-check_d <- read_csv("../data/bigsword.csv")
-check_d
-```
-
-
-
-
-There we go, the failure caused by dreaded column 2
-
-```{r}
-#| label: readfiles
-#| eval: FALSE
-read_csv(filenames)
 ```
 
 

@@ -82,3 +82,11 @@ I've moved ahead in the meantime and I'm knee deep in data cleanup. This process
 
 Once my data is cleaned up it'll be early analysis time!
 
+### Sharing Scheme
+
+I'm sharing (and already have) my raw data as it is all publicly available data anyway
+
+### License Information
+
+I'm choosing CC-BY-SA as my license. Since I'm using and reformatting publicly found data, I think it's fair that others are able to use my transformed data the same way.
+

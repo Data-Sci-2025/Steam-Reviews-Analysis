@@ -90,3 +90,7 @@ I'm sharing (and already have) my raw data as it is all publicly available data 
 
 I'm choosing CC-BY-SA as my license. Since I'm using and reformatting publicly found data, I think it's fair that others are able to use my transformed data the same way.
 
+### Pipeline options
+
+I'm choosing to use the New Continuing option for my code pipeline, with my qmd files numbered in the order intended to be read in. I'll add a note about this in my qmd files as well.
+

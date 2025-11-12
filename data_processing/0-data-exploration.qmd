@@ -246,5 +246,11 @@ games_df |>
 ```
 
 
+## Session Info
+
+```{r}
+#| label: sessioninfo
+sessionInfo()
+```
 
 

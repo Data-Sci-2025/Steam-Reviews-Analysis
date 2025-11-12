@@ -352,7 +352,9 @@ There are some other quirks to the reviews:
   and treat them almost as an emoji. For formatting, I’ll see what I can
   do about cutting down long lines of equals, hyphens, underscores, etc.
 
-- Review art(?) ![](../notes_and_info/reviewimg.PNG)
+- Review art(?)
+
+![](../notes_and_info/reviewimg.PNG)
 
 There are a number of reviews using ⣿ (and all the variations in the
 replace text chunk above) to create a kind of ASCII art that can be

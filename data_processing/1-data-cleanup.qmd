@@ -7,8 +7,6 @@ format: gfm
 #| label: setup
 #| include: false
 library(tidyverse)
-library(dplyr)
-library(stringr)
 ```
 
 **Note**: reviews.csv is too large to upload to github right now, but using the data which is uploaded and the "data exploration" file, if you un-comment the write_csv chunk, you should be able to recreate it just fine. You'll just have to change the file path to read in for this one. 
@@ -53,7 +51,7 @@ diffrows <- reviews_df[reviews_df$review != reviews_df$engtxt, ]
 diffrows
 ```
 
-The engtxt column is not actually different from the review column, the only difference being conversions of any reviews that just say "xx%" (100% being converted to 1) or anything with x/10 being also converted to a string of numbers. Since it's essentially the same data, I'll ditch the engtxt column and keep the review one.
+The engtxt column is not actually different from the review column, (it seems to auto translate the only difference being conversions of any reviews that just say "xx%" (100% being converted to 1) or anything with x/10 being also converted to a string of numbers. Since it's essentially the same data, I'll ditch the engtxt column and keep the review one.
 
 Now for column decisions. I'll keep review_id since it's a unique value for each different review. 
 
@@ -72,39 +70,15 @@ reviews_df <- reviews_df |>
 reviews_df
 ```
 
-Now, I wanted to verify everything is correct. If every review ID is unique, then piping the review_id column into distinct() should be the exact same dimensions as the full dataframe.
+Now, I wanted to verify everything is correct. If every review ID is unique and I didn't accidentally duplicate anything, then piping the review_id column into distinct() should be the exact same dimensions as the full dataframe.
+
+I had to run some fixes, but it's all good now!
 
 
 ```{r}
 #| label: rowscheck
 reviews_df |>
   distinct(review_id)
-```
-
-But it's not... so an investigation is needed
-
-```{r}
-#| label: row-dupes
-dupes <- duplicated(reviews_df$review_id)
-
-dupes2 <- reviews_df[dupes, ]
-dupes2
-```
-
-
-```{r}
-#| label: game-ids
-dupes2 |>
-  distinct(steam_id)
-```
-
-It looks like, for some reason, the game Superpower 3 has the same reviews as the command & conquer game. I went to check into this more, and it looks like, for some reason, the Superpower 3 game ID didn't actually work with the script to rip game reviews and I missed it by mistake. I won't work now, either, so I'm going to have to find a replacement game in the overwhelmingly negative category and rebuild my dataframe. It's only the one, though, not the end of the world. 
-
-
-```{r}
-#| label: dupe-check
-reviews_df |>
-  filter(review_id==207594063)
 ```
 
 

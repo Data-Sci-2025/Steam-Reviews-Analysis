@@ -115,7 +115,7 @@ Only 7 total games in this section
   - Total reviews 3,418, Total in English 1,300 (18%) $10
 - Command & Conquer 4 (9-29) mar 2010
   - Total reviews 4,461, Total in English 2,483 (14%) $20
-- Superpower 3 (9-29) Oct 2022
+- Superpower 3 (11-12) Oct 2022
   - 973 reviews (10%) $30 
 
 

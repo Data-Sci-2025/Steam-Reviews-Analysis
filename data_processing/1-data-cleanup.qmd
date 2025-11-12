@@ -136,9 +136,14 @@ reviews_df <- reviews_df |>
                 c("\n" = " ",
                   "\\(" = "",
                   "\\)" = "",
+                  "https.*? " = "",
+                  "https.*\\b" = "",
+                  "http.*? " = "",
+                  "http.*\\b" = "",
                   "(\\w)/(\\w)" = "\\1 \\2",
                   "(\\w) / (\\w)" = "\\1 \\2",
                   "\\[.*?\\]" = "",
+                  " ==+ " = "",
                   "⠸|⢹|⠣|⣛|⣣|⣁|⣖|⣭|⠃|⢻|⣧|⣽" = "",
                   "⣷|⣟|⢶|⢣|⠄|⡿|⣮|⣻|⣦|⢛|⠿|⢭|⠼|⢀" = "",
                   "⡉|⣶|⠘|⢿|⡠|⢆|⣳|⡵|⡅|⠙|⣼|⡄|⡧|⢇" = "",
@@ -230,13 +235,11 @@ There are some other quirks to the reviews:
 There are a number of reviews using ⣿ (and all the variations in the replace text chunk above) to create a kind of ASCII art that can be safely removed, it is not speech information at all.
 
   - Finally, links
-links? Lots of people are linking to things in their reviews.
+links? Lots of people are linking to things in their reviews.I don't want those.
 
 
-```{r}
-#| label: text-search
-str_view(reviews_df$review, "/")
-```
+In progress notes:
+I got rid of a bunch of ======= but there are still some others.... but I can't capture ==+ without also capturing a few reviews that are just "8==D" which I GUESS counts as a valid review, enough so that I don't want to just erase parts of it.
 
 
 ## Tokenizing

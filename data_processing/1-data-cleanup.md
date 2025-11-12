@@ -10,11 +10,11 @@ fine. You’ll just have to change the file path to read in for this one.
 reviews_df <- read_csv("../private/reviews.csv")
 ```
 
-    Rows: 210637 Columns: 10
+    Rows: 191109 Columns: 10
     ── Column specification ────────────────────────────────────────────────────────
     Delimiter: ","
-    chr (7): language, date, review_type, purchased, score, review, engtxt
-    dbl (3): review_id, upvotes, steam_id
+    chr (6): language, date, review_type, purchased, review, engtxt
+    dbl (4): review_id, score, upvotes, steam_id
 
     ℹ Use `spec()` to retrieve the full column specification for this data.
     ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
@@ -23,29 +23,43 @@ reviews_df <- read_csv("../private/reviews.csv")
 reviews_df
 ```
 
-    # A tibble: 210,637 × 10
+    # A tibble: 191,109 × 10
        review_id language date     review_type purchased score upvotes review engtxt
-           <dbl> <chr>    <chr>    <chr>       <chr>     <chr>   <dbl> <chr>  <chr> 
-     1 205434212 english  2025.08… ✅          ❌        0.51…       1 "The … "The …
-     2 205407336 english  2025.08… ❌          ❌        0.5         0 "Game… "Game…
-     3 205265837 english  2025.08… ❌          ✅        0.5         0 "So, … "So, …
-     4 205236599 english  2025.08… ✅          ❌        0.5         0 "Eeri… "Eeri…
-     5 205099824 english  2025.08… ❌          ❌        0.52…       1 "just… "just…
-     6 205035565 english  2025.08… ❌          ✅        0.5         0 "This… "This…
-     7 205004797 english  2025.08… ✅          ✅        0.47…       0 "Abso… "Abso…
-     8 204962454 english  2025.08… ✅          ✅        0.5         0 "Most… "Most…
-     9 204909988 english  2025.08… ❌          ❌        0.46…       0 "I en… "I en…
-    10 204877346 english  2025.08… ❌          ✅        0.46…       0 "Wish… "Wish…
-    # ℹ 210,627 more rows
+           <dbl> <chr>    <chr>    <chr>       <chr>     <dbl>   <dbl> <chr>  <chr> 
+     1 205434212 english  2025.08… ✅          ❌            0       1 "The … "The …
+     2 205407336 english  2025.08… ❌          ❌            0       0 "Game… "Game…
+     3 205265837 english  2025.08… ❌          ✅            0       0 "So, … "So, …
+     4 205236599 english  2025.08… ✅          ❌            0       0 "Eeri… "Eeri…
+     5 205099824 english  2025.08… ❌          ❌            0       1 "just… "just…
+     6 205035565 english  2025.08… ❌          ✅            0       0 "This… "This…
+     7 205004797 english  2025.08… ✅          ✅            0       0 "Abso… "Abso…
+     8 204962454 english  2025.08… ✅          ✅            0       0 "Most… "Most…
+     9 204909988 english  2025.08… ❌          ❌            0       0 "I en… "I en…
+    10 204877346 english  2025.08… ❌          ✅            0       0 "Wish… "Wish…
+    # ℹ 191,099 more rows
     # ℹ 1 more variable: steam_id <dbl>
 
-In this current format, the steam id column is not correct, but I can
-confirm all the games are there. The first reviews are for amnesia and
-the ones at the end are for the Vampire: The Masquerade game. Once I fix
-the steam_id workflow I’ll use distinct() to confirm there are 45
-different game IDs. I could use that as well, later, to split training
-and testing data and to narrow down to x number of games per game (where
-possible).
+``` r
+reviews_df |>
+  distinct(steam_id)
+```
+
+    # A tibble: 45 × 1
+       steam_id
+          <dbl>
+     1   239200
+     2  1048640
+     3  1308950
+     4   946600
+     5  2607330
+     6  2940020
+     7   246940
+     8  1092660
+     9   300160
+    10   238870
+    # ℹ 35 more rows
+
+## Cleaning Up
 
 ``` r
 reviews_df <- reviews_df |>
@@ -54,26 +68,27 @@ reviews_df <- reviews_df |>
                   "❌" = "NEG")))
 ```
 
-Fix those pesky emoji columns
+Fix those pesky emoji columns (I’m going to ditch the “purchased” column
+later on, so I didn’t bother)
 
 ``` r
 reviews_df
 ```
 
-    # A tibble: 210,637 × 10
+    # A tibble: 191,109 × 10
        review_id language date     review_type purchased score upvotes review engtxt
-           <dbl> <chr>    <chr>    <chr>       <chr>     <chr>   <dbl> <chr>  <chr> 
-     1 205434212 english  2025.08… POS         ❌        0.51…       1 "The … "The …
-     2 205407336 english  2025.08… NEG         ❌        0.5         0 "Game… "Game…
-     3 205265837 english  2025.08… NEG         ✅        0.5         0 "So, … "So, …
-     4 205236599 english  2025.08… POS         ❌        0.5         0 "Eeri… "Eeri…
-     5 205099824 english  2025.08… NEG         ❌        0.52…       1 "just… "just…
-     6 205035565 english  2025.08… NEG         ✅        0.5         0 "This… "This…
-     7 205004797 english  2025.08… POS         ✅        0.47…       0 "Abso… "Abso…
-     8 204962454 english  2025.08… POS         ✅        0.5         0 "Most… "Most…
-     9 204909988 english  2025.08… NEG         ❌        0.46…       0 "I en… "I en…
-    10 204877346 english  2025.08… NEG         ✅        0.46…       0 "Wish… "Wish…
-    # ℹ 210,627 more rows
+           <dbl> <chr>    <chr>    <chr>       <chr>     <dbl>   <dbl> <chr>  <chr> 
+     1 205434212 english  2025.08… POS         ❌            0       1 "The … "The …
+     2 205407336 english  2025.08… NEG         ❌            0       0 "Game… "Game…
+     3 205265837 english  2025.08… NEG         ✅            0       0 "So, … "So, …
+     4 205236599 english  2025.08… POS         ❌            0       0 "Eeri… "Eeri…
+     5 205099824 english  2025.08… NEG         ❌            0       1 "just… "just…
+     6 205035565 english  2025.08… NEG         ✅            0       0 "This… "This…
+     7 205004797 english  2025.08… POS         ✅            0       0 "Abso… "Abso…
+     8 204962454 english  2025.08… POS         ✅            0       0 "Most… "Most…
+     9 204909988 english  2025.08… NEG         ❌            0       0 "I en… "I en…
+    10 204877346 english  2025.08… NEG         ✅            0       0 "Wish… "Wish…
+    # ℹ 191,099 more rows
     # ℹ 1 more variable: steam_id <dbl>
 
 ``` r
@@ -81,37 +96,27 @@ diffrows <- reviews_df[reviews_df$review != reviews_df$engtxt, ]
 diffrows
 ```
 
-    # A tibble: 1,223 × 10
+    # A tibble: 1,117 × 10
        review_id language date     review_type purchased score upvotes review engtxt
-           <dbl> <chr>    <chr>    <chr>       <chr>     <chr>   <dbl> <chr>  <chr> 
-     1 204166566 english  2025.08… POS         ❌        0.46…       0 7/10   45848 
-     2        NA <NA>     <NA>     <NA>        <NA>      <NA>       NA <NA>   <NA>  
-     3 196362582 english  2025.05… NEG         ✅        0.5         0 3/10   45726 
-     4 194326563 english  2025.04… POS         ❌        0.5         0 5/10   45787 
-     5 184768635 english  2025.00… POS         ❌        0.5         0 9/10   45910 
-     6 168865908 english  2024.06… POS         ✅        0.5         0 9/10   45910 
-     7 162686854 english  2024.03… NEG         ✅        0.41…       0 1/5    45662 
-     8 155991617 english  2024.00… NEG         ❌        0.49…       1 3/10   45726 
-     9        NA <NA>     <NA>     <NA>        <NA>      <NA>       NA <NA>   <NA>  
-    10        NA <NA>     <NA>     <NA>        <NA>      <NA>       NA <NA>   <NA>  
-    # ℹ 1,213 more rows
+           <dbl> <chr>    <chr>    <chr>       <chr>     <dbl>   <dbl> <chr>  <chr> 
+     1 204166566 english  2025.08… POS         ❌            0       0 7/10   45848 
+     2        NA <NA>     <NA>     <NA>        <NA>         NA      NA <NA>   <NA>  
+     3 196362582 english  2025.05… NEG         ✅            0       0 3/10   45726 
+     4 194326563 english  2025.04… POS         ❌            0       0 5/10   45787 
+     5 184768635 english  2025.00… POS         ❌            0       0 9/10   45910 
+     6 168865908 english  2024.06… POS         ✅            0       0 9/10   45910 
+     7 162686854 english  2024.03… NEG         ✅            0       0 1/5    45662 
+     8 155991617 english  2024.00… NEG         ❌            0       1 3/10   45726 
+     9        NA <NA>     <NA>     <NA>        <NA>         NA      NA <NA>   <NA>  
+    10        NA <NA>     <NA>     <NA>        <NA>         NA      NA <NA>   <NA>  
+    # ℹ 1,107 more rows
     # ℹ 1 more variable: steam_id <dbl>
 
-``` r
-reviews_df |>
-  filter(review_id==204166566)
-```
-
-    # A tibble: 1 × 10
-      review_id language date      review_type purchased score upvotes review engtxt
-          <dbl> <chr>    <chr>     <chr>       <chr>     <chr>   <dbl> <chr>  <chr> 
-    1 204166566 english  2025.08.… POS         ❌        0.46…       0 7/10   45848 
-    # ℹ 1 more variable: steam_id <dbl>
-
-the engtxt column is not actually different from the review column, the
-only difference being conversions of any reviews that just say “xx%”
-(100% being converted to 1) or anything with x/10 being also converted
-to a string of numbers.
+The engtxt column is not actually different from the review column, (it
+seems to auto translate the only difference being conversions of any
+reviews that just say “xx%” (100% being converted to 1) or anything with
+x/10 being also converted to a string of numbers. Since it’s essentially
+the same data, I’ll ditch the engtxt column and keep the review one.
 
 Now for column decisions. I’ll keep review_id since it’s a unique value
 for each different review.
@@ -120,24 +125,25 @@ I don’t know that the date column is extremely important. I might want
 to look at how quickly games get reviews (are they concentrated at
 release and fall off, or is it relatively steady? any spikes?) but I
 will probably edit the column to a better format. Ditch the time, look
-into MM/DD/YY format instead, or whatever works best in R.
+into whatever format works best in R.
 
 I don’t think the purchased col is extremely important, it only marks if
 a review writer has purchased the game or not, which is not key to any
 of my analysis.
 
-score and upvotes is based on user response to a comment. Users can
+score and upvotes are based on user response to a comment. Users can
 upvote for helpfulness of a review, or mark it as funny. I can’t find
 data on how exactly the review score is calculated, but I don’t think
 these two factors will play a huge role in what I’m looking to do.
 
 ``` r
+#narrowing the df down to only the columns I want
 reviews_df <- reviews_df |>
   select(review_id:review_type, review, steam_id)
 reviews_df
 ```
 
-    # A tibble: 210,637 × 6
+    # A tibble: 191,109 × 6
        review_id language date             review_type review               steam_id
            <dbl> <chr>    <chr>            <chr>       <chr>                   <dbl>
      1 205434212 english  2025.08.29 02:05 POS         "The atmosphere and…   239200
@@ -150,14 +156,21 @@ reviews_df
      8 204962454 english  2025.08.22 21:33 POS         "Mostly a walking s…   239200
      9 204909988 english  2025.08.22 03:01 NEG         "I enjoyed the game…   239200
     10 204877346 english  2025.08.21 19:11 NEG         "Wish I could love …   239200
-    # ℹ 210,627 more rows
+    # ℹ 191,099 more rows
+
+Now, I wanted to verify everything is correct. If every review ID is
+unique and I didn’t accidentally duplicate anything, then piping the
+review_id column into distinct() should be the exact same dimensions as
+the full dataframe.
+
+I had to run some fixes, but it’s all good now!
 
 ``` r
 reviews_df |>
   distinct(review_id)
 ```
 
-    # A tibble: 207,975 × 1
+    # A tibble: 191,109 × 1
        review_id
            <dbl>
      1 205434212
@@ -170,65 +183,12 @@ reviews_df |>
      8 204962454
      9 204909988
     10 204877346
-    # ℹ 207,965 more rows
-
-``` r
-dupes <- duplicated(reviews_df$review_id)
-
-dupes2 <- reviews_df[dupes, ]
-dupes2[200:nrow(dupes2), ]
-```
-
-    # A tibble: 2,463 × 6
-       review_id language date             review_type review               steam_id
-           <dbl> <chr>    <chr>            <chr>       <chr>                   <dbl>
-     1 190443226 english  2025.02.17 14:03 NEG         "Dodged it 15 years…   239200
-     2 190427680 english  2025.02.17 07:56 NEG         "I bought this game…   239200
-     3 190420231 english  2025.02.17 05:26 NEG         "I played this game…   239200
-     4 190414049 english  2025.02.17 03:41 NEG         "This game is broke…   239200
-     5 190395753 english  2025.02.16 23:31 NEG         "this one was garba…   239200
-     6 190381054 english  2025.02.16 20:47 NEG         "This is a crime ag…   239200
-     7 190301361 english  2025.02.16 01:49 NEG         "2 log-in screens a…   239200
-     8 190167215 english  2025.02.14 18:08 NEG         "I don't even know …   239200
-     9 190138069 english  2025.02.14 07:44 NEG         "This game no longe…   239200
-    10 190067946 english  2025.02.13 08:57 NEG         "Ended up permanent…   239200
-    # ℹ 2,453 more rows
-
-``` r
-reviews_df |>
-  filter(review_id==148416513)
-```
-
-    # A tibble: 2 × 6
-      review_id language date             review_type review                steam_id
-          <dbl> <chr>    <chr>            <chr>       <chr>                    <dbl>
-    1 148416513 english  2023.09.18 06:11 POS         "I've only played fo…   239200
-    2 148416513 english  2023.09.18 06:11 POS         "I've only played fo…   239200
-
-For some reason, some reviews appear to have been duplicated. I’m going
-to revisit this once I fix my steam_id issue so I can pinpoint exactly
-what is being duplicated here and why… It looks like the duplicated game
-is command & conquer, but why….
-
-I’ve been looking through some files and I can see that Command &
-Conquer are duplicated, Powerful Courses are duplicated, that’s all I
-can seem to find, though. I don’t know why these are duplicated, but
-I’ll see what I can work out with some more searching and get rid of the
-duplicates once I know for sure. Again once the steam_id problem is
-fixed I’ll be able to verify that I have 45 different steam_ids and just
-remove the duplicate value rows.
-
-I verified that none of my files are identical to each other, double
-checking by reading in any two that were similar in length and verifying
-that the reviews don’t match. This is how I was able to verify that the
-only two games with duplicates are C&C and Powerful Courses. Oddly, it
-doesn’t seem like every single review for those games is duplicated,
-only some of them. No idea why.
+    # ℹ 191,099 more rows
 
 ## List of Goals
 
 - adjust the date column (DONE)
-- clean up the text of non text items
+- clean up the text of non text items (IN PROGRESS)
 - Word tokens and word count per review
 - word types
 - TTR
@@ -262,7 +222,7 @@ reviews_df$date <- as.Date(reviews_df$date)
 reviews_df
 ```
 
-    # A tibble: 210,637 × 6
+    # A tibble: 191,109 × 6
        review_id language date       review_type review                     steam_id
            <dbl> <chr>    <date>     <chr>       <chr>                         <dbl>
      1 205434212 english  2025-08-29 POS         "The atmosphere and sound…   239200
@@ -275,7 +235,7 @@ reviews_df
      8 204962454 english  2025-08-22 POS         "Mostly a walking simulat…   239200
      9 204909988 english  2025-08-22 NEG         "I enjoyed the game as es…   239200
     10 204877346 english  2025-08-21 NEG         "Wish I could love this g…   239200
-    # ℹ 210,627 more rows
+    # ℹ 191,099 more rows
 
 ## Text Cleaning
 
@@ -284,7 +244,7 @@ reviews_df |>
   select(review)
 ```
 
-    # A tibble: 210,637 × 1
+    # A tibble: 191,109 × 1
        review                                                                       
        <chr>                                                                        
      1 "The atmosphere and sound design are strong, but many core mechanics from Th…
@@ -297,7 +257,7 @@ reviews_df |>
      8 "Mostly a walking simulator, but there's a few puzzles. There's a few collec…
      9 "I enjoyed the game as essentially a creepy walking simulator with some ligh…
     10 "Wish I could love this game but it crashes at the end of the same level eve…
-    # ℹ 210,627 more rows
+    # ℹ 191,099 more rows
 
 ``` r
 reviews_df <- reviews_df |>
@@ -344,24 +304,15 @@ reviews_df <- reviews_df |>
                 ))
 ```
 
-I’m doing some exploring using str_view to dive in and look at what I
-want to get rid of to begin some real analysis.
-
-First - do I want to lowercase before tokenizing? I think yes but I have
-to recheck old homeworks to be sure. Definitely want to lowercase before
-looking at types and before doing tf-idf.
-
-- how do you make a set of word types in R anyway i don’t know
-
-Second - what to do with punctuation? I have to review previous work
-also.
+Using str_view and str_replace I’m cleaning up the review text so I can
+conduct some real analysis.
 
 For the sake of processing text, I’m first removing any parenthesis
 included. it could be interesting what gets put in a parenthetical
-statement vs outside, but for pure analysis and vectorizing we don’t
-want them.
+statement vs outside, but for pure analysis and vectorizing I don’t want
+them.
 
-There are some included kind of html(?) tags like \[b\] and \[/b\] of
+There are some included kind of html(?) tags like \[b\] and \[/b\] or
 \[h1\] etc. I want to get rid of those too.
 
 Getting rid of /, sometimes it appears as word/word and others word /
@@ -371,41 +322,44 @@ I’m keeping those but I have to think about what to do with it. It also
 depends on how the tokenizer handles it. If it tokenizes to \[7\] \[/\]
 \[10\] I think that’s acceptable.
 
-Questions - what do to with emojis?
+Question - what do to with emojis?
 
 Sometimes they are used stylistically to split up reviews: 📚 Story /
 Narrative, ⌛ Length, 🔁 Replayability
 
-Other times functionally (this is about difficulty): 🔲 Too easy ☑️
-Casual-friendly 🔲 Balanced/Normal 🔲 Challenging 🔲 Brutal but fair 🔲
-Pure chaos (PvP focus)
+Other times functionally (this is about a game’s difficulty): 🔲 Too
+easy ☑️ Casual-friendly 🔲 Balanced/Normal 🔲 Challenging 🔲 Brutal but
+fair 🔲 Pure chaos (PvP focus)
 
 Sometimes in place of words: At least one review, start to finish,
-contains one item only 💩 Another one looks like: This game is 💩 but i
-still love it
+contains one item only - 💩 Another one looks like: This game is 💩 but
+i still love it
 
-Some reviews also have no words and will just say “7/10” and nothing
-else, what about those?
+There are some other quirks to the reviews:
 
-What about abbreviations? I’ve seen af, wtf, omg, lmao, etc etc. - there
-are a lot, i imagine just leave them as they are
+- Some reviews also have no words and will just say “7/10” and nothing
+  else, I’m leaving those as-is.
 
-There are also emoticons in the old style: :D, xD etc I even saw ° ͜ʖ
-͡°, ﾉ◕ヮ◕ﾉ\*:･ﾟ✧
+- There are a lot abbreviations. I’ve seen af, wtf, omg, lmao, etc etc.
+  I’m leaving those as-is
 
-LOTS of formatting choices people make for visual purposes: =====, ☑ and
-☐ (not as emojis),
+- There are also emoticons in the old style: :D, xD etc I even saw ° ͜ʖ
+  ͡°, ﾉ◕ヮ◕ﾉ\*:･ﾟ✧ … they’re not NOT informative, so I’ll also leave
+  those (unless I have to revisit later)
 
-Or what about this… There are a number of reviews using ⣿ (and all the
-variations in the replace text chunk above) to create a kind of ASCII
-art that can be safely removed, it is not speech information at all.
+- LOTS of formatting choices people make for visual purposes. =====, ☑
+  and ☐ (not as emojis). For the second I will leave them as they are
+  and treat them almost as an emoji. For formatting, I’ll see what I can
+  do about cutting down long lines of equals, hyphens, underscores, etc.
 
-Think about \\.\*?\\ - there are some unicodes that show up I was having
-trouble singling out so I have to figure that out. I think they’re
-probably special characters used in some more elaborate emoticons/faces
-that didn’t quite translate somewhere along the way.
+- Review art(?) ![](../notes_and_info/reviewimg.PNG)
 
-links? Lots of people are linking to things in their reviews.
+There are a number of reviews using ⣿ (and all the variations in the
+replace text chunk above) to create a kind of ASCII art that can be
+safely removed, it is not speech information at all.
+
+- Finally, links links? Lots of people are linking to things in their
+  reviews.
 
 ``` r
 str_view(reviews_df$review, "/")
@@ -431,4 +385,64 @@ str_view(reviews_df$review, "/")
     [1023] │ I was expecting a horror game with a good storyline something like SOMA. And i got a walking simulator with a terrible enemy encounters. It's not a 'bad' game. The story was kinda interesting, but not enough to keep me entertained and i felt like even though it was only 6h long i want it to finally end so i can stop playing, cause it's not interesting as a game you mostly wonder corridors, do very basic "puzzles"</>turn knobs.
     [1130] │ A lot of stuttering for whatver reason =</> Similar enemies and gameplay as the first game, some mechanics were cut out, no new ones.
     [1131] │ Amnesia's Lackluster Sequel Amnesia: A Machine for Pigs is a survival horror game that was originally meant to be a mod. The game is an indirect sequel to Amnesia: The Dark Descent, which was both developed and produced by Frictional Games. While set in the same universe as the previous game, it features a new cast of characters and time setting. Follow My Review Group Here! About Description 💾Graphics The graphics are pretty good in this game. The atmosphere is incredible here with some interesting locations that change it up from the previous Amnesia game. The Monster Design is not that intimidating or scary in my opinion. The lighting is pretty good and you still have that annoying motion blur from the previous game which you can turn off luckily. 🎮Gameplay The gameplay here is watered down from the last game which sucks. You have infinite use of the lantern now so no more worrying about oil. I don’t like this feature at all. I enjoyed worrying about my oil consumption. It gave me something to think about and brought a challenge. The inventory system is gone. Just wiped away for no reason, which I question why they did that. The puzzles are barely even puzzles. You barely even interact with the monster. Even if you do, it's not much of a threat. It’s hard to find anything good to say about the gameplay. I guess you love horror games that have no fear or threat to you, then you can play this one. 📜Story I actually really enjoyed the story in this game. I love the twist later into the story. I feel like this is more of a rails on story game than a horror game. I highly recommend reading the notes since that will help you understand the game better as it can be confusing if you just skip them. 🕛Playtime This game took me like 5 hours to beat. It’s a one time only play for me. So don’t expect replayability here. 🎧Sound The voice acting is really good in this game. They did such a good job with making it sounds from the late 1800’s to early 1900’s. The environments can make some pretty creepy sounds as well which I really enjoyed. The music is pretty good too better than the first game. ❗Bugs❗ There is a huge bug in this game where if there is any trigger of an event, your frame rate will go down to like 30fps for a good few minutes. It takes me out of the experience every time this happens and I almost gave up on this game because of it. If you go to your journal and exit and can fix it, but not all the time. All and this happened a lot so be prepared for that. 🔅Performance Besides the near game breaking performance bug. I do get 60fps on max settings when the game wants to cooperate with me. ✔️Pro’s Amazing atmosphere Environmental Storytelling Some cool locations Good story Amazing voice acting ❌Con’s Annoying Micro Stutters at times Frame rate drops when events trigger Poor Optimization No more inventory system Puzzles are far too easy Almost no threats in this game Had to force Vsync on Nvidia Control Panel Terrible motion blur You can turn it off luckily 🏆Rating 3 10 Get this game on sale for around 75% off. Also don’t feel bad if you miss on the sale, you are not missing too much on this game. 🔗Conclusion This game was a huge disappointment. With the lack of interaction from the previous game and the lack of challenge this game has, I would just straight up skip this game. You are not missing anything ground breaking or amazing. The performance bug was horrible and the gameplay was just boring since there is rarely a threat. Move on and find a different game. It has a good story and scary environment and atmosphere, but that's not enough to make it worth buying for me especially coming from an incredible prequel to this. https:</></>store.steampowered.com app 239200 Amnesia_A_Machine_for_Pigs</> Links to help you in Amnesia: A Machine for Pigs: Amnesia: A Machine for Pigs - General Guide Master Archivist Achievement Guide Master Archivist: Maps Specs for Review: GPU: ASUS GeForce GTX 1070 8GB ROG Strix CPU: Intel Core i5-6600K 3.9 GHz RAM: Corsair Vengeance 16GB DDR4 3200MHz 
-    ... and 2199 more
+    ... and 1938 more
+
+## Tokenizing
+
+Testing out the tokenizing here to see if there’s anything I need to
+change in the text cleanup chunk above before I move onto an analysis
+qmd
+
+unnest tokens you can mess with formatting if needed to select how you
+want things to tokenize
+
+First - do I want to lowercase before tokenizing? I think yes but I have
+to recheck old homeworks to be sure. Definitely want to lowercase before
+looking at types and before doing tf-idf.
+
+- how do you make a set of word types in R anyway i don’t know
+- probably by using unique() doy
+
+Second - what to do with punctuation? I have to review previous work
+also.
+
+``` r
+sessionInfo()
+```
+
+    R version 4.5.1 (2025-06-13 ucrt)
+    Platform: x86_64-w64-mingw32/x64
+    Running under: Windows 10 x64 (build 19045)
+
+    Matrix products: default
+      LAPACK version 3.12.1
+
+    locale:
+    [1] LC_COLLATE=English_United States.utf8 
+    [2] LC_CTYPE=English_United States.utf8   
+    [3] LC_MONETARY=English_United States.utf8
+    [4] LC_NUMERIC=C                          
+    [5] LC_TIME=English_United States.utf8    
+
+    time zone: America/New_York
+    tzcode source: internal
+
+    attached base packages:
+    [1] stats     graphics  grDevices utils     datasets  methods   base     
+
+    other attached packages:
+     [1] lubridate_1.9.4 forcats_1.0.1   stringr_1.5.2   dplyr_1.1.4    
+     [5] purrr_1.1.0     readr_2.1.5     tidyr_1.3.1     tibble_3.3.0   
+     [9] ggplot2_4.0.0   tidyverse_2.0.0
+
+    loaded via a namespace (and not attached):
+     [1] bit_4.6.0          gtable_0.3.6       jsonlite_2.0.0     crayon_1.5.3      
+     [5] compiler_4.5.1     tidyselect_1.2.1   parallel_4.5.1     scales_1.4.0      
+     [9] yaml_2.3.10        fastmap_1.2.0      R6_2.6.1           generics_0.1.4    
+    [13] knitr_1.50         pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0        
+    [17] rlang_1.1.6        utf8_1.2.6         stringi_1.8.7      xfun_0.53         
+    [21] S7_0.2.0           bit64_4.6.0-1      timechange_0.3.0   cli_3.6.5         
+    [25] withr_3.0.2        magrittr_2.0.4     digest_0.6.37      grid_4.5.1        
+    [29] vroom_1.6.6        rstudioapi_0.17.1  hms_1.1.3          lifecycle_1.0.4   
+    [33] vctrs_0.6.5        evaluate_1.0.5     glue_1.8.0         farver_2.1.2      
+    [37] rmarkdown_2.29     tools_4.5.1        pkgconfig_2.0.3    htmltools_0.5.8.1 

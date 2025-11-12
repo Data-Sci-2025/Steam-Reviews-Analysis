@@ -20,8 +20,14 @@ reviews_df <- read_csv("../private/reviews.csv")
 reviews_df
 ```
 
+```{r}
+#| label: game-ids
+reviews_df |>
+  distinct(steam_id)
+```
 
-In this current format, the steam id column is not correct, but I can confirm all the games are there. The first reviews are for amnesia and the ones at the end are for the Vampire: The Masquerade game. Once I fix the steam_id workflow I'll use distinct() to confirm there are 45 different game IDs. I could use that as well, later, to split training and testing data and to narrow down to x number of games per game (where possible).
+
+## Cleaning Up
 
 
 ```{r}
@@ -33,7 +39,7 @@ reviews_df <- reviews_df |>
 ```
 
 
-Fix those pesky emoji columns
+Fix those pesky emoji columns (I'm going to ditch the "purchased" column later on, so I didn't bother)
 
 ```{r}
 #| label: reviews-df
@@ -47,30 +53,27 @@ diffrows <- reviews_df[reviews_df$review != reviews_df$engtxt, ]
 diffrows
 ```
 
-
-```{r}
-#| label: col-diff
-reviews_df |>
-  filter(review_id==204166566)
-```
-
-the engtxt column is not actually different from the review column, the only difference being conversions of any reviews that just say "xx%" (100% being converted to 1) or anything with x/10 being also converted to a string of numbers. 
+The engtxt column is not actually different from the review column, the only difference being conversions of any reviews that just say "xx%" (100% being converted to 1) or anything with x/10 being also converted to a string of numbers. Since it's essentially the same data, I'll ditch the engtxt column and keep the review one.
 
 Now for column decisions. I'll keep review_id since it's a unique value for each different review. 
 
-I don't know that the date column is extremely important. I might want to look at how quickly games get reviews (are they concentrated at release and fall off, or is it relatively steady? any spikes?) but I will probably edit the column to a better format. Ditch the time, look into MM/DD/YY format instead, or whatever works best in R. 
+I don't know that the date column is extremely important. I might want to look at how quickly games get reviews (are they concentrated at release and fall off, or is it relatively steady? any spikes?) but I will probably edit the column to a better format. Ditch the time, look into whatever format works best in R. 
 
 I don't think the purchased col is extremely important, it only marks if a review writer has purchased the game or not, which is not key to any of my analysis.
 
-score and upvotes is based on user response to a comment. Users can upvote for helpfulness of a review, or mark it as funny. I can't find data on how exactly the review score is calculated, but I don't think these two factors will play a huge role in what I'm looking to do. 
+score and upvotes are based on user response to a comment. Users can upvote for helpfulness of a review, or mark it as funny. I can't find data on how exactly the review score is calculated, but I don't think these two factors will play a huge role in what I'm looking to do. 
 
 
 ```{r}
 #| label: reviews-df2
+#narrowing the df down to only the columns I want
 reviews_df <- reviews_df |>
   select(review_id:review_type, review, steam_id)
 reviews_df
 ```
+
+Now, I wanted to verify everything is correct. If every review ID is unique, then piping the review_id column into distinct() should be the exact same dimensions as the full dataframe.
+
 
 ```{r}
 #| label: rowscheck
@@ -78,33 +81,37 @@ reviews_df |>
   distinct(review_id)
 ```
 
-
+But it's not... so an investigation is needed
 
 ```{r}
 #| label: row-dupes
 dupes <- duplicated(reviews_df$review_id)
 
 dupes2 <- reviews_df[dupes, ]
-dupes2[200:nrow(dupes2), ]
+dupes2
 ```
+
+
+```{r}
+#| label: game-ids
+dupes2 |>
+  distinct(steam_id)
+```
+
+It looks like, for some reason, the game Superpower 3 has the same reviews as the command & conquer game. I went to check into this more, and it looks like, for some reason, the Superpower 3 game ID didn't actually work with the script to rip game reviews and I missed it by mistake. I won't work now, either, so I'm going to have to find a replacement game in the overwhelmingly negative category and rebuild my dataframe. It's only the one, though, not the end of the world. 
+
 
 ```{r}
 #| label: dupe-check
 reviews_df |>
-  filter(review_id==148416513)
+  filter(review_id==207594063)
 ```
 
-For some reason, some reviews appear to have been duplicated. I'm going to revisit this once I fix my steam_id issue so I can pinpoint exactly what is being duplicated here and why... It looks like the duplicated game is command & conquer, but why.... 
-
-I've been looking through some files and I can see that Command & Conquer are duplicated, Powerful Courses are duplicated, that's all I can seem to find, though. I don't know why these are duplicated, but I'll see what I can work out with some more searching and get rid of the duplicates once I know for sure. Again once the steam_id problem is fixed I'll be able to verify that I have 45 different steam_ids and just remove the duplicate value rows. 
-
-I verified that none of my files are identical to each other, double checking by reading in any two that were similar in length and verifying that the reviews don't match. This is how I was able to verify that the only two games with duplicates are C&C and Powerful Courses.
-Oddly, it doesn't seem like every single review for those games is duplicated, only some of them. No idea why. 
 
 ## List of Goals
 
 - adjust the date column (DONE)
-- clean up the text of non text items
+- clean up the text of non text items (IN PROGRESS)
 - Word tokens and word count per review
 - word types
 - TTR
@@ -200,6 +207,7 @@ I'm doing some exploring using str_view to dive in and look at what I want to ge
 First - do I want to lowercase before tokenizing? I think yes but I have to recheck old homeworks to be sure. Definitely want to lowercase before looking at types and before doing tf-idf.
 
   - how do you make a set of word types in R anyway i don't know
+  - probably by using unique() doy
   
 Second - what to do with punctuation? I have to review previous work also.
   
@@ -209,6 +217,13 @@ There are some included kind of html(?) tags like [b] and [/b] of [h1] etc. I wa
 
 Getting rid of /, sometimes it appears as word/word and others word / word. Replacing it with a space and will later process to move extra spaces down to one space
   - sometimes it appears in 7/10 or something. I'm keeping those but I have to think about what to do with it. It also depends on how the tokenizer handles it. If it tokenizes to [7] [/] [10] I think that's acceptable.
+
+```{r}
+grep -c -P
+
+
+```
+
 
 
 Questions - what do to with emojis? 
@@ -253,5 +268,10 @@ str_view(reviews_df$review, "/")
 ```
 
 
+## Tokenizing
 
+Testing out the tokenizing here to see if there's anything I need to change in the text cleanup chunk above before I move onto an analysis qmd
+
+unnest tokens
+you can mess with formatting if needed to select how you want things to tokenize
 

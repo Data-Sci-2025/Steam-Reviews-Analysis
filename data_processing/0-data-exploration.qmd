@@ -7,8 +7,6 @@ format: gfm
 #| label: setup
 #| include: false
 library(tidyverse)
-library(dplyr)
-library(stringr)
 ```
 
 ## Data Preview & First Looks
@@ -21,17 +19,17 @@ amnesia
 
 
 ```{r}
-#| label: dloop
-deathloop <- read_csv("../data/deathloop.csv")
-deathloop
+#| label: deadlyprem
+deadlyprem <- read_csv("../data/deadlyprem.csv")
+deadlyprem
 ```
 
 
 First looks show some of the first areas I know I have to work around. I called up two games just to confirm that they both look the same. Both have the same almost metadata-like details at the top that will have to be excluded, and both (and all the rest) of the files have that one odd issue, with the column name being the game's steam id (used to pull the reviews in through the script)
 
 ```{r}
-#| label: dloop-colnames
-print(colnames(deathloop))
+#| label: prem-colnames
+print(colnames(deadlyprem))
 ```
 
 ## Early Tidying Steps
@@ -40,9 +38,9 @@ print(colnames(deathloop))
 
 
 ```{r}
-#| label: dloopcols
-deathloop <- deathloop |>
-  rename(review_id = ...1, language = 2, date = ...3, review_type = ...4, purchased = ...5, score = ...6, upvotes = ...7, review = Reviews, engtxt = ...9) |>
+#| label: premcols
+deadlyprem <- deadlyprem |>
+  rename(review_id = 1, language = 2, date = 3, review_type = 4, purchased = 5, score = 6, upvotes = 7, review = 8, engtxt = 9) |>
   filter(language == 'english')
 ```
 
@@ -55,14 +53,14 @@ Note: Think about how to rename cols using iteration for ease.... the language c
 
 
 ```{r}
-#| label: loop-reviews
-deathloop |>
+#| label: pre,-reviews
+deadlyprem |>
   distinct(review_type)
 ```
 
 ```{r}
-#| label: loop-replace
-deathloop |>
+#| label: prem-replace
+deadlyprem |>
   mutate(review_type =  str_replace_all(review_type, 
                 c("✅" = "POS",
                   "❌" = "NEG")))
@@ -153,8 +151,6 @@ allgames
 ```
 
 
-
-
 ### Some quick stats
 
 45 total games, how many reviews will I be looking at? 
@@ -185,115 +181,24 @@ I only plan to look at english reviews, but it took some work to transform both 
 
 ## Getting the Data read in
 
-So this is where I've been noodling around trying to get all my data read in. It's still very much a work in progress, but here's the parts of what I've been putting together and working on here and there.
-
-There are still some scratch-y notes in here because my reading in of the steam ID number is still not working properly, but I'll clean that up later once it's all in working condition.
+Getting the files read in starts with the list of all the file names in the data file:
 
 
 ```{r}
 #| label: list-files
-filenames <- list.files("../data", pattern="*.csv", full.names=TRUE)
+filenames <- list.files("../data", pattern="*\\.csv$", full.names=TRUE)
 filenames
 ```
 
+## Building Function and Dataframe
 
-Here's where I was experimenting with a for loop to go through each file, add it into an empty list, and then I could bind that list together, but that wasn't working either. 
+Because the base .csv files all look the same, but are a bit odd, there are some quirks to deal with in the function. 
 
+1. because column 2 is the game's unique steam ID it prevents them being read in all together, so we have to flatten them into one string with str_flatten
 
-```{r}
-#| label: file-loop
-#| eval: FALSE
-datalist <- list()
+2. renaming those columns as decided earlier
 
-for (file in filenames) {
-  gamefile <- read.csv(file, header=FALSE)
-  datalist <- gamefile
-}
-```
-
-
-The loop is obviously working, but the dfs aren't being added to the list. Looking at the example below, it's only going through and saving the last dataset (Vampire Masquerade)
-
-```{r}
-#| label: boundgames
-#| eval: FALSE
-testing <- rbind(datalist)
-
-testing
-```
-
-```{r}
-#| label: vampires
-#| eval: FALSE
-read.csv("../data/vampires.csv")
-```
-
-
-Here are the notes from 10/28 on a new process I'm going to give a shot! We'll see how it gets going. 
-
-
-
-look at chapter 26
-
-pipe into map create anon function in map \x() to pull the column title into its own column
-
-
-x<- listfiles
-
-x|>
-map(\(x))
-  x|> steam ID col 
-    take steam id from col 2 |>
-    mutate(steam_id = IDNO))|>
-    rename(review_lang = 2) |>
-    bindrows()
-    
-    LETTERS[1:9]
-    
-    
-    lines <- read_lines(file)
-    steam_id <- str (parse to steam id) (lines)
-    data <- read_csv(lines[26:length(lines)])
-    
-    (lines[26:length(lines)]) turn this into a single string before putting into read_csv
-    
-    
-    |> mutate(steam_id = steam_id)
-    
-
-```{r}
-#| label: find-colname
-numtest <- amnesia |> 
-  select(2) |>
-  colnames()
-
-numtest
-```
-
-```{r}
-#| label: id-col
-amnesia <- amnesia |>
-  mutate(steam_id = numtest)
-
-amnesia
-```
-
-
-```{r}
-#| label: mod-readlines
-#| eval: FALSE
-lines <- read_lines(filenames)
-data <- read_csv(filenames, lines[25:length((lines))])
-
-
-data
-```
-
-
-
-
-
-## Building function
+3. because the .csv files also have some meta data already seen above, the review_id, score, and upvotes cols were causing issues. The early rows are <chr> and the later ones are <int> so we have to force it as an int until we ditch that header info altogether. 
 
 
 ```{r}
@@ -306,27 +211,24 @@ build_df <- function(x){
   games_df <- games_df |> mutate(steam_id = steam_id)
   games_df <- games_df |>
     rename(review_id = 1, language = 2, date = 3, review_type = 4, purchased = 5, score = 6, upvotes = 7, review = 8, engtxt = 9) |>
-  filter(language == 'english')
+    filter(language == 'english') |>
+    mutate(review_id = as.integer(review_id)) |> 
+    mutate(score = as.integer(score)) |>
+    mutate(upvotes = as.integer(upvotes))
 }
 ```
 
+Using the function, build up the dataframe, map the 45 different steam ID numbers onto 45 different dataframes, and then bind them all together!
 
 ```{r}
 #| label: build-df
-games_df <- build_df(filenames)
+games_df <- map((filenames), build_df)|> 
+  bind_rows()
+
 games_df
 ```
 
-
-```{r}
-#| label: reviews-csv
-#write_csv(games_df, file="../private/reviews.csv")
-```
-
-
-
-
-
+Just to verify, here they are! 45 different steam ID numbers for 45 different games. Thanks Dan for all the help!!
 
 ```{r}
 #| label: id-verify
@@ -335,48 +237,14 @@ games_df |>
 ```
 
 
-
-
-
-
-
-```{r}
-#| label: sample-df
-dlooplines <- read_lines("../data/amnesia.csv")
-flatlines <- str_flatten(dlooplines, "\n")
-colid <- read_csv(flatlines)
-steam_id <- colid |> select(2) |> colnames()
-colid <- colid |> mutate(steam_id = steam_id)
-colid <- colid |>
-  rename(review_id = ...1, language = 2, date = ...3, review_type = ...4, purchased = ...5, score = ...6, upvotes = ...7, review = Reviews, engtxt = ...9) |>
-  filter(language == 'english')
-
-colid
-```
-
-
-
+## Write out reviews_csv
 
 
 ```{r}
-#| label: scratch
-#| eval: FALSE
-filenames |>
-      map(\(x) read_csv(x, show_col_types=FALSE, col_names = c("A", "B", "C", "D", "E", "F", "G", "H", "I"))) |>
-      map(\(x) 
-        x |>
-          mutate(steam_id = colnames(x)[2]) |>
-          rename(review_lang = 2) 
-      ) |>
- head(2)
-
-
-#colid[-(1:24),] |>
-
-
-#dlooplines2 <- dlooplines[24:length((dlooplines))]
-#dloopstr <- str_flatten(dlooplines2, "\n")
-#dloopdata <- read_csv(dloopstr)
+#| label: reviews-csv
+#write_csv(games_df, file="../private/reviews.csv")
 ```
+
+
 
 

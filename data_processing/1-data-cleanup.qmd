@@ -176,36 +176,29 @@ reviews_df <- reviews_df |>
 ```
 
 
-I'm doing some exploring using str_view to dive in and look at what I want to get rid of to begin some real analysis. 
-
-First - do I want to lowercase before tokenizing? I think yes but I have to recheck old homeworks to be sure. Definitely want to lowercase before looking at types and before doing tf-idf.
-
-  - how do you make a set of word types in R anyway i don't know
-  - probably by using unique() doy
+Using str_view and str_replace I'm cleaning up the review text so I can conduct some real analysis. 
   
-Second - what to do with punctuation? I have to review previous work also.
-  
-For the sake of processing text, I'm first removing any parenthesis included. it could be interesting what gets put in a parenthetical statement vs outside, but for pure analysis and vectorizing we don't want them. 
+For the sake of processing text, I'm first removing any parenthesis included. it could be interesting what gets put in a parenthetical statement vs outside, but for pure analysis and vectorizing I don't want them. 
 
-There are some included kind of html(?) tags like [b] and [/b] of [h1] etc. I want to get rid of those too. 
+There are some included kind of html(?) tags like [b] and [/b] or [h1] etc. I want to get rid of those too. 
 
 Getting rid of /, sometimes it appears as word/word and others word / word. Replacing it with a space and will later process to move extra spaces down to one space
   - sometimes it appears in 7/10 or something. I'm keeping those but I have to think about what to do with it. It also depends on how the tokenizer handles it. If it tokenizes to [7] [/] [10] I think that's acceptable.
+  
+
+Question - what do to with emojis? 
 
 ```{r}
-grep -c -P
+#| label: emoji-search
+grep -c -P ("[\\x{1f300}-\\x{1f5ff}\\x{1f900}-\\x{1f9ff}\\x{1f600}-\\x{1f64f}\\x{1f680}-\\x{1f6ff}\\x{2600}-\\x{26ff}\\x{2700}-\\x{27bf}\\x{1f1e6}-\\x{1f1ff}\\x{1f191}-\\x{1f251}\\x{1f004}\\x{1f0cf}\\x{1f170}-\\x{1f171}\\x{1f17e}-\\x{1f17f}\\x{1f18e}\\x{3030}\\x{2b50}\\x{2b55}\\x{2934}-\\x{2935}\\x{2b05}-\\x{2b07}\\x{2b1b}-\\x{2b1c}\\x{3297}\\x{3299}\\x{303d}\\x{00a9}\\x{00ae}\\x{2122}\\x{23f3}\\x{24c2}\\x{23e9}-\\x{23ef}\\x{25b6}\\x{23f8}-\\x{23fa}]", reviews_df$review)
 
 
 ```
 
-
-
-Questions - what do to with emojis? 
-
 Sometimes they are used stylistically to split up reviews:
 📚 Story / Narrative, ⌛ Length, 🔁 Replayability
 
-Other times functionally (this is about difficulty):
+Other times functionally (this is about a game's difficulty):
 🔲 Too easy
 ☑️ Casual-friendly
 🔲 Balanced/Normal
@@ -214,25 +207,26 @@ Other times functionally (this is about difficulty):
 🔲 Pure chaos (PvP focus)
 
 Sometimes in place of words:
-At least one review, start to finish, contains one item only 💩
+At least one review, start to finish, contains one item only - 💩
 Another one looks like: This game is 💩 but i still love it
 
-Some reviews also have no words and will just say "7/10" and nothing else, what about those? 
 
-What about abbreviations? I've seen af, wtf, omg, lmao, etc etc. 
-  - there are a lot, i imagine just leave them as they are
+There are some other quirks to the reviews:
 
-There are also emoticons in the old style: :D, xD etc
-I even saw ° ͜ʖ ͡°, ﾉ◕ヮ◕ﾉ*:･ﾟ✧
+  - Some reviews also have no words and will just say "7/10" and nothing else, I'm leaving those as-is.
 
-LOTS of formatting choices people make for visual purposes:
-=====, ☑ and ☐ (not as emojis), 
+  - There are a lot abbreviations. I've seen af, wtf, omg, lmao, etc etc. I'm leaving those as-is 
 
-Or what about this...
+  - There are also emoticons in the old style: :D, xD etc I even saw ° ͜ʖ ͡°, ﾉ◕ヮ◕ﾉ*:･ﾟ✧ ... they're not NOT informative, so I'll also leave those (unless I have to revisit later)
+
+  - LOTS of formatting choices people make for visual purposes. =====, ☑ and ☐ (not as emojis). For the second I will leave them as they are and treat them almost as an emoji. For formatting, I'll see what I can do about cutting down long lines of equals, hyphens, underscores, etc.
+
+  - Review art(?)
+![](../notes_and_info/reviewimg.PNG)
+
 There are a number of reviews using ⣿ (and all the variations in the replace text chunk above) to create a kind of ASCII art that can be safely removed, it is not speech information at all.
 
-Think about \\{.*?\\} - there are some unicodes that show up I was having trouble singling out so I have to figure that out. I think they're probably special characters used in some more elaborate emoticons/faces that didn't quite translate somewhere along the way. 
-
+  - Finally, links
 links? Lots of people are linking to things in their reviews.
 
 
@@ -248,4 +242,24 @@ Testing out the tokenizing here to see if there's anything I need to change in t
 
 unnest tokens
 you can mess with formatting if needed to select how you want things to tokenize
+
+First - do I want to lowercase before tokenizing? I think yes but I have to recheck old homeworks to be sure. Definitely want to lowercase before looking at types and before doing tf-idf.
+
+  - how do you make a set of word types in R anyway i don't know
+  - probably by using unique() doy
+  
+  Second - what to do with punctuation? I have to review previous work also.
+  
+  
+
+
+
+
+
+
+
+```{r}
+#| label: sessioninfo
+sessionInfo()
+```
 

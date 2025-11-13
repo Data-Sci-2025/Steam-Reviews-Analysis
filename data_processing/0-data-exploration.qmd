@@ -1,6 +1,8 @@
 ---
 title: "data exploration"
 format: gfm
+params:
+  write_df: true
 ---
 
 ```{r}
@@ -242,7 +244,12 @@ games_df |>
 
 ```{r}
 #| label: reviews-csv
-#write_csv(games_df, file="../private/reviews.csv")
+#| eval: !expr param$write_df
+if (!dir.exists("../private")) {
+  dir.create("../private")
+  }
+
+write_csv(games_df, file="../private/reviews.csv")
 ```
 
 

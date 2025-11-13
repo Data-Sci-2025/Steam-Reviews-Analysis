@@ -7,6 +7,7 @@ format: gfm
 #| label: setup
 #| include: false
 library(tidyverse)
+library(tidytext)
 ```
 
 **Note**: reviews.csv is too large to upload to github right now, but using the data which is uploaded and the "data exploration" file, if you un-comment the write_csv chunk, you should be able to recreate it just fine. You'll just have to change the file path to read in for this one. 
@@ -246,20 +247,60 @@ I got rid of a bunch of ======= but there are still some others.... but I can't 
 
 Testing out the tokenizing here to see if there's anything I need to change in the text cleanup chunk above before I move onto an analysis qmd
 
-unnest tokens
-you can mess with formatting if needed to select how you want things to tokenize
+Because of the way unnest_tokens works, it spits out a DF with 9+ million rows, one token per row. My steps are:
+  - new df with tokenized reviews
+  - merged df with those tokens combined into a list of tokens per unique review ID
+  - join the merged df with the original reviews df by mapping onto the review ID
 
-First - do I want to lowercase before tokenizing? I think yes but I have to recheck old homeworks to be sure. Definitely want to lowercase before looking at types and before doing tf-idf.
 
-  - how do you make a set of word types in R anyway i don't know
-  - probably by using unique() doy
+```{r}
+tokens_df <- reviews_df |>
+  unnest_tokens(tokens, review, drop=FALSE)
+
+nrow(tokens_df)
+```
+
+
+```{r}
+merged_df <- tokens_df |>
+  group_by(review_id) |>
+  summarize(merged_text = paste(tokens, collapse = ", "))
+
+nrow(merged_df)
+```
+
+
+```{r}
+reviews_df <- reviews_df |>
+  left_join(merged_df)
+
+reviews_df
+```
+
+
+I noticed that the merged df had a few less rows than the base reviews df does, and have to investigate why that is.
+
+It's because of emojis!
+
+
+```{r}
+colSums(is.na(reviews_df))
+```
+
+```{r}
+reviews_df |>
+  filter(if_any(merged_text, is.na))
+```
+
+
   
-  Second - what to do with punctuation? I have to review previous work also.
-  
-  
+## Write out reviews.csv
 
 
-
+```{r}
+#| label: reviews-csv
+#write_csv(games_df, file="../private/reviews.csv")
+```
 
 
 

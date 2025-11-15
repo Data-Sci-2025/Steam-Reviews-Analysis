@@ -1,0 +1,100 @@
+---
+title: "2-data-analysis"
+format: gfm
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(tidytext)
+```
+
+**Note**: Please run [0-data-exploration](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/0-data-exploration.qmd) and [1-data-cleanup](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/1-data-cleanup.qmd) first to create the version of the .csv file needed to start here.
+
+
+
+```{r}
+#| label: readingin
+reviews_df <- read_csv("../private/reviews_analyze.csv")
+```
+
+
+```{r}
+#| label: toks-col
+reviews_df <- reviews_df |>
+  rename(tokens = merged_text)
+
+reviews_df
+```
+
+
+Copied over from the last file in the pipeline to keep track.
+
+## List of Goals
+
+- adjust the date column (DONE)
+- clean up the text of non text items (DONE)
+- Word tokens and word count per review (DONE)
+- word types (DONE)
+- TTR
+
+**Early Exploration**
+
+- average review length
+- most common words (with and without stop words)
+- most common words for pos and for neg
+- some stats (correlation) - length and review type, review and rating type, maybe some others
+- TF-IDF
+- maybe let's look at some emoji usage
+
+**Later Goals**
+
+- build a classifier
+
+
+## Word Count
+
+```{r}
+#| label: word-count
+reviews_df <- reviews_df |>
+  mutate(word_count = str_count(tokens, '\\,')+1)
+
+reviews_df
+```
+
+
+## Word Types & Count
+
+```{r}
+#| label: GetTypes
+remove_dupes <- function(x) {
+  #split tokens to be iterated over
+  words <- strsplit(x, " ")[[1]]
+  #apply the unique() function per row
+  unique_words <- unique(words)
+  #re-collapse into rows
+  paste(unique_words, collapse = " ")
+}
+```
+
+
+```{r}
+#| label: types-col
+reviews_df$types <- sapply(reviews_df$tokens, remove_dupes)
+```
+
+```{r}
+#| label: types-count
+reviews_df <- reviews_df |>
+  mutate(type_count = str_count(types, '\\,')+1)
+
+reviews_df
+```
+
+
+
+
+
+
+

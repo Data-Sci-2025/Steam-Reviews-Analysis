@@ -37,11 +37,11 @@ Copied over from the last file in the pipeline to keep track.
 - clean up the text of non text items (DONE)
 - Word tokens and word count per review (DONE)
 - word types (DONE)
-- TTR
+- TTR (DONE)
 
 **Early Exploration**
 
-- average review length
+- average review length (DONE)
 - most common words (with and without stop words)
 - most common words for pos and for neg
 - some stats (correlation) - length and review type, review and rating type, maybe some others
@@ -50,7 +50,42 @@ Copied over from the last file in the pipeline to keep track.
 
 **Later Goals**
 
-- build a classifier
+- build a classifier 
+
+## Some Missed Cleanup
+
+While I was working on word counts I discovered a number of unicode blank spaces that were appearing as empty cells in the "review" column and were being counted as 1 word reviews. I had to go through, find the blank rows among the 1 word reviews, use charToRaw on the review ID associated, and search online to find the unicode string to search for and remove. 
+
+I went over the top to remove from both reviews and token columns, just to be sure I was getting everything and removing the full row. It seemed like when I didn't, the rows weren't being entirely eliminated. Overkill is fine with me if the end result is what I'm after!
+
+```{r}
+reviews_df <- reviews_df |>
+  mutate(review = str_replace_all(review, "\\\u200B+", " ")) |>
+  mutate(tokens = str_replace_all(tokens, "\\\u200B+", " ")) |>
+  mutate(review = str_replace_all(review, "\\\u200E+", " ")) |>
+  mutate(tokens = str_replace_all(tokens, "\\\u200E+", " ")) |>
+  mutate(review = str_replace_all(review, "\\\u200C+", " ")) |>
+  mutate(tokens = str_replace_all(tokens, "\\\u200C+", " ")) |>
+  mutate(review = str_replace_all(review, "\\\UE0021+", " ")) |>
+  mutate(tokens = str_replace_all(tokens, "\\\UE0021+", " ")) |>
+  mutate(review = str_replace_all(review, "\\\u00AD+", " ")) |>
+  mutate(tokens = str_replace_all(tokens, "\\\u00AD+", " ")) |>
+  mutate(review = str_replace_all(review, "\\\u200F+", " ")) |>
+  mutate(tokens = str_replace_all(tokens, "\\\u200F+", " ")) |>
+  mutate(review = str_replace_all(review, "^\\\u3164+$", " ")) |>
+  mutate(tokens = str_replace_all(tokens, "^\\\u3164+$", " ")) |>
+  mutate(review = str_replace_all(review, "\\\u180C", " ")) |>
+  mutate(tokens = str_replace_all(tokens, "\\\u180C", " ")) |>
+  mutate(review = str_replace_all(review, "^\\\u0020+$", " ")) |>
+  mutate(tokens = str_replace_all(tokens, "^\\\u0020+$", " ")) |>
+  mutate(review = str_replace_all(review, "\\\u2063", " ")) |>
+  mutate(tokens = str_replace_all(tokens, "\\\u2063", " ")) |>
+  mutate(review = str_replace_all(review, "\\\u2060", " ")) |>
+  mutate(tokens = str_replace_all(tokens, "\\\u2060", " ")) |>
+  mutate(review = review |>
+      na_if(" ")) |>
+  drop_na('review')
+```
 
 
 ## Word Count
@@ -62,6 +97,42 @@ reviews_df <- reviews_df |>
 
 reviews_df
 ```
+
+### Review length
+
+First, there are a number of reviews that are just a blank space that were counted as having 1 word because of how I formulated the word count column. I'm going to declare these columns NA. If there's no text in the review, there's nothing there for me to analyze anyway. 
+
+
+```{r}
+summary(reviews_df$word_count)
+```
+
+So the average review is 51 words, and the median 17 words. 
+
+Let's look a little deeper. 
+
+
+
+
+
+```{r}
+reviews_df |>
+  filter(word_count==1)
+
+reviews_df |>
+  filter(word_count>1700)
+```
+
+```{r}
+check <- reviews_df |>
+  filter(review_id==199641605)
+
+charToRaw(check$review)
+
+```
+
+
+
 
 
 ## Word Types & Count
@@ -88,10 +159,27 @@ reviews_df$types <- sapply(reviews_df$tokens, remove_dupes)
 #| label: types-count
 reviews_df <- reviews_df |>
   mutate(type_count = str_count(types, '\\,')+1)
+```
+
+
+## TTR 
+
+TTR is used to measure the variety of language used in a text. It's not  exactly a measure of the complexity of a document, but can be considered with other factors as an indicator of a writer's language abilities. 
+
+TTR is measured by dividing the total number of word types (unique words used) by total number of word tokens (all words used). A low score (closer to 0) indicates a highly repetitive document, and a high score (closer to 1) indicates a higher variety or words. A score of 1 would mean that no words were repeated in the document. 
+
+TTR is very sensitive to document length. Too long, and documents taper off. There are only so many content words to be used in a document, eventually the highly repetitive function words will outnumber them. 
+
+[source](https://medium.com/@rajeswaridepala/empirical-laws-ttr-cc9f826d304d)
+
+```{r}
+reviews_df <- reviews_df |>
+  mutate(TTR = type_count/word_count)
 
 reviews_df
 ```
 
+Here I'll look at the range of TTR and see what I see. 
 
 
 

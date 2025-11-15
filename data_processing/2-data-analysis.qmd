@@ -8,6 +8,7 @@ format: gfm
 #| include: false
 library(tidyverse)
 library(tidytext)
+library(ggplot2)
 ```
 
 **Note**: Please run [0-data-exploration](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/0-data-exploration.qmd) and [1-data-cleanup](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/1-data-cleanup.qmd) first to create the version of the .csv file needed to start here.
@@ -112,9 +113,6 @@ So the average review is 51 words, and the median 17 words.
 Let's look a little deeper. 
 
 
-
-
-
 ```{r}
 reviews_df |>
   filter(word_count==1)
@@ -123,16 +121,73 @@ reviews_df |>
   filter(word_count>1700)
 ```
 
+There's quite a few one-word reviews! Some of them are pretty reasonable... "Amazing", "Spooky", "Boring", "Unplayable". Short and sweet, gets the point across well enough. Others are a little less obvious. I saw a number of keyboard smash reviews, strings of numbers, I saw one that was just a rabbit emoji. The last one might be a reference I just don't understand.
+
+Looking instead at these longest reviews, I was really surprised! A huge majority of these are exactly the same phrase repeated over and over, and those repeated reviews are all for the same game, as well. I have to do some investigation... 
+
+Checking my game info [here](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/0-gameinfo.csv), I was able to confirm that these repeating reviews are all from "The Stanley Parable: Ultra Deluxe". 
+
+Looking further, I found some more information. ["The end is never"](https://thestanleyparable.fandom.com/wiki/The_End_Is_Never...) is a tagline for the game itself, and appears within the game multiple times as a reference to the inescapable time loop the game's protagonist is stuck in. The phrase also apparently appears on the game's loading screens in a constant loop. 
+
+
+### Positive and Negative review length
+
+First let's get a look at what we're working with. How many reviews of each type are there?
+
 ```{r}
-check <- reviews_df |>
-  filter(review_id==199641605)
-
-charToRaw(check$review)
-
+ggplot(reviews_df, aes(x=review_type, fill=review_type )) + 
+  geom_bar( width = 0.5) +
+  scale_fill_brewer(palette = "Set2") +
+  geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 3, hjust = 0.5, position = "stack") +
+  theme(legend.position="right")
 ```
 
+There are a LOT more positive reviews than negative ones. This made me curious, what about the total data. It's possible positively reviewed games have more reviews in general than neagtively reviewed games? 
+
+```{r}
+games <- read_csv("../notes_and_info/0-gameinfo.csv")
+
+games |>
+  group_by(rank) |>
+  #merging all varieties of pos/neg together by removing the first word/rank
+  mutate(rank = str_replace_all(rank, "\\w+ (\\w)", "\\1")) |>
+  summarise(eng_reviews = sum(eng_reviews))
+```
+
+It looks like kind of yes! 
+
+My theory here just comes down to popularity. As a game releases and players try it out and review it, it either begins to migrate through the ranks of positive or negative. As new players find out about the game, if it shows already that it's being negatively reviewed, why would they spend money to try it out themselves? I wouldn't! On the other hand, if players see that a game is getting positive reviews, they'll more likely try it and, in turn, also positively review it.
+
+Some of the games in the higher ranks in this data are hugely beloved games, while the negative ones are very likely largely forgotten to time once they descended into the negative review rankings. 
+
+So, there it is. Positively ranked games have overall more reviews than negatively ranked games, and there are more positive reviews than negative ones in my data as a result. We'll keep that in mind, moving forward.
 
 
+### Average Review Length
+
+Now to what we came here to look into. Are positive reviews typically longer, or negative reviews? 
+
+
+```{r}
+ggplot(reviews_df, aes(x=review_type, y = word_count)) + 
+  stat_summary(fun = mean, geom = "bar", fill = "skyblue") +
+  geom_text(aes(label = after_stat(sprintf("%.2f", y))), stat = "summary", fun = "mean", vjust = 3, hjust=0.5) +
+  ylab("Avg Amount") +
+  theme(legend.position="right")
+```
+
+Now that's really interesting to me! Despite having fewer reviews total, and *all* of the longest reviews we looked at above being positive, negative reviews are still quite a bit longer on average. People must have a lot more to say when they dislike a game than when they like one!
+
+I wonder if there's a trend in shorter reviews that might be swinging this average one way or the other. 
+
+```{r}
+reviews_df |>
+  group_by(review_type) |>
+  filter(word_count<6) |>
+  summarise(word_count = sum(word_count))
+```
+
+Looks like it's pretty common for positive reviews to be shorter. this could potentially drag down the overall average of positive reviews.
 
 
 ## Word Types & Count

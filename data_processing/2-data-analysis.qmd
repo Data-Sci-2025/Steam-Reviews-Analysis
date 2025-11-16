@@ -61,6 +61,8 @@ While I was working on word counts I discovered a number of unicode blank spaces
 I went over the top to remove from both reviews and token columns, just to be sure I was getting everything and removing the full row. It seemed like when I didn't, the rows weren't being entirely eliminated. Overkill is fine with me if the end result is what I'm after!
 
 ```{r}
+#| label: remove-unicode
+#| include: FALSE
 reviews_df <- reviews_df |>
   mutate(review = str_replace_all(review, "\\\u200B+", " ")) |>
   mutate(tokens = str_replace_all(tokens, "\\\u200B+", " ")) |>
@@ -106,6 +108,7 @@ First, there are a number of reviews that are just a blank space that were count
 
 
 ```{r}
+#| label: WC-stats
 summary(reviews_df$word_count)
 ```
 
@@ -115,6 +118,7 @@ Let's look a little deeper.
 
 
 ```{r}
+#| label: WC-low-high
 reviews_df |>
   filter(word_count==1)
 
@@ -136,6 +140,7 @@ Looking further, I found some more information. ["The end is never"](https://the
 First let's get a look at what we're working with. How many reviews of each type are there?
 
 ```{r}
+#| label: plot-reviews
 ggplot(reviews_df, aes(x=review_type, fill=review_type )) + 
   geom_bar( width = 0.5) +
   scale_fill_brewer(palette = "Set2") +
@@ -146,6 +151,7 @@ ggplot(reviews_df, aes(x=review_type, fill=review_type )) +
 There are a LOT more positive reviews than negative ones. This made me curious, what about the total data. It's possible positively reviewed games have more reviews in general than neagtively reviewed games? 
 
 ```{r}
+#| label: games-info
 games <- read_csv("../notes_and_info/0-gameinfo.csv")
 
 games |>
@@ -170,6 +176,7 @@ Now to what we came here to look into. Are positive reviews typically longer, or
 
 
 ```{r}
+#| label: plot-avg-len
 ggplot(reviews_df, aes(x=review_type, y = word_count)) + 
   stat_summary(fun = mean, geom = "bar", fill = "skyblue") +
   geom_text(aes(label = after_stat(sprintf("%.2f", y))), stat = "summary", fun = "mean", vjust = 3, hjust=0.5) +
@@ -182,6 +189,7 @@ Now that's really interesting to me! Despite having fewer reviews total, and *al
 I wonder if there's a trend in shorter reviews that might be swinging this average one way or the other. 
 
 ```{r}
+#| label: rev-type-count
 reviews_df |>
   group_by(review_type) |>
   filter(word_count<6) |>
@@ -236,6 +244,7 @@ TTR is very sensitive to document length. Too long, and documents taper off. The
 [source](https://medium.com/@rajeswaridepala/empirical-laws-ttr-cc9f826d304d)
 
 ```{r}
+#| label: TTR
 reviews_df <- reviews_df |>
   mutate(TTR = type_count/word_count)
 
@@ -250,11 +259,13 @@ Here I'll look at the range of TTR and see what I see.
 A lot of work went into keeping those emojis, so I want to take a look at them! 
 
 ```{r}
+#| label: emoji-str
 emoji_pattern <- "[\\\U0001F600-\\\U0001F64F\\\U0001F300-\\\U0001F5FF\\\U0001F900-\\\U0001F9FF\\\U00002600-\\\U000027BF]"
 ```
 
 
 ```{r}
+#| label: extract-emojis
 emojis <- reviews_df |>
   filter(grepl(emoji_pattern, types, perl=TRUE)) |>
   mutate(types = str_remove_all(types, "\\w|,|'|‘|’
@@ -268,19 +279,22 @@ Only 1,622 of our reviews contain some kind of emoji usage. Not as many as I exp
 
 
 ```{r}
+#| label: emojis-only
 emoji_df <- emojis |>
   count(types, sort=TRUE)
 
 emoji_df
 ```
 
+
 ```{r}
+#| label: plot-emoji
+#| eval: FALSE
 max_count <- emoji_df |>
   pull(n) |>
   max()
-```
 
-```{r}
+
 hchart(
   emoji_df, 
   "bar",

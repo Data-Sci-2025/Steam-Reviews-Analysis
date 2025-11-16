@@ -9,6 +9,7 @@ format: gfm
 library(tidyverse)
 library(tidytext)
 library(ggplot2)
+library(highcharter)
 ```
 
 **Note**: Please run [0-data-exploration](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/0-data-exploration.qmd) and [1-data-cleanup](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/1-data-cleanup.qmd) first to create the version of the .csv file needed to start here.
@@ -47,7 +48,7 @@ Copied over from the last file in the pipeline to keep track.
 - most common words for pos and for neg
 - some stats (correlation) - length and review type, review and rating type, maybe some others
 - TF-IDF
-- maybe let's look at some emoji usage
+- maybe let's look at some emoji usage (STARTED)
 
 **Later Goals**
 
@@ -187,7 +188,14 @@ reviews_df |>
   summarise(word_count = sum(word_count))
 ```
 
-Looks like it's pretty common for positive reviews to be shorter. this could potentially drag down the overall average of positive reviews.
+Looks like it's pretty common for positive reviews to be shorter. This could potentially drag down the overall average of positive reviews. However... there are more short positive reviews, but there are also more positive reviews in general, so maybe not.
+
+38.7% of all negative reviews are 5 words or shorter, and 74.4% of all positive reviews are. That's quite a big chunk of reviews! 
+
+
+### Length Stats
+
+correlation between review length and review type?
 
 
 ## Word Types & Count
@@ -235,6 +243,81 @@ reviews_df
 ```
 
 Here I'll look at the range of TTR and see what I see. 
+
+
+## Emojis
+
+A lot of work went into keeping those emojis, so I want to take a look at them! 
+
+```{r}
+emoji_pattern <- "[\\\U0001F600-\\\U0001F64F\\\U0001F300-\\\U0001F5FF\\\U0001F900-\\\U0001F9FF\\\U00002600-\\\U000027BF]"
+```
+
+
+```{r}
+emojis <- reviews_df |>
+  filter(grepl(emoji_pattern, types, perl=TRUE)) |>
+  mutate(types = str_remove_all(types, "\\w|,|'|‘|’
+                                 %|\\.|’|\\\036|－|❝|❞
+                                 |‑"))
+
+emojis
+```
+
+Only 1,622 of our reviews contain some kind of emoji usage. Not as many as I expected!
+
+
+```{r}
+emoji_df <- emojis |>
+  count(types, sort=TRUE)
+
+emoji_df
+```
+
+```{r}
+max_count <- emoji_df |>
+  pull(n) |>
+  max()
+```
+
+```{r}
+hchart(
+  emoji_df, 
+  "bar",
+  hcaes(types, n), 
+  name = "Count",
+  # dataLabels = list(enabled = TRUE, style = list(fontWeight = "normal"))
+  ) |>
+  hc_xAxis(
+    min = 0,
+    max = 30,
+    scrollbar = list(enabled = TRUE)
+    ) |>
+  hc_yAxis(
+    max = max_count,
+    title = list(
+      text = "Count",
+      align = "high"
+      )
+    ) |>
+  hc_tooltip(
+    headerFormat = "{point.key}",
+    pointFormat = " {point.y}"
+  ) |>
+  hc_size(height = 700)
+```
+
+
+Cool [source](https://jkunst.com/blog/posts/2021-01-10-using-emoji-with-highcharterhighcharts/) for the emoji finding & charting code.
+
+
+
+## Tf-IDF
+
+
+
+
+
 
 
 

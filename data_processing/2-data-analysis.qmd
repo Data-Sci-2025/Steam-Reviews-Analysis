@@ -66,19 +66,17 @@ Some of these have way more reviews than others (positive games) and it could be
 
 2. I made some histograms for word length per review type (pos or neg) and they're both really skewed with a huge chunk of the reviews being very short (see the Length Stats tab here). It's making it so I can't really do a box plot or a violin plot because of the shape of things. Would a log transformation help? 
 
-3. What about measuring correlation between a numerical value and categorical? word count and review type. 
+3. What about measuring correlation/the relationship between a numerical value and categorical? word count and review type. 
 
 4. I've been looking at a lot of just word count and review type, what else should I be really looking at though...
 
 5. This about exploring TTR and what to do with that. Visualizations?
 
-6. Also I mentioned wanting to look at review flow and date. I want to see when reviews come in, when they taper off, if there and any spikes over time...
+6. Also I mentioned wanting to look at review flow and date. I want to see when reviews come in, when they taper off, if there are any spikes over time...
 
 7. I don't know WHAT to do with these stupid emojis not being split up properly and I don't know if it matters or if I want to kind of start over on those entirely. Maybe if I do grepl using just the string of emoji unicodes and wipe out anything not in there. I might just create a separate emoji processing qmd and see what I can wrestle out there, make it a kind of extra goal.
 
 7. similar toks charts not working why?????
-
-8. The classifier question
 
 9. Why is tf-idf ALL 0. I think it's not working at all bc if it was it would be 0.00000 at least but it's just 0 for every single one.
 

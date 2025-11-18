@@ -78,8 +78,6 @@ Some of these have way more reviews than others (positive games) and it could be
 
 7. similar toks charts not working why?????
 
-9. Why is tf-idf ALL 0. I think it's not working at all bc if it was it would be 0.00000 at least but it's just 0 for every single one.
-
 
 ## Some Missed Cleanup
 
@@ -102,6 +100,20 @@ reviews_df <- reviews_df |>
       na_if(" ")) |>
   drop_na('review')
 ```
+
+
+## Getting a Look at the Data
+
+I'm going to move some of the basic data analysis in here later but I need it where it is for class 11/18
+
+
+### Reviews over time
+
+```{r}
+#| eval: false
+ggplot(dat, aes(x=Date_Published)) +   stat_count(geom='line', aes(y=..count..))
+```
+
 
 
 ## Word Count
@@ -173,6 +185,26 @@ games |>
   mutate(rank = str_replace_all(rank, "\\w+ (\\w)", "\\1")) |>
   summarise(eng_reviews = sum(eng_reviews))
 ```
+
+**Note** this equals 732,317 total reviews because I pulled the numbers straight from Steam game listings and not from the sheets I downloaded. At the time I wasn't thinking about it, but the script used to pull reviews would time out after a certain point and there was no guarantee I was getting the full number of reviews shown on Steam. Actually, it was very likely that for some of the more popular games there's almost no way I was getting all of them. 
+
+Let's look at the accurate number.
+
+```{r}
+merged_games <- reviews_df |>
+  left_join(games)
+
+merged_games |>
+  group_by(rank) |>
+  #merging all varieties of pos/neg together by removing the first word per rank
+  #very positive and overwhelmingly positive both just become positive etc
+  mutate(rank = str_replace_all(rank, "\\w+ (\\w)", "\\1")) |>
+  summarise(count = n())
+
+```
+
+= 189298, that's the same number of rows as reviews_df, so that adds up a little better.
+
 
 It looks like kind of yes! 
 

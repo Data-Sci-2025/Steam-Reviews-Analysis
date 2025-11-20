@@ -33,6 +33,25 @@ merged_games <- reviews_df |>
   left_join(games) 
 ```
 
+## A note about the data
+
+There are two main aspects of my data being analyzed in this file. 
+
+1. review type
+
+Reviews in Steam can either be positive or negative (indicated by a thumbs up or thumbs down). I will often refer to review type in relation to other variables. There are always only two categories this could be. 
+
+2. game rank
+
+Game ranks in Steam are a bit more complicated. There are nine total ranks a game could fall into, Overwhelmingly Positive, Very Positive, Positive, Mostly Positive, Mixed, and the mirrored version of the first four for Negative games as well. 
+
+There isn't an official source of the exact breakdown of how these ranks are calculated, but people have worked out that it comes down to both the ratio of positive and negative review types as well as total number of reviews. 
+
+For example, a game with 3,000 99% positive reviews will still be ranked lower than a game with 5,000 95% positive reviews. Or a game can be 100% positive, but if it only has up to 50 reviews, it will be stuck in the "Positive" ranking. As far as I've understoon, these calculations are the same for negatively reviewed games. It appears that regardless of number of reviews, if the ratio of positive/negative reviews is in the 40%-60% range, it will be considered "Mixed".
+
+I will, at times during my analysis, lump these game rankings together into a simplified three tiers. Positive, mixed, and negative. Just know, that in these moments, the positive and negative options are referring to four smaller categories grouped together for the sake of ease. 
+
+
 
 ## Downsampling Data
 
@@ -41,6 +60,48 @@ Move the measurement stuff up here that first showed the hugely disparate number
 Use the table in the questions menu below but merge it with the games info too to include the game's rank to prove the point.
 
 Positively reviewed games have more reviews than negatively reviewed games quite significantly. To account for this I decided to downsample those positively reviewed games 
+
+
+```{r}
+simple_rank <- merged_games |>
+  group_by(rank) |>
+  #merging all varieties of pos/neg together by removing the first word per rank
+  #very positive and overwhelmingly positive both just become positive etc
+  mutate(rank_simp = str_replace_all(rank, "\\w+ (\\w)", "\\1"))
+
+simple_rank
+```
+
+```{r}
+simple_rank |>
+  group_by(rank_simp) |>
+  summarise(n = n())
+```
+
+```{r}
+other_games <- simple_rank |>
+  filter(rank_simp!='Positive')
+```
+
+
+
+```{r}
+posgames <- simple_rank |>
+  filter(rank_simp=="Positive")
+  
+posgames
+```
+
+
+
+```{r}
+#| eval: FALSE
+sampled_data <- posgames |>
+  group_by(your_stratification_variable) %>%
+  slice_sample(prop = 0.5) %>%
+  ungroup()
+```
+
 
 
 
@@ -71,7 +132,8 @@ Some of these have way more reviews than others (positive games) and it could be
 
 ## Getting a Look at the Data
 
-Number of reviews per game:
+### Reviews per game
+ 
 ```{r}
 #| label: game-revs-c2
 revcount_df <- merged_games |>
@@ -82,42 +144,78 @@ revcount_df
 ```
 
 ```{r}
+#| label: split-data
 cut1 <- revcount_df |>
-  slice(1:9) |>
-  mutate(group = 1)
+  slice(1:10) |>
+  #reorder by total so that the plot legend is in the right order
+  mutate(game = fct_reorder(game, total, .desc = TRUE))
 
 cut2 <- revcount_df |>
-  slice(10:18) |>
-  mutate(group=2)
+  slice(11:20) |>
+  mutate(game = fct_reorder(game, total, .desc = TRUE))
 
 cut3 <- revcount_df |>
-  slice(19:27)
+  slice(21:29) |>
+  mutate(game = fct_reorder(game, total, .desc = TRUE))
 
-cut_games <- bind_rows(cut1, cut2, cut3)
+cut4 <- revcount_df |>
+  slice(30:36)|>
+  mutate(game = fct_reorder(game, total, .desc = TRUE))
 
-cut_games
+cut5 <- revcount_df |>
+  slice(37:45) |>
+  mutate(game = fct_reorder(game, total, .desc = TRUE))
 ```
-
 
 
 ```{r}
-ggplot(cut_games, aes(x = reorder(game, -total), y=total)) +
-  geom_bar(stat='identity') +
-  facet_wrap(~ group) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+#| label: revcount-bars
+ggplot(cut1, aes(x = reorder(game, -total), y=total, fill=game)) +
+  geom_bar(stat='identity', color="black") + 
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_blank()) +
+  labs(x="Game", y = "No. of Reviews")
+
+ggplot(cut2, aes(x = reorder(game, -total), y=total, fill=game)) +
+  geom_bar(stat='identity', color="black") + 
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_blank()) +
+  labs(x="Game", y = "No. of Reviews")
+
+ggplot(cut3, aes(x = reorder(game, -total), y=total, fill=game)) +
+  geom_bar(stat='identity', color="black") + 
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_blank()) +
+  labs(x="Game", y = "No. of Reviews")
+
+ggplot(cut4, aes(x = reorder(game, -total), y=total, fill=game)) +
+  geom_bar(stat='identity', color="black") + 
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_blank()) +
+  labs(x="Game", y = "No. of Reviews")
+
+ggplot(cut5, aes(x = reorder(game, -total), y=total, fill=game)) +
+  geom_bar(stat='identity', color="black") + 
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_blank()) +
+  labs(x="Game", y = "No. of Reviews")
 ```
 
+Take care to note the y-axis and how it changes between plots. The games with the fewest reviews are significantly less than the ones with the most. This is because of how the "Positive" and "Negative" categories are calculated, the cutoff point at those ranks is 50 reviews. Any more than that and the game will migrate to a different rank. 
 
+Also please note that the numbers indicated here are not reflective of the actual number of reviews as shown on Steam (documented [here](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/0-gameinfo.csv)), and only reflect the total number of reviews in *this* data set, which has been adjusted above for the sake of comparison.
+
+
+Just to get a full scope of the scale (and why I split the data up like I did above) here are all the totals in comparison.
 
 
 ```{r}
 ggplot(revcount_df, aes(x = reorder(game, -total), y=total)) +
-  geom_bar(stat='identity') 
+  geom_bar(stat='identity') +
+  theme(axis.text.x = element_blank())
 ```
 
-
-
-
+### Positive and Negative
 
 How many reviews of each type are there?
 
@@ -130,8 +228,7 @@ ggplot(reviews_df, aes(x=review_type, fill=review_type )) +
   theme(legend.position="right")
 ```
 
-There are a LOT more positive reviews than negative ones. This made me curious, what about the total data. It's possible positively reviewed games have more reviews in general than negatively reviewed games? 
-
+There are a LOT more positive reviews than negative ones. This made me think, what about the total data. It's possible positively reviewed games have more reviews in general than negatively reviewed games? 
 
 
 Since the number of reviews (total and in English) at [this table](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/0-gameinfo.csv) were added manually by me using the total listing on the Steam App. Those numbers are accurate as of the date I downloaded my reviews (shown in my [projnotes.md](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/projnotes.md)). However the script I used to download the reviews would time out after a certain point, and not every single review was downloaded. 
@@ -140,9 +237,6 @@ Let's look at the actual count of reviews per game ranking, simplified down to o
 
 ```{r}
 #| label: rank-rev-count
-merged_games <- reviews_df |>
-  left_join(games)
-
 merged_games |>
   group_by(rank) |>
   #merging all varieties of pos/neg together by removing the first word per rank
@@ -153,7 +247,7 @@ merged_games |>
 ```
 
 
-It looks like kind of yes! 
+It looks like yes! 
 
 My theory here just comes down to popularity. As a game releases and players try it out and review it, it either begins to migrate through the ranks of positive or negative. As new players find out about the game, if it shows already that it's being negatively reviewed, why would they spend money to try it out themselves? I wouldn't! On the other hand, if players see that a game is getting positive reviews, they'll more likely try it and, in turn, also positively review it.
 
@@ -183,7 +277,9 @@ With word counts per review added, let's take a look!
 summary(reviews_df$word_count)
 ```
 
-So the average review is around 51 words long, and the median 17 words. 
+So the average review is around 51/52 words long, and the median 17 words. 
+
+TO DO: (maybe look into something about average text lengths online like for blogs etc)
 
 Let's look a little deeper. 
 

@@ -326,6 +326,34 @@ nrow(reviews_df)
 
 The removal of punctuation ended up cutting down on some rows. It saved us our emojis but removed some reviews that I saw at least that were just "???????", just an emoticon, or "....." etc. Some reviews had no text, it turns out, which became an N/A once tokenized, and those have been removed now as well. 
 
+
+## One more thing...
+
+When I got started on my analysis notebook, I found some additional cleaning up that I needed to do. This mostly was some odd unicode blank spaces that were affecting some of my looks at tokens and types, especially with emojis. I'm moving that here for the sake of cleanliness.
+
+```{r}
+#| label: toks-col
+reviews_df <- reviews_df |>
+  #rename from the tokenized col from before
+  rename(tokens = merged_text)
+
+reviews_df
+```
+
+
+```{r}
+#| label: remove-unicode
+#| include: FALSE
+reviews_df <- reviews_df |>
+  mutate(review = str_replace_all(review, "\\\u200B+|\\\u200E+|\\\u200C+|\\\UE0021+|\\\u00AD+|\\\u200F+|^\\\u3164+$|\\\u180C|^\\\u0020+$|\\\u2063|\\\u2060|\\\u0009|\\\u00A0|\\\u034F|\\\u1160|\\\u2000|\\\u2003|\\\u2004|\\\u200D|\\\u202A|\\\u202C|\\\u202F|\\\u2067|\\\u3000|\\\u3164|\\\uFE0E|\\\uFE0F|\\\uFEFF", " ")) |>
+  mutate(tokens = str_replace_all(tokens, "\\\u200B+|\\\u200E+|\\\u200C+|\\\UE0021+|\\\u00AD+|\\\u200F+|^\\\u3164+$|\\\u180C|^\\\u0020+$|\\\u2063|\\\u2060|\\\u0009|\\\u00A0|\\\u034F|\\\u1160|\\\u2000|\\\u2003|\\\u2004|\\\u200D|\\\u202A|\\\u202C|\\\u202F|\\\u2067|\\\u3000|\\\u3164|\\\uFE0E|\\\uFE0F|\\\uFEFF", " ")) |>
+  mutate(review = str_replace_all(review, "  +", " ")) |>
+  mutate(tokens = str_replace_all(tokens, "  +", " ")) |>
+  mutate(review = review |>
+      na_if(" ")) |>
+  drop_na('review')
+```
+
   
 ## Write out reviews.csv
 

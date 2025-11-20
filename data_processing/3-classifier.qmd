@@ -92,9 +92,6 @@ ok question if I want to use word_count (review length) as a predictor in my cla
 setup_sample <- setup_sample |>
   pivot_wider(names_from = word, values_from = tf_idf, values_fill = 0)
 
-setup_sample <- setup_sample |>
-  dplyr::select(!review_id, WC)
-
 ncol(setup_sample)
 ```
 

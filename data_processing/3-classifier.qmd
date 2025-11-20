@@ -100,6 +100,21 @@ head(setup_sample)
 ```
 
 
+```{r}
+setup_sample <- setup_sample |>
+  purrr::discard(function(x) sum(x != 0) == 1)
+
+ncol(setup_sample)
+```
+
+
+```{r}
+head(setup_sample)
+```
+
+
+
+
 
 ```{r}
 # split into training and testing sets
@@ -127,27 +142,58 @@ training <- setup_sample[ inTrain,]
 testing  <- setup_sample[-inTrain,]
 
 nrow(training)
+ncol(training)
 
 nrow(testing)
+ncol(testing)
 ```
 
 
 ```{r}
-colnames(training)
-```
-
-
-
-```{r}
+#| eval: FALSE
 training |>
-  select(artsy)
+  slice(1:10) |>
+  dplyr::select(1:8) |>
+  purrr::discard(function(x) sum(x != 0) == 1)
+```
+
+
+
+
+```{r}
+#| eval: FALSE
+sessionInfo()
+training |>
+  keep(\(x) sum(is.na(x))!=0) |>
+  colnames()
+training |>
+  dplyr::select(games)
 ```
 
 
 
 ```{r}
-colSums(is.na(training))
+#| eval: false
+training
 ```
+
+
+Warning: predictions failed for Fold04.Rep3: usekernel= TRUE, fL=0, adjust=1 Error in predict.NaiveBayes(modelFit, newdata) : 
+  Not all variable names used in object found in newdata
+
+
+
+```{r}
+#| eval: false
+test <- training |>
+  sapply(function(x) sum(x != 0) == 1)
+
+truetest <- which(test)
+
+#truetest
+```
+
+
 
 
 

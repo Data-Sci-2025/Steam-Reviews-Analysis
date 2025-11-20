@@ -100,6 +100,7 @@ head(setup_sample)
 ```
 
 
+
 ```{r}
 # split into training and testing sets
 
@@ -118,6 +119,7 @@ inTrain <- createDataPartition(
 
 ```{r}
 nrow(inTrain)
+ncol(inTrain)
 ```
 
 ```{r}
@@ -131,10 +133,29 @@ nrow(testing)
 
 
 ```{r}
+colnames(training)
+```
+
+
+
+```{r}
+training |>
+  select(artsy)
+```
+
+
+
+```{r}
+colSums(is.na(training))
+```
+
+
+
+```{r}
 ctrl <- trainControl(method = "repeatedcv", repeats = 3)
 
 nb_model = train(
-  review_type ~ ., # Specifying the response variable and the feature variables
+  review_type ~ .- review_id - WC, # Specifying the response variable and the feature variables
   method = "nb", # Specifying the model to use
   data = training, 
   trControl = ctrl

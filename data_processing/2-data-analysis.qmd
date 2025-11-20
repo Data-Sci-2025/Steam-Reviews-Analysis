@@ -9,8 +9,6 @@ format: gfm
 library(tidyverse)
 library(tidytext)
 library(ggplot2)
-library(highcharter)
-library(palmerpenguins)
 library(tidyr)
 library(scales)
 library(ggplot2)
@@ -23,58 +21,57 @@ library(forcats)
 
 ```{r}
 #| label: readingin
+# reviews 
 reviews_df <- read_csv("../private/reviews_analyze.csv", show_col_types = FALSE)
+
+# game titles, ranks, etc, we'll need it later
+games <- read_csv("../notes_and_info/0-gameinfo.csv", show_col_types = FALSE)
 ```
 
 
 ```{r}
 #| label: toks-col
 reviews_df <- reviews_df |>
+  #rename from the tokenized col from before
   rename(tokens = merged_text)
 
 reviews_df
 ```
 
 
-## Goal Tracker
+## Downsampling Data
 
-**List of Goals**
+Move the measurement stuff up here that first showed the hugely disparate numbers of both reviews per games and positive vs negative reviews. 
 
-- some stats (correlation) - length and review type, review and rating type, maybe some others
-- TF-IDF
-- maybe let's look at some emoji usage (STARTED)
+Use the table in the questions menu below but merge it with the games info too to include the game's rank to prove the point.
 
-**Later Goals**
-
-- build a classifier 
+Positively reviewed games have more reviews than negatively reviewed games quite significantly. To account for this I decided to downsample those positively reviewed games 
 
 
-## Questions
 
-1. Should I cap number of reviews per game to even things out?
+
+## TO DO
+
+downsample positive reviews to 37k 
+
+set seed in R - set.seed(1234) on the downsampling code so other people get the same sampling
+
+slice_sample - stratified downsampling
+
+1. Should I cap number of reviews per game to even things out? YES - DOWNSAMPLING
 
 ```{r}
 #| label: game-revs-c
 reviews_df |>
   group_by(steam_id) |>
-  summarise(count = n())
+  summarise(count = n()) |>
+  arrange(desc(count))
 ```
 
 Some of these have way more reviews than others (positive games) and it could be affecting some of what I'm looking at objectively... on the other hand it's the most accurate look at the data. 
 
-1a. If I do cut down on the number of reviews, should it be across the board for analysis, or just for some of the steps? 
 
-2. I made some histograms for word length per review type (pos or neg) and they're both really skewed with a huge chunk of the reviews being very short (see the Length Stats tab here). It's making it so I can't really do a box plot or a violin plot because of the shape of things. Would a log transformation help? 
-
-3. What about measuring correlation/the relationship between a numerical value and categorical? word count and review type. 
-
-4. I've been looking at a lot of just word count and review type, what else should I be really looking at though...
-
-5. This about exploring TTR and what to do with that. Visualizations?
-
-6. Also I mentioned wanting to look at review flow and date. I want to see when reviews come in, when they taper off, if there are any spikes over time...
-
-7. I don't know WHAT to do with these stupid emojis not being split up properly and I don't know if it matters or if I want to kind of start over on those entirely. Maybe if I do grepl using just the string of emoji unicodes and wipe out anything not in there. I might just create a separate emoji processing qmd and see what I can wrestle out there, make it a kind of extra goal.
+2. I made some histograms for word count per review type (pos or neg) and they're both really skewed with a huge chunk of the reviews being very short (see the Length Stats tab here). It's making it so I can't really do a box plot or a violin plot because of the shape of things. Would a log transformation help? YES
 
 7. similar toks charts not working why?????
 
@@ -104,16 +101,58 @@ reviews_df <- reviews_df |>
 
 ## Getting a Look at the Data
 
-I'm going to move some of the basic data analysis in here later but I need it where it is for class 11/18
-
-
-### Reviews over time
-
+Number of reviews per game:
 ```{r}
-#| eval: false
-ggplot(dat, aes(x=Date_Published)) +   stat_count(geom='line', aes(y=..count..))
+#| label: game-revs-c
+reviews_df |>
+  group_by(steam_id) |>
+  summarise(count = n()) |>
+  arrange(desc(count))
 ```
 
+Do this with the merged games df so that the labels will be the actual game names
+
+
+How many reviews of each type are there?
+
+```{r}
+#| label: plot-reviews
+ggplot(reviews_df, aes(x=review_type, fill=review_type )) + 
+  geom_bar( width = 0.5) +
+  scale_fill_brewer(palette = "Set2") +
+  geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 3, hjust = 0.5, position = "stack") +
+  theme(legend.position="right")
+```
+
+There are a LOT more positive reviews than negative ones. This made me curious, what about the total data. It's possible positively reviewed games have more reviews in general than negatively reviewed games? 
+
+
+
+Since the number of reviews (total and in English) at [this table](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/0-gameinfo.csv) were added manually by me using the total listing on the Steam App. Those numbers are accurate as of the date I downloaded my reviews (shown in my [projnotes.md](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/projnotes.md)). However the script I used to download the reviews would time out after a certain point, and not every single review was downloaded. 
+
+Let's look at the actual count of reviews per game ranking, simplified down to only positive, negative, and mixed for ease.
+
+```{r}
+merged_games <- reviews_df |>
+  left_join(games)
+
+merged_games |>
+  group_by(rank) |>
+  #merging all varieties of pos/neg together by removing the first word per rank
+  #very positive and overwhelmingly positive both just become positive etc
+  mutate(rank = str_replace_all(rank, "\\w+ (\\w)", "\\1")) |>
+  summarise(count = n())
+
+```
+
+
+It looks like kind of yes! 
+
+My theory here just comes down to popularity. As a game releases and players try it out and review it, it either begins to migrate through the ranks of positive or negative. As new players find out about the game, if it shows already that it's being negatively reviewed, why would they spend money to try it out themselves? I wouldn't! On the other hand, if players see that a game is getting positive reviews, they'll more likely try it and, in turn, also positively review it.
+
+Some of the games in the higher ranks in this data are hugely beloved games, while the negative ones are very likely largely forgotten to time once they descended into the negative review rankings. 
+
+So, there it is. Positively ranked games have overall more reviews than negatively ranked games, and there are more positive reviews than negative ones in my data as a result. We'll keep that in mind, moving forward.
 
 
 ## Word Count
@@ -126,17 +165,18 @@ reviews_df <- reviews_df |>
 reviews_df
 ```
 
+
+
 ### Review length
 
-First, there are a number of reviews that are just a blank space that were counted as having 1 word because of how I formulated the word count column. I'm going to declare these columns NA. If there's no text in the review, there's nothing there for me to analyze anyway. 
-
+With word counts per review added, let's take a look!
 
 ```{r}
 #| label: WC-stats
 summary(reviews_df$word_count)
 ```
 
-So the average review is 51 words, and the median 17 words. 
+So the average review is around 51 words long, and the median 17 words. 
 
 Let's look a little deeper. 
 
@@ -152,67 +192,12 @@ reviews_df |>
 
 There's quite a few one-word reviews! Some of them are pretty reasonable... "Amazing", "Spooky", "Boring", "Unplayable". Short and sweet, gets the point across well enough. Others are a little less obvious. I saw a number of keyboard smash reviews, strings of numbers, I saw one that was just a rabbit emoji. The last one might be a reference I just don't understand.
 
-Looking instead at these longest reviews, I was really surprised! A huge majority of these are exactly the same phrase repeated over and over, and those repeated reviews are all for the same game, as well. I have to do some investigation... 
+Looking next at these longest reviews, I was really surprised! A huge majority of these are exactly the same phrase repeated over and over, and those repeated reviews are all for the same game, as well. I have to do some investigation... 
 
 Checking my game info [here](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/0-gameinfo.csv), I was able to confirm that these repeating reviews are all from "The Stanley Parable: Ultra Deluxe". 
 
 Looking further, I found some more information. ["The end is never"](https://thestanleyparable.fandom.com/wiki/The_End_Is_Never...) is a tagline for the game itself, and appears within the game multiple times as a reference to the inescapable time loop the game's protagonist is stuck in. The phrase also apparently appears on the game's loading screens in a constant loop. 
 
-
-### Positive and Negative review length
-
-First let's get a look at what we're working with. How many reviews of each type are there?
-
-```{r}
-#| label: plot-reviews
-ggplot(reviews_df, aes(x=review_type, fill=review_type )) + 
-  geom_bar( width = 0.5) +
-  scale_fill_brewer(palette = "Set2") +
-  geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 3, hjust = 0.5, position = "stack") +
-  theme(legend.position="right")
-```
-
-There are a LOT more positive reviews than negative ones. This made me curious, what about the total data. It's possible positively reviewed games have more reviews in general than negatively reviewed games? 
-
-```{r}
-#| label: games-info
-games <- read_csv("../notes_and_info/0-gameinfo.csv")
-
-games |>
-  group_by(rank) |>
-  #merging all varieties of pos/neg together by removing the first word per rank
-  #very positive and overwhelmingly positive both just become positive etc
-  mutate(rank = str_replace_all(rank, "\\w+ (\\w)", "\\1")) |>
-  summarise(eng_reviews = sum(eng_reviews))
-```
-
-**Note** this equals 732,317 total reviews because I pulled the numbers straight from Steam game listings and not from the sheets I downloaded. At the time I wasn't thinking about it, but the script used to pull reviews would time out after a certain point and there was no guarantee I was getting the full number of reviews shown on Steam. Actually, it was very likely that for some of the more popular games there's almost no way I was getting all of them. 
-
-Let's look at the accurate number.
-
-```{r}
-merged_games <- reviews_df |>
-  left_join(games)
-
-merged_games |>
-  group_by(rank) |>
-  #merging all varieties of pos/neg together by removing the first word per rank
-  #very positive and overwhelmingly positive both just become positive etc
-  mutate(rank = str_replace_all(rank, "\\w+ (\\w)", "\\1")) |>
-  summarise(count = n())
-
-```
-
-= 189298, that's the same number of rows as reviews_df, so that adds up a little better.
-
-
-It looks like kind of yes! 
-
-My theory here just comes down to popularity. As a game releases and players try it out and review it, it either begins to migrate through the ranks of positive or negative. As new players find out about the game, if it shows already that it's being negatively reviewed, why would they spend money to try it out themselves? I wouldn't! On the other hand, if players see that a game is getting positive reviews, they'll more likely try it and, in turn, also positively review it.
-
-Some of the games in the higher ranks in this data are hugely beloved games, while the negative ones are very likely largely forgotten to time once they descended into the negative review rankings. 
-
-So, there it is. Positively ranked games have overall more reviews than negatively ranked games, and there are more positive reviews than negative ones in my data as a result. We'll keep that in mind, moving forward.
 
 
 ### Average Review Length
@@ -246,9 +231,13 @@ Looks like it's pretty common for positive reviews to be shorter. This could pot
 38.7% of all negative reviews are 5 words or shorter, and 74.4% of all positive reviews are. That's quite a big chunk of reviews! 
 
 
+NOW look at average review length per game, add that together to look at per game rank too. 
+
+
 ### Length Stats
 
 Word length histograms.... A LOT of reviews are all grouped together at the lower end of the spectrum
+DO A LOG TRANSFORMATION TO THEM AND REDO
 
 ```{r}
 #| label: pos-neg-revs
@@ -263,11 +252,13 @@ negrevs <- reviews_df |>
 ```{r}
 #| label: pos-neg-dist
 pos <- ggplot(posrevs, aes(x=word_count)) + 
-  geom_histogram(binwidth = 50)
+  geom_histogram(binwidth = 50) +
+  scale_y_log10()
 pos
 
 neg <- ggplot(negrevs, aes(x=word_count)) + 
-  geom_histogram(binwidth = 50)
+  geom_histogram(binwidth = 50) +
+  scale_y_log10()
 neg
 ```
 
@@ -275,13 +266,7 @@ Can I log transform this and then make box or violin plots?
 
 
 
-```{r}
-#| label: WC-scatter
-ggplot(reviews_df) +
-  aes(x = review_type, y = word_count, color = review_type) +
-  geom_jitter() +
-  theme(legend.position = "none")
-```
+
 
 ```{r}
 #| label: WC-bplot
@@ -296,9 +281,6 @@ ggplot(reviews_df, aes(x=word_count, y=review_type)) +
   geom_violin()
 ```
 
-
-
-correlation between review length and review type?
 
 
 ## Word Types & Count
@@ -349,83 +331,13 @@ reviews_df
 
 ### TTR Exploring 
 
-
-## Emojis
-
-A lot of work went into keeping those emojis, so I want to take a look at them! 
-
-```{r}
-#| label: emoji-str
-emoji_pattern <- "[\\\U0001F600-\\\U0001F64F\\\U0001F300-\\\U0001F5FF\\\U0001F900-\\\U0001F9FF\\\U00002600-\\\U000027BF]"
-```
-
-
-```{r}
-#| label: extract-emojis
-emojis <- reviews_df |>
-  filter(grepl(emoji_pattern, types, perl=TRUE)) |>
-  mutate(types = str_remove_all(types, "\\w|,|'|‘|’
-                                 %|\\.|’|\\\036|－|❝|❞
-                                 |‑"))
-
-emojis
-```
-
-Only 1,622 of our reviews contain some kind of emoji usage. Not as many as I expected!
-
-
-```{r}
-#| label: emojis-only
-emoji_df <- emojis |>
-  mutate(types = sapply(emojis$types, remove_dupes)) |>
-  count(types, sort=TRUE)
-
-emoji_df
-```
-
-
-```{r}
-#| label: plot-emoji
-#| eval: FALSE
-max_count <- emoji_df |>
-  pull(n) |>
-  max()
-
-
-hchart(
-  emoji_df, 
-  "bar",
-  hcaes(types, n), 
-  name = "Count",
-  # dataLabels = list(enabled = TRUE, style = list(fontWeight = "normal"))
-  ) |>
-  hc_xAxis(
-    min = 0,
-    max = 30,
-    scrollbar = list(enabled = TRUE)
-    ) |>
-  hc_yAxis(
-    max = max_count,
-    title = list(
-      text = "Count",
-      align = "high"
-      )
-    ) |>
-  hc_tooltip(
-    headerFormat = "{point.key}",
-    pointFormat = " {point.y}"
-  ) |>
-  hc_size(height = 700)
-```
-
-
-Cool [source](https://jkunst.com/blog/posts/2021-01-10-using-emoji-with-highcharterhighcharts/) for the emoji finding & charting code.
+idk think about what to put in here - probably just a general summary looking at pos/neg, it will likely mostly be aligned with review length over all, since so many reviews are so short.
 
 
 
 ## Tf-idf
 
-Calculating Tf-idf for our game reviews (excluding emoji usage for this one).
+Calculating Tf-idf for our game reviews. Because they were creating a lot of issues with tokenizing and odd characters, I've excluded emojis and gone simply for text reviews. It's a bummer to lose out on such strong reviews as "one single poop emoji", but needs to be done for ease of processing. For now, at least.
 
 ```{r}
 #| label: rm-stopwords
@@ -450,6 +362,9 @@ Looking through the first few pages of tokens, I wonder if we can pick out some 
 
 What about top words per review type? 
 
+REDO THIS merge into reviews_df as a new df and do the pos/neg thing by filtering instead. 
+
+
 ```{r}
 #| label: pos-topwords
 pos_toks <- posrevs |>
@@ -468,11 +383,11 @@ neg_toks <- negrevs |>
 neg_toks
 ```
 
-How can I visually compare these two sets of data? 
+
 
 ### TF
 
-calculate the frequency for each word for the works of Jane Austen, the Brontë sisters, and H.G. Wells by binding the data frames together
+calculate the frequency for each word for the works of Jane Austen, the Brontë sisters, and H.G. Wells by binding the data frames together - RECALCULATE THIS TOO - per review, per review type, recheck activity 9 to make sure that seems right
 
 
 ```{r}
@@ -535,44 +450,27 @@ not all the words are found in all three sets of texts and there are fewer data 
 
 quantify how similar and different these sets of word frequencies are using a correlation test
 
-### In progress: correlation review type
-
-```{r}
-#| label: austen-corr
-#| eval: false
-cor.test(data = freq[freq$review_type == "Positive",],
-         ~ proportion + Negative)
-
-
-#cor.test(data = frequency[frequency$author == "H.G. Wells",], 
-         #~ proportion + `Jane Austen`)
-```
-
-
-### tf-idf notes from class
-
-how to quantify what a document is about
- 
-tf - term frequency - how frequently a word shows up
-idf - inverse document frequency- how many documents a word appears in (no of docs / no of dccs containing term)
-
-tf-idf: frequency of a term adjusted for how rarely it is used
-
-- intended to measure how important a word is to a document in a collection (or corpus) of documents
 
 ### term freq
+
 
 ```{r}
 #| label: revtoks-totals
 review_words <- reviews_df |>
   unnest_tokens(word, review) |>
-  count(review_type, word, sort = TRUE)
+  anti_join(stop_words) |>
+  count(review_id, word, sort = TRUE)
 
-total_words <- reviews_df |> 
-  group_by(review_type) |> 
-  summarize(total = sum(word_count))
+total_words <- review_words |> 
+  group_by(review_id) |> 
+  summarize(total = sum(n))
 
 review_words <- left_join(review_words, total_words)
+
+review_words <- left_join(reviews_df, review_words)
+
+review_words <- review_words |>
+  select(review_id, review_type, word, n, total)
 
 review_words
 ```
@@ -604,13 +502,70 @@ takes a tidy text dataset as input with one row per token (term), per document
   - one column contains the documents (review type)
   - last necessary column contains the counts, how many times each document contains each term (n)
   
+  maybe edit to carry in also steam_id I think, just so it's in there.
+  MAYBE do this from the merged games df - but you have to re-merge it because the original is actually merged before the word counts etc have been added in. THEN save the game names and also the rank - simplify that rank in a new column to "pos, mixed, neg" and try that with the classifier. If we can calculate % of pos/neg ratio of reviews per game can we predict the game's rank? 
+  
 ```{r}
 #| label: review-tfidf
 review_tf_idf <- review_words |>
-  bind_tf_idf(word, review_type, n)
+  bind_tf_idf(word, review_id, n)
 
 review_tf_idf
 ```
+
+with stop words included there are 6,412,302 total rows
+with stop words excluded it went down to 3,045,610!
+
+```{r}
+review_tf_idf |>
+  arrange(desc(n))
+```
+
+
+```{r}
+review_tf_idf <- review_tf_idf |>
+  select(review_id, review_type, word, total, tf_idf)
+
+review_tf_idf
+```
+
+
+
+
+
+
+
+```{r}
+#| label: tf-idf-csv
+write_csv(review_tf_idf, file="../private/reviews_tfidf.csv")
+```
+
+
+
+```{r}
+reviews_df |>
+  filter(review_id==161023893)
+```
+
+
+
+
+
+
+
+
+
+how to quantify what a document is about
+ 
+tf - term frequency - how frequently a word shows up
+idf - inverse document frequency- how many documents a word appears in (no of docs / no of dccs containing term)
+
+tf-idf: frequency of a term adjusted for how rarely it is used
+
+- intended to measure how important a word is to a document in a collection (or corpus) of documents
+
+
+
 
 Some notes to pay attention to:
 
@@ -620,17 +575,16 @@ idf and thus tf-idf are zero for these extremely common words
   
 idf will be a higher number for words that occur in fewer of the documents in the collection
 
-To take a look at high idk terms:
+To take a look at high idf terms:
 
 ```{r}
-#| label: aust-high-tfidf
-#| eval: false
-book_tf_idf %>%
+#| label: rev-high-tfidf
+review_tf_idf %>%
   select(-total) %>%
   arrange(desc(tf_idf))
 ```
 
-proper nouns! names. Makes sense, generally a character only appears in one book and would be ver informative of that book. 
+SUMMARY - these are informative in the sense that they are not likley to be replicated, I suppose. Not so much in like. discerning meaning.  
 
 ```{r}
 #| label: aust-propnouns

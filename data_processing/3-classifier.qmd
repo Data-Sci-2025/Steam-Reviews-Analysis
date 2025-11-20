@@ -1,0 +1,163 @@
+---
+title: "3-classifier"
+format: gfm
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(tidytext)
+library(ggplot2)
+library(caret)
+library(mlbench)
+library(klaR)
+```
+
+**Note**: Please run [0-data-exploration](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/0-data-exploration.qmd) and [1-data-cleanup](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/1-data-cleanup.qmd) first to create the version of the .csv file needed to start here.
+
+
+
+```{r}
+#| label: readingin
+reviews_df <- read_csv("../private/reviews_analyze.csv")
+
+reviews_df
+```
+
+
+
+some model (Score ~ .-Steam_id, review_d)
+
+basically exclude any column that you don't want to be a predictor (because it's going to be 6.4 million columns)
+
+which type model for topic modeling sparse data/matrix for document term matrix as input
+
+
+
+Think about this
+https://www.kdnuggets.com/2023/04/best-machine-learning-model-sparse-data.html
+specifically about removing sparse data points like some of those keysmash values that have very high tf-idf but aren't actually very valuable. 
+find parameter for removal - something like a cut off point for tf idf?
+
+
+decision tree classifier
+naive bayes classifier
+
+
+```{r}
+review_tf_idf <- read_csv("../private/reviews_tfidf.csv", show_col_types = FALSE)
+```
+
+```{r}
+review_tf_idf
+```
+
+```{r}
+colSums(is.na(review_tf_idf))
+```
+
+```{r}
+review_tf_idf <- na.omit(review_tf_idf)
+```
+
+```{r}
+colSums(is.na(review_tf_idf))
+```
+
+
+
+```{r}
+#| eval: false
+review_tf_idf <- review_tf_idf |>
+  pivot_wider(names_from = word, values_from = tf_idf, values_fill = 0)
+
+ncol(review_tf_idf)
+```
+
+
+```{r}
+setup_sample <- review_tf_idf[1:200000, ]
+
+setup_sample <-setup_sample |>
+  rename(WC=total)
+  
+setup_sample
+```
+
+ok question if I want to use word_count (review length) as a predictor in my classifier should I use the full word count from the reviews_df or the "total" column here (the word count excluding stop words)
+
+
+```{r}
+setup_sample <- setup_sample |>
+  pivot_wider(names_from = word, values_from = tf_idf, values_fill = 0)
+
+ncol(setup_sample)
+```
+
+```{r}
+head(setup_sample)
+```
+
+
+```{r}
+# split into training and testing sets
+
+inTrain <- createDataPartition(
+  y = setup_sample$review_type,
+  ## the outcome data are needed
+  p = .75,
+  ## The percentage of data in the
+  ## training set
+  list = FALSE
+)
+
+
+```
+
+
+```{r}
+nrow(inTrain)
+```
+
+```{r}
+training <- setup_sample[ inTrain,]
+testing  <- setup_sample[-inTrain,]
+
+nrow(training)
+
+nrow(testing)
+```
+
+
+```{r}
+ctrl <- trainControl(method = "repeatedcv", repeats = 3)
+
+nb_model = train(
+  review_type ~ .-review_id, review_type, WC, # Specifying the response variable and the feature variables
+  method = "nb", # Specifying the model to use
+  data = training, 
+  trControl = ctrl
+)
+```
+Got a protect() protection stack overflow error when I used a training set size of almost 20k.This was with a setup sample of [1:600K]
+
+Was still too big at 12K training size (up to 400k I think)
+
+
+
+Is this a reasonable fix?
+https://stackoverflow.com/questions/32826906/how-to-solve-protection-stack-overflow-issue-in-r-studio
+rstudio.exe --max-ppsize=5000000
+
+
+
+
+
+
+
+
+
+
+
+

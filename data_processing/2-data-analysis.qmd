@@ -28,14 +28,9 @@ reviews_df <- read_csv("../private/reviews_analyze.csv", show_col_types = FALSE)
 games <- read_csv("../notes_and_info/0-gameinfo.csv", show_col_types = FALSE)
 ```
 
-
 ```{r}
-#| label: toks-col
-reviews_df <- reviews_df |>
-  #rename from the tokenized col from before
-  rename(tokens = merged_text)
-
-reviews_df
+merged_games <- reviews_df |>
+  left_join(games) 
 ```
 
 
@@ -62,8 +57,8 @@ slice_sample - stratified downsampling
 
 ```{r}
 #| label: game-revs-c
-reviews_df |>
-  group_by(steam_id) |>
+merged_games |>
+  group_by(game) |>
   summarise(count = n()) |>
   arrange(desc(count))
 ```
@@ -71,32 +66,7 @@ reviews_df |>
 Some of these have way more reviews than others (positive games) and it could be affecting some of what I'm looking at objectively... on the other hand it's the most accurate look at the data. 
 
 
-2. I made some histograms for word count per review type (pos or neg) and they're both really skewed with a huge chunk of the reviews being very short (see the Length Stats tab here). It's making it so I can't really do a box plot or a violin plot because of the shape of things. Would a log transformation help? YES
-
-7. similar toks charts not working why?????
-
-
-## Some Missed Cleanup
-
-While I was working on word counts I discovered a number of unicode blank spaces that were appearing as empty cells in the "review" column and were being counted as 1 word reviews. They were also messing with some of my later work with tokenization and tf-idf. 
-
-I had to go through, find the blank rows among the 1 word reviews, use charToRaw on the review ID associated, and search online to find the unicode string to search for and remove.
-
-I went over the top to remove from both reviews and token columns, just to be sure I was getting everything and removing the full row. It seemed like when I didn't, the rows weren't being entirely eliminated when they needed to be. Overkill is fine with me if the end result is what I'm after!
-
-
-```{r}
-#| label: remove-unicode
-#| include: FALSE
-reviews_df <- reviews_df |>
-  mutate(review = str_replace_all(review, "\\\u200B+|\\\u200E+|\\\u200C+|\\\UE0021+|\\\u00AD+|\\\u200F+|^\\\u3164+$|\\\u180C|^\\\u0020+$|\\\u2063|\\\u2060|\\\u0009|\\\u00A0|\\\u034F|\\\u1160|\\\u2000|\\\u2003|\\\u2004|\\\u200D|\\\u202A|\\\u202C|\\\u202F|\\\u2067|\\\u3000|\\\u3164|\\\uFE0E|\\\uFE0F|\\\uFEFF", " ")) |>
-  mutate(tokens = str_replace_all(tokens, "\\\u200B+|\\\u200E+|\\\u200C+|\\\UE0021+|\\\u00AD+|\\\u200F+|^\\\u3164+$|\\\u180C|^\\\u0020+$|\\\u2063|\\\u2060|\\\u0009|\\\u00A0|\\\u034F|\\\u1160|\\\u2000|\\\u2003|\\\u2004|\\\u200D|\\\u202A|\\\u202C|\\\u202F|\\\u2067|\\\u3000|\\\u3164|\\\uFE0E|\\\uFE0F|\\\uFEFF", " ")) |>
-  mutate(review = str_replace_all(review, "  +", " ")) |>
-  mutate(tokens = str_replace_all(tokens, "  +", " ")) |>
-  mutate(review = review |>
-      na_if(" ")) |>
-  drop_na('review')
-```
+2. similar toks charts not working why?????
 
 
 ## Getting a Look at the Data
@@ -104,13 +74,49 @@ reviews_df <- reviews_df |>
 Number of reviews per game:
 ```{r}
 #| label: game-revs-c2
-reviews_df |>
-  group_by(steam_id) |>
-  summarise(count = n()) |>
-  arrange(desc(count))
+revcount_df <- merged_games |>
+  group_by(game) |>
+  summarise(total = n()) |>
+  arrange(desc(total))
+revcount_df
 ```
 
-Do this with the merged games df so that the labels will be the actual game names
+```{r}
+cut1 <- revcount_df |>
+  slice(1:9) |>
+  mutate(group = 1)
+
+cut2 <- revcount_df |>
+  slice(10:18) |>
+  mutate(group=2)
+
+cut3 <- revcount_df |>
+  slice(19:27)
+
+cut_games <- bind_rows(cut1, cut2, cut3)
+
+cut_games
+```
+
+
+
+```{r}
+ggplot(cut_games, aes(x = reorder(game, -total), y=total)) +
+  geom_bar(stat='identity') +
+  facet_wrap(~ group) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+```
+
+
+
+
+```{r}
+ggplot(revcount_df, aes(x = reorder(game, -total), y=total)) +
+  geom_bar(stat='identity') 
+```
+
+
+
 
 
 How many reviews of each type are there?
@@ -272,14 +278,16 @@ Can I log transform this and then make box or violin plots?
 ```{r}
 #| label: WC-bplot
 ggplot(reviews_df, aes(x=review_type, y=word_count)) + 
-  geom_boxplot() 
+  geom_boxplot() +
+  scale_y_log10()
   #geom_jitter(shape=16, position=position_jitter(0.2))
 ```
 
 ```{r}
 #| label: WC-vplot
-ggplot(reviews_df, aes(x=word_count, y=review_type)) + 
-  geom_violin()
+ggplot(reviews_df, aes(x=review_type, y=word_count)) + 
+  geom_violin() +
+  scale_y_log10()
 ```
 
 

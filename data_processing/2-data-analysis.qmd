@@ -103,7 +103,7 @@ reviews_df <- reviews_df |>
 
 Number of reviews per game:
 ```{r}
-#| label: game-revs-c
+#| label: game-revs-c2
 reviews_df |>
   group_by(steam_id) |>
   summarise(count = n()) |>
@@ -133,6 +133,7 @@ Since the number of reviews (total and in English) at [this table](https://githu
 Let's look at the actual count of reviews per game ranking, simplified down to only positive, negative, and mixed for ease.
 
 ```{r}
+#| label: rank-rev-count
 merged_games <- reviews_df |>
   left_join(games)
 
@@ -517,12 +518,14 @@ with stop words included there are 6,412,302 total rows
 with stop words excluded it went down to 3,045,610!
 
 ```{r}
+#| label: high-count-words
 review_tf_idf |>
   arrange(desc(n))
 ```
 
 
 ```{r}
+#| label: tf-df-final
 review_tf_idf <- review_tf_idf |>
   select(review_id, review_type, word, total, tf_idf)
 
@@ -536,13 +539,14 @@ review_tf_idf
 
 
 ```{r}
-#| label: tf-idf-csv
+#| label: write_tf-idf-csv
 write_csv(review_tf_idf, file="../private/reviews_tfidf.csv")
 ```
 
 
 
 ```{r}
+#| label: jim-review
 reviews_df |>
   filter(review_id==161023893)
 ```

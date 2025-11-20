@@ -94,3 +94,47 @@ I'm choosing CC-BY-SA as my license. Since I'm using and reformatting publicly f
 
 I'm choosing to use the New Continuing option for my code pipeline, with my qmd files numbered in the order intended to be read in. I'll add a note about this in my qmd files as well.
 
+
+## November 19, 2025 - Progress Report 3
+
+I've gotten my data into the shape I want it to be in to work with! I still can't upload my dataframe because it's too big, but it's easy enough to recreate by following my data processing .qmd files and follow what I've done, or formulate something new and unique. 
+
+Now that I'm here, I've gone full tilt into analysis, but have more work to do still. [Here](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/2-data-analysis.md) is the latest I've accomplished. 
+
+### What I've done
+
+- Review counts total by game and by review type (next: bar chart)
+- [Word count](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/2-data-analysis.md#word-count) aka review length, average review length, highest and lowest review lengths
+- Review length [distributions](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/2-data-analysis.md#length-stats) (log transformed) (next: update violin plot)
+- [Word types](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/2-data-analysis.md#word-types--count) and count
+- [TTR](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/2-data-analysis.md#ttr). With such a majority of reviews being so short I don't see it being a useful metric, but I took a look still.
+- [Tf-idf](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/2-data-analysis.md#tf-idf). This section needs the most tidying since I was messing with it, hopefully I'll get it a little tidier before tomorrow.
+
+I've also created an additional notebook called "stretch goals". This is my kind of lofty ideas outlet. Things I'm interested in but are either not extremely linguistically relevant (like reviews posted over time) or are challenging enough I decided to set them aside for the more important goal of the classifier (emoji analysis)
+
+
+### What I'm doing
+
+I've snipped out a subset of my full data set and am putting together a classifier. Once I'm sure it's functioning on the small subset, I'll be clear to set the full sized data through it. 
+
+I want to try to classify two things:
+
+1. review positivity or negativity based on words used (tf-idf data) and review length
+
+2. If I can, game rank, simplified down to positive, mixed, or negative, based on % of of positive vs negative reviews. I'll likely set this aside as a bonus goal since it's not exactly linguistically relevant. 
+
+### What's next
+
+1. my sample sizes are very very different. Positively reviewed games receive more game reviews than negatively reviewed games do. Check out the actual numbers [here](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/2-data-analysis.md#positive-and-negative-review-length). Because of this, comparative analysis has been pretty tricky. I'm going to use slice_data to cap the number of reviews for positive games so that things are a bit more even. 
+
+2. Tidying my notebooks. I had to do some additional cleanup in my analysis notebook, and I plan to move it back to my cleanup notebook so things are all in their place. Some moving around of bits and section headers, mostly style and organization choices
+
+3. Fix my visualizations as mentioned above. Once I do my downsampling all the numbers are going to change anyway, so I want to get the classifier functioning first and then throw my whole energy into the downsampling. 
+
+
+### Questions in mind
+
+For my classifier I plan to use word count (review length) as a predicting variable since it seems like, on average, negative reviews are a bit longer than positive ones. For that, should I used the 'word_count' column from may full reviews_df or the 'total' column from the tf-idf df which is the review total length after stop words are removed?
+
+
+

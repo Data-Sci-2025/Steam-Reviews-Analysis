@@ -18,21 +18,6 @@ library(forcats)
 **Note**: Please run [0-data-exploration](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/0-data-exploration.qmd) and [1-data-cleanup](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/1-data-cleanup.qmd) first to create the version of the .csv file needed to start here.
 
 
-
-```{r}
-#| label: readingin
-# reviews 
-reviews_df <- read_csv("../private/reviews_analyze.csv", show_col_types = FALSE)
-
-# game titles, ranks, etc, we'll need it later
-games <- read_csv("../notes_and_info/0-gameinfo.csv", show_col_types = FALSE)
-```
-
-```{r}
-merged_games <- reviews_df |>
-  left_join(games) 
-```
-
 ## A note about the data
 
 There are two main aspects of my data being analyzed in this file. 
@@ -53,84 +38,112 @@ I will, at times during my analysis, lump these game rankings together into a si
 
 
 
+```{r}
+#| label: readingin
+# reviews 
+full_df <- read_csv("../private/reviews_analyze.csv", show_col_types = FALSE)
+
+# game titles, ranks, etc, we'll need it later
+games <- read_csv("../notes_and_info/0-gameinfo.csv", show_col_types = FALSE)
+```
+
+
 ## Downsampling Data
 
-Move the measurement stuff up here that first showed the hugely disparate numbers of both reviews per games and positive vs negative reviews. 
+In the data as I gathered it, positively reviewed games were quite over represented in the data. Because many of the positively reviewed games in the data are widely beloved games, they naturally have only gathered more and more reviews with time, with a majority of those being positive reviews. 
 
-Use the table in the questions menu below but merge it with the games info too to include the game's rank to prove the point.
+The number of reviews (total and in English) at [this table](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/0-gameinfo.csv) were added manually by me using the total listing on the Steam App. Those numbers are accurate as of the date I downloaded my reviews (shown in my [projnotes.md](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/projnotes.md)). However the script I used to download the reviews would time out after a certain point, and not every single review was downloaded. 
 
-Positively reviewed games have more reviews than negatively reviewed games quite significantly. To account for this I decided to downsample those positively reviewed games 
-
-
-```{r}
-simple_rank <- merged_games |>
-  group_by(rank) |>
-  #merging all varieties of pos/neg together by removing the first word per rank
-  #very positive and overwhelmingly positive both just become positive etc
-  mutate(rank_simp = str_replace_all(rank, "\\w+ (\\w)", "\\1"))
-
-simple_rank
-```
-
-```{r}
-simple_rank |>
-  group_by(rank_simp) |>
-  summarise(n = n())
-```
-
-```{r}
-other_games <- simple_rank |>
-  filter(rank_simp!='Positive')
-```
-
+The original numbers are shown here.
 
 
 ```{r}
-posgames <- simple_rank |>
-  filter(rank_simp=="Positive")
-  
-posgames
+#| label: full-revs-total
+full_df |>
+  group_by(steam_id) |>
+  summarise(total = n()) |>
+  arrange(desc(total))
+
+full_df |>
+  group_by(review_type) |>
+  summarise(total = n())
+```
+
+
+My theory here just comes down to popularity. As a game releases and players try it out and review it, it begins to migrate through the ranks of either positive or negative. As new players find out about the game, if it shows already that it's being negatively reviewed, why would they spend money to try it out themselves? I wouldn't! On the other hand, if players see that a game is getting positive reviews, they're more likely try it and, in turn, also positively review it.
+
+The negatively reviewed games were very likely largely forgotten to time once they started the descent into the negative review rankings. After an initial flood of bad reviews, feedback fell off. 
+
+So, there it is. Positively ranked games have overall more reviews than negatively ranked games, and there are more positive reviews than negative ones in my data as a result. 
+
+
+Because of this, we decided the best fit would be a stratified downsampling of the total positive reviews. Positive reviews to be randomly, but proportionally, cut down in total to be made more equal to negatively reviewed games and as a result, more appropriately comparable. 
+
+
+```{r}
+#| label: revs-split
+posreviews <-
+  full_df |>
+  filter(review_type=="POS")
+
+negreviews<-
+  full_df |>
+  filter(review_type=="NEG")
 ```
 
 
 
 ```{r}
-#| eval: FALSE
-sampled_data <- posgames |>
-  group_by(your_stratification_variable) %>%
-  slice_sample(prop = 0.5) %>%
-  ungroup()
+#| label: downsampling
+# seed so randomly selected downsampled reviews will be the same
+set.seed(1234)
+
+# reviews to be analyzed, sampled proportionally by difference in neg & pos reviews per game
+reviews_df <- posreviews |>
+  slice_sample(prop=nrow(negreviews)/nrow(posreviews), by=steam_id)
+
+reviews_df <- bind_rows(reviews_df, negreviews)
+
+# a new df, much more manageable in size
+reviews_df
 ```
 
 
+```{r}
+#| label: merged-games
+
+#combine the reviews df and the game info df for all info needed
+merged_games <- reviews_df |>
+  left_join(games) 
+```
 
 
 
 ## TO DO
-
-downsample positive reviews to 37k 
-
-set seed in R - set.seed(1234) on the downsampling code so other people get the same sampling
-
-slice_sample - stratified downsampling
-
-1. Should I cap number of reviews per game to even things out? YES - DOWNSAMPLING
-
-```{r}
-#| label: game-revs-c
-merged_games |>
-  group_by(game) |>
-  summarise(count = n()) |>
-  arrange(desc(count))
-```
-
-Some of these have way more reviews than others (positive games) and it could be affecting some of what I'm looking at objectively... on the other hand it's the most accurate look at the data. 
 
 
 2. similar toks charts not working why?????
 
 
 ## Getting a Look at the Data
+
+
+```{r}
+#| label: merged2
+merged_games2 <- full_df |>
+  left_join(games) 
+```
+
+```{r}
+#| label: rev2
+revcount_df2 <- merged_games2 |>
+  group_by(game) |>
+  summarise(total = n()) |>
+  arrange(desc(total))
+revcount_df2
+```
+
+
 
 ### Reviews per game
  
@@ -205,6 +218,8 @@ Take care to note the y-axis and how it changes between plots. The games with th
 
 Also please note that the numbers indicated here are not reflective of the actual number of reviews as shown on Steam (documented [here](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/0-gameinfo.csv)), and only reflect the total number of reviews in *this* data set, which has been adjusted above for the sake of comparison.
 
+Finally, I've mentioned before that it is the most positively reviewed games that had the most total reviews total, and that is *mostly* true. 
+
 
 Just to get a full scope of the scale (and why I split the data up like I did above) here are all the totals in comparison.
 
@@ -228,10 +243,8 @@ ggplot(reviews_df, aes(x=review_type, fill=review_type )) +
   theme(legend.position="right")
 ```
 
-There are a LOT more positive reviews than negative ones. This made me think, what about the total data. It's possible positively reviewed games have more reviews in general than negatively reviewed games? 
 
 
-Since the number of reviews (total and in English) at [this table](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/0-gameinfo.csv) were added manually by me using the total listing on the Steam App. Those numbers are accurate as of the date I downloaded my reviews (shown in my [projnotes.md](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/projnotes.md)). However the script I used to download the reviews would time out after a certain point, and not every single review was downloaded. 
 
 Let's look at the actual count of reviews per game ranking, simplified down to only positive, negative, and mixed for ease.
 
@@ -249,11 +262,7 @@ merged_games |>
 
 It looks like yes! 
 
-My theory here just comes down to popularity. As a game releases and players try it out and review it, it either begins to migrate through the ranks of positive or negative. As new players find out about the game, if it shows already that it's being negatively reviewed, why would they spend money to try it out themselves? I wouldn't! On the other hand, if players see that a game is getting positive reviews, they'll more likely try it and, in turn, also positively review it.
 
-Some of the games in the higher ranks in this data are hugely beloved games, while the negative ones are very likely largely forgotten to time once they descended into the negative review rankings. 
-
-So, there it is. Positively ranked games have overall more reviews than negatively ranked games, and there are more positive reviews than negative ones in my data as a result. We'll keep that in mind, moving forward.
 
 
 ## Word Count
@@ -331,7 +340,7 @@ reviews_df |>
 
 Looks like it's pretty common for positive reviews to be shorter. This could potentially drag down the overall average of positive reviews. However... there are more short positive reviews, but there are also more positive reviews in general, so maybe not.
 
-38.7% of all negative reviews are 5 words or shorter, and 74.4% of all positive reviews are. That's quite a big chunk of reviews! 
+TO DO - fix this once the downsampling is done... 38.7% of all negative reviews are 5 words or shorter, and 74.4% of all positive reviews are. That's quite a big chunk of reviews! 
 
 
 NOW look at average review length per game, add that together to look at per game rank too. 

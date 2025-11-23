@@ -144,6 +144,14 @@ nrow(testing)
 ncol(testing)
 ```
 
+```{r}
+training |>
+  group_by(review_type) |>
+  summarise(count=n())
+```
+
+
+
 The classifier will be trained on 41,000 reviews and tested on close to 14,000 to see how well it can, by words used in a review, predict if a review itself is a positive or negative one.
 
 

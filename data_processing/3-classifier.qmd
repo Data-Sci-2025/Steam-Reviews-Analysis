@@ -7,42 +7,18 @@ format: gfm
 #| label: setup
 #| include: false
 library(tidyverse)
-library(tidytext)
-library(ggplot2)
 library(caret)
 library(mlbench)
 library(klaR)
+library(naivebayes)
 ```
 
-**Note**: Please run [0-data-exploration](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/0-data-exploration.qmd) and [1-data-cleanup](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/1-data-cleanup.qmd) first to create the version of the .csv file needed to start here.
+**Note**: Please run [0-data-exploration](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/0-data-exploration.qmd), [1-data-cleanup](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/1-data-cleanup.qmd), and [2-data-analysis](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/2-data-analysis.qmd) first to create the version of the .csv file needed to start here.
+
+## Classifier Data
 
 
-
-```{r}
-#| label: readingin
-reviews_df <- read_csv("../private/reviews_analyze.csv")
-
-reviews_df
-```
-
-
-
-some model (Score ~ .-Steam_id, review_d)
-
-basically exclude any column that you don't want to be a predictor (because it's going to be 6.4 million columns)
-
-which type model for topic modeling sparse data/matrix for document term matrix as input
-
-
-
-Think about this
-https://www.kdnuggets.com/2023/04/best-machine-learning-model-sparse-data.html
-specifically about removing sparse data points like some of those keysmash values that have very high tf-idf but aren't actually very valuable. 
-find parameter for removal - something like a cut off point for tf idf?
-
-
-decision tree classifier
-naive bayes classifier
+To get another look at the df to be used to train the classifier later. This is the tf-idf information for the downsampled version of the game reviews data, stop words removed. 
 
 
 ```{r}
@@ -52,6 +28,18 @@ review_tf_idf <- read_csv("../private/reviews_tfidf.csv", show_col_types = FALSE
 ```{r}
 review_tf_idf
 ```
+
+
+Now if I'm going to try to predict 
+
+
+
+
+
+### Remove NA 
+
+Just to double check and clean out any troublesome NA values:
+
 
 ```{r}
 colSums(is.na(review_tf_idf))
@@ -66,18 +54,28 @@ colSums(is.na(review_tf_idf))
 ```
 
 
-
 ```{r}
-#| eval: false
-review_tf_idf <- review_tf_idf |>
-  pivot_wider(names_from = word, values_from = tf_idf, values_fill = 0)
-
-ncol(review_tf_idf)
+review_tf_idf |>
+  group_by(review_type) |>
+  summarise(count=n())
 ```
 
 
+
+
+
+## Data Setup
+
+Even after downsampling and removing stop words, I ran into issues trying to pivot my very large dataframe wider. 
+
+Initially I sampled lines 1:400,000 of my data which worked well enough! But when I started to train the classifier on it, ran into an issue where even in all those rows, only POS marked reviews were appearing. 
+
+Instead, I did a random sampling method of 300,000 rows of data and confirmed afterward that it contained both NEG and POS marked reviews. 
+
+
 ```{r}
-setup_sample <- review_tf_idf[1:80000, ]
+set.seed(99)
+setup_sample <- sample_n(review_tf_idf, 300000)
 
 setup_sample <-setup_sample |>
   rename(WC=total)
@@ -85,8 +83,13 @@ setup_sample <-setup_sample |>
 setup_sample
 ```
 
-ok question if I want to use word_count (review length) as a predictor in my classifier should I use the full word count from the reviews_df or the "total" column here (the word count excluding stop words)
+```{r}
+setup_sample |>
+  group_by(review_type) |>
+  summarise(count=n())
+```
 
+Pivot wider so that all the individual words appear as column names, populated below by tf-idf values per review. 
 
 ```{r}
 setup_sample <- setup_sample |>
@@ -95,9 +98,9 @@ setup_sample <- setup_sample |>
 ncol(setup_sample)
 ```
 
-```{r}
-head(setup_sample)
-```
+Because of how the classifier works, any word that only appears once in any of the reviews (has only one tf-idf value over 0) would be discarded. If we train a classifier on the word "refund" and that word only appears once in this data subset, it would never encounter the word "refund" in the testing data to apply that classification weight to. It's wasted computing space and power on a word that it will never see again. 
+
+To get rid of them in advance and ease the classification training process, this chunk will discard any column (word) that only has one value greater than 0 - any word that only appears a single time.
 
 
 ```{r}
@@ -108,12 +111,10 @@ ncol(setup_sample)
 ```
 
 
-```{r}
-head(setup_sample)
-```
 
+## Building a Classifier
 
-
+Split the data by review type into training and testing data, with 75% of the data going to training.
 
 
 ```{r}
@@ -133,11 +134,6 @@ inTrain <- createDataPartition(
 
 
 ```{r}
-nrow(inTrain)
-ncol(inTrain)
-```
-
-```{r}
 training <- setup_sample[ inTrain,]
 testing  <- setup_sample[-inTrain,]
 
@@ -148,53 +144,12 @@ nrow(testing)
 ncol(testing)
 ```
 
-
-```{r}
-#| eval: FALSE
-training |>
-  slice(1:10) |>
-  dplyr::select(1:8) |>
-  purrr::discard(function(x) sum(x != 0) == 1)
-```
+The classifier will be trained on 41,000 reviews and tested on close to 14,000 to see how well it can, by words used in a review, predict if a review itself is a positive or negative one.
 
 
+## Training
 
-
-```{r}
-#| eval: FALSE
-sessionInfo()
-training |>
-  keep(\(x) sum(is.na(x))!=0) |>
-  colnames()
-training |>
-  dplyr::select(games)
-```
-
-
-
-```{r}
-#| eval: false
-training
-```
-
-
-Warning: predictions failed for Fold04.Rep3: usekernel= TRUE, fL=0, adjust=1 Error in predict.NaiveBayes(modelFit, newdata) : 
-  Not all variable names used in object found in newdata
-
-
-
-```{r}
-#| eval: false
-test <- training |>
-  sapply(function(x) sum(x != 0) == 1)
-
-truetest <- which(test)
-
-#truetest
-```
-
-
-
+I initially attempted to train on a larger subset of 400,000 samples, but the training ran for 6+ hours without end and I decided to downsize to 300,000. This training I ran overnight, so I don't know how long it actually took.
 
 
 ```{r}
@@ -202,32 +157,34 @@ ctrl <- trainControl(method = "repeatedcv", repeats = 3)
 
 nb_model = train(
   review_type ~ .- review_id - WC, # Specifying the response variable and the feature variables
-  method = "nb", # Specifying the model to use
+  method = "naive_bayes", # Specifying the model to use
   data = training, 
   trControl = ctrl
 )
 ```
-Got a protect() protection stack overflow error when I used a training set size of almost 20k.This was with a setup sample of [1:600K]
-
-Was still too big at 12K training size (up to 400k I think)
 
 
 
-Is this a reasonable fix?
-https://stackoverflow.com/questions/32826906/how-to-solve-protection-stack-overflow-issue-in-r-studio
-rstudio.exe --max-ppsize=5000000
+## Testing
+
+```{r}
+nb_test <- predict(nb_model, newdata = testing)
+str(nb_test)
+```
+
+```{r}
+nb_probs <- predict(nb_model, newdata = testing, type = "prob")
+head(nb_probs)
+```
 
 
-Something is wrong; all the Accuracy metric values are missing:
-    Accuracy       Kappa    
- Min.   : NA   Min.   : NA  
- 1st Qu.: NA   1st Qu.: NA  
- Median : NA   Median : NA  
- Mean   :NaN   Mean   :NaN  
- 3rd Qu.: NA   3rd Qu.: NA  
- Max.   : NA   Max.   : NA  
- NA's   :2     NA's   :2    
-Error: Stopping
+```{r}
+confusionMatrix(nb_test, as.factor(testing$review_type))
+```
+
+
+
+
 
 
 

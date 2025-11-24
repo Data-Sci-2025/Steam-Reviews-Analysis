@@ -31,14 +31,14 @@ of reviews.
 
 For example, a game with 3,000 99% positive reviews will still be ranked
 lower than a game with 5,000 95% positive reviews. Or a game can be 100%
-positive, but if it only has up to 50 reviews, it will be stuck in the
-“Positive” ranking. As far as I’ve understoon, these calculations are
-the same for negatively reviewed games. It appears that regardless of
-number of reviews, if the ratio of positive/negative reviews is in the
-40%-60% range, it will be considered “Mixed”.
+positive, but if it only has fewer than 50 reviews, it will be stuck in
+the “Positive” ranking. As far as I’ve understood, these calculations
+are the same for negatively reviewed games. It appears that regardless
+of number of reviews, if the ratio of positive/negative reviews is in
+the 40%-60% range, it will be considered “Mixed”.
 
 I will, at times during my analysis, lump these game rankings together
-into a simplified three tiers. Positive, mixed, and negative. Just know,
+into a simplified three tiers; positive, mixed, and negative. Just know,
 that in these moments, the positive and negative options are referring
 to four smaller categories grouped together for the sake of ease.
 
@@ -172,11 +172,36 @@ merged_games <- reviews_df |>
 
     Joining with `by = join_by(steam_id)`
 
-## TO DO
-
-2.  similar toks charts not working why?????
-
 ## Getting a Look at the Data
+
+The data we’ll be looking at is game reviews for 45 games spread out
+over 15 years from 2008 to 2024 (no games from 2021 are in the data). To
+get a feel for what we’re looking at, let’s take a look.
+
+``` r
+simple_games <- games |>
+  #simplify the 9 game ranks into three by combining all positives and negatives
+  mutate(rank = str_replace_all(rank, "\\w+ (\\w)", "\\1")) |>
+  mutate(year_range = cut(year, 
+          breaks=c(0,2011,2014,2017,2020,2024),
+          labels=c('2008-2011','2012-2014','2015-2017','2018-2020','2022-2024')))
+
+ggplot(simple_games, aes(x = year_range, fill=rank)) +
+      geom_bar(position="dodge") +
+      labs(title = "Number of Games per Rank by Year",
+           x = NULL,
+           y = "Count") +
+      geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 2, hjust = 0.5, position = position_dodge(width=.9)) +
+      theme_minimal()
+```
+
+![](2-data-analysis_files/figure-commonmark/game-rank-yr-1.png)
+
+As mentioned above, the positive and negative “ranks” here are 4 ranks
+each combined. Are games getting better over time? This sample of 45
+games seems to suggest it! That’s not something I want to conclude from
+such a small sample size of all Steam games, but it’s an interesting
+look here.
 
 ``` r
 merged_games2 <- full_df |>
@@ -184,6 +209,43 @@ merged_games2 <- full_df |>
 ```
 
     Joining with `by = join_by(steam_id)`
+
+``` r
+games_year <- merged_games |>
+  mutate(year_range = cut(year, 
+            breaks=c(0,2011,2014,2017,2020,2024),
+            labels=c('2008-2011','2012-2014','2015-2017','2018-2020','2022-2024')))
+
+ggplot(games_year, aes(x = year_range, fill=review_type)) +
+      geom_bar(position="dodge") +
+      labs(title = "Number of Reviews by Year (adjusted)",
+           x = "Years",
+           y = "Count") +
+      theme_minimal()
+```
+
+![](2-data-analysis_files/figure-commonmark/revs-yr-1.png)
+
+``` r
+games_year2 <- merged_games2 |>
+  mutate(year_range = cut(year, 
+            breaks=c(0,2011,2014,2017,2020,2024),
+            labels=c('2008-2011','2012-2014','2015-2017','2018-2020','2022-2024')))
+
+ggplot(games_year2, aes(x = year_range, fill=review_type)) +
+      geom_bar(position="dodge") +
+      labs(title = "Number of Reviews by Year (original)",
+           x = "Years",
+           y = "Count") +
+      theme_minimal()
+```
+
+![](2-data-analysis_files/figure-commonmark/revs-yr-2.png)
+
+Again, these year divisions contain 8 games, 9 games, 5 games, 11 games,
+and 12 games each. The number and ratio of negative and positive reviews
+for games across 15 years seems to align with the chart above. In this
+data, at least, games got more positive with time!
 
 ``` r
 revcount_df2 <- merged_games2 |>
@@ -327,24 +389,37 @@ I did above) here are all the totals in comparison.
 ``` r
 ggplot(revcount_df, aes(x = reorder(game, -total), y=total)) +
   geom_bar(stat='identity') +
-  theme(axis.text.x = element_blank())
+  theme(axis.text.x = element_blank()) +
+  labs(x="Game", y="Total", title="Total Reviews per Game")
 ```
 
-![](2-data-analysis_files/figure-commonmark/unnamed-chunk-1-1.png)
+![](2-data-analysis_files/figure-commonmark/revs-by-game-1.png)
 
 ### Positive and Negative
 
 How many reviews of each type are there?
 
 ``` r
+ggplot(full_df, aes(x=review_type, fill=review_type )) + 
+  geom_bar( width = 0.5) +
+  scale_fill_brewer(palette = "Set2") +
+  geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 3, hjust = 0.5, position = "stack") +
+  theme(legend.position="right") +
+  labs(x="Review Type", y="Count", title="Total Reviews per Type (original)")
+```
+
+![](2-data-analysis_files/figure-commonmark/plot-reviews-1.png)
+
+``` r
 ggplot(reviews_df, aes(x=review_type, fill=review_type )) + 
   geom_bar( width = 0.5) +
   scale_fill_brewer(palette = "Set2") +
   geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 3, hjust = 0.5, position = "stack") +
-  theme(legend.position="right")
+  theme(legend.position="right") +
+  labs(x="Review Type", y="Count", title="Total Reviews per Type (adjusted)")
 ```
 
-![](2-data-analysis_files/figure-commonmark/plot-reviews-1.png)
+![](2-data-analysis_files/figure-commonmark/plot-reviews-adj-1.png)
 
 Let’s look at the actual count of reviews per game ranking, simplified
 down to only positive, negative, and mixed for ease.
@@ -364,8 +439,6 @@ merged_games |>
     1 Mixed     8809
     2 Negative 18422
     3 Positive 47613
-
-It looks like yes!
 
 ## Word Count
 
@@ -402,8 +475,11 @@ summary(reviews_df$word_count)
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
        1.00    7.00   22.00   61.75   64.00 2182.00 
 
-So the average review is around 51/52 words long, and the median 17
-words.
+So the average review (for the full data) is around 51/52 words long,
+and the median 17 words. Adjusted, that shifts to an average of almost
+62 words, and a median of 22. Because we adjusted specifically the
+positive reviews, and a vast majority of the shortest reviews were all
+positive, the average lengths are a bit higher.
 
 TO DO: (maybe look into something about average text lengths online like
 for blogs etc)
@@ -465,8 +541,19 @@ I just don’t understand.
 
 Looking next at these longest reviews, I was really surprised! A huge
 majority of these are exactly the same phrase repeated over and over,
-and those repeated reviews are all for the same game, as well. I have to
+and those repeated reviews are all for the same game as well. I have to
 do some investigation…
+
+``` r
+reviews_df |>
+  filter(review_id==198792433) |>
+  select(review)
+```
+
+    # A tibble: 1 × 1
+      review                                                                        
+      <chr>                                                                         
+    1 the end is never the end is never the end is never the end is never the end i…
 
 Checking my game info
 [here](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/0-gameinfo.csv),
@@ -489,11 +576,19 @@ longer, or negative reviews?
 ggplot(reviews_df, aes(x=review_type, y = word_count)) + 
   stat_summary(fun = mean, geom = "bar", fill = "skyblue") +
   geom_text(aes(label = after_stat(sprintf("%.2f", y))), stat = "summary", fun = "mean", vjust = 3, hjust=0.5) +
-  ylab("Avg Amount") +
-  theme(legend.position="right")
+  labs(y="Word Count", x="Review Type", title="Average Review Length")
 ```
 
 ![](2-data-analysis_files/figure-commonmark/plot-avg-len-1.png)
+
+``` r
+  theme(legend.position="right")
+```
+
+    <theme> List of 1
+     $ legend.position: chr "right"
+     @ complete: logi FALSE
+     @ validate: logi TRUE
 
 Now that’s really interesting! Despite having fewer reviews total, and
 *all* of the longest reviews we looked at above being positive, negative
@@ -544,7 +639,8 @@ negrevs <- reviews_df |>
 ``` r
 pos <- ggplot(posrevs, aes(x=word_count)) + 
   geom_histogram(binwidth = 50) +
-  scale_y_log10()
+  scale_y_log10() +
+  labs(title="Positive Review Length", x="Review Length", y="Count")
 pos
 ```
 
@@ -555,7 +651,8 @@ pos
 ``` r
 neg <- ggplot(negrevs, aes(x=word_count)) + 
   geom_histogram(binwidth = 50) +
-  scale_y_log10()
+  scale_y_log10() +
+  labs(title="Negative Review Length", x="Review Length", y="Count")
 neg
 ```
 
@@ -563,24 +660,11 @@ neg
 
 ![](2-data-analysis_files/figure-commonmark/pos-neg-dist-2.png)
 
-Can I log transform this and then make box or violin plots?
-
 ``` r
-ggplot(reviews_df, aes(x=review_type, y=word_count)) + 
-  geom_boxplot() +
-  scale_y_log10()
-```
-
-![](2-data-analysis_files/figure-commonmark/WC-bplot-1.png)
-
-``` r
-  #geom_jitter(shape=16, position=position_jitter(0.2))
-```
-
-``` r
-ggplot(reviews_df, aes(x=review_type, y=word_count)) + 
+ggplot(reviews_df, aes(x=review_type, y=word_count, fill=review_type)) + 
   geom_violin() +
-  scale_y_log10()
+  scale_y_log10() +
+  labs(x="Review Type", y="Word Count", title="Word Count by Review Type")
 ```
 
 ![](2-data-analysis_files/figure-commonmark/WC-vplot-1.png)
@@ -655,13 +739,17 @@ idk think about what to put in here - probably just a general summary
 looking at pos/neg, it will likely mostly be aligned with review length
 over all, since so many reviews are so short.
 
+## Language Choices
+
+Swear word detection??
+
 ## Tf-idf
 
 Calculating Tf-idf for our game reviews. Because they were creating a
 lot of issues with tokenizing and odd characters, I’ve excluded emojis
 and gone simply for text reviews. It’s a bummer to lose out on such
-strong reviews as “one single poop emoji”, but needs to be done for ease
-of processing. For now, at least.
+strong reviews as “one single poop emoji”, but it needs to be done for
+ease of processing. For now, at least.
 
 ``` r
 data(stop_words)
@@ -699,7 +787,8 @@ By tokenizing and removing stop words, which in this case also removed
 all emojis and special characters, we went from around 11 million tokens
 (from [data cleanup
 tokenizing](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/1-data-cleanup.md#tokenizing))
-down to 3.6 million (from calculating sum(n) on tokens_df).
+down to 3.6 million before downsampling, and 1.7 million after (from
+running sum(n) on tokens_df).
 
 The most common word token among these game reviews…. is game!
 
@@ -710,9 +799,6 @@ length, probably), worth (game price, I bet), puzzles, pretty, money,
 music, graphics… all in the top 50 words.
 
 What about top words per review type?
-
-REDO THIS merge into reviews_df as a new df and do the pos/neg thing by
-filtering instead.
 
 ``` r
 pos_toks <- posrevs |>
@@ -742,6 +828,8 @@ pos_toks
     10 experience  3197
     # ℹ 38,999 more rows
 
+Write out here thoughts about these words
+
 ``` r
 neg_toks <- negrevs |>
   unnest_tokens(word, review) |>
@@ -770,7 +858,9 @@ neg_toks
     10 2      4096
     # ℹ 50,250 more rows
 
-### TF
+Write out thoughts about this one
+
+### Term
 
 calculate the frequency for each word for the works of Jane Austen, the
 Brontë sisters, and H.G. Wells by binding the data frames together -
@@ -800,7 +890,51 @@ frequency
     10 buy       0.00396
     # ℹ 67,500 more rows
 
-This means that 64% of all the words in game reviews is the word game???
+This means that 6.3% of all the words in game reviews is the word game
+
+``` r
+posfreq <- pos_toks |>
+  mutate(proportion = n / sum(n)) |>
+  select(-n)
+posfreq
+```
+
+    # A tibble: 39,009 × 2
+       word       proportion
+       <chr>           <dbl>
+     1 game          0.0660 
+     2 story         0.0120 
+     3 play          0.0110 
+     4 10            0.00933
+     5 games         0.00896
+     6 fun           0.00855
+     7 time          0.00826
+     8 love          0.00616
+     9 played        0.00611
+    10 experience    0.00516
+    # ℹ 38,999 more rows
+
+``` r
+negfreq <- neg_toks |>
+  mutate(proportion = n / sum(n)) |>
+  select(-n)
+negfreq
+```
+
+    # A tibble: 50,260 × 2
+       word  proportion
+       <chr>      <dbl>
+     1 game     0.0616 
+     2 play     0.00802
+     3 time     0.00791
+     4 story    0.00631
+     5 games    0.00624
+     6 bad      0.00569
+     7 buy      0.00507
+     8 money    0.00409
+     9 fun      0.00399
+    10 2        0.00376
+    # ℹ 50,250 more rows
 
 ### Plotting
 
@@ -833,32 +967,6 @@ freq
      9 aaaa  Positive     0.0000256
     10 aaaa  Negative     0.0000199
     # ℹ 109,990 more rows
-
-### In progress: similar tokens pos & neg
-
-``` r
-ggplot(freq, aes(x = proportion, y = review_type, 
-                      color = abs(proportion))) +
-  geom_abline(color = "gray40", lty = 2) +
-  geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3) +
-  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
-  scale_x_log10(labels = percent_format()) +
-  scale_y_log10(labels = percent_format()) +
-  scale_color_gradient(limits = c(0, 0.001), 
-                       low = "darkslategray4", high = "gray75") +
-  facet_wrap(~review_type, ncol = 2) +
-  theme(legend.position="none") 
-```
-
-- labs(y = “Jane Austen”, x = NULL)
-
-Words closest to the line have similar frequencies in both samples
-
-Also: not all the words are found in all three sets of texts and there
-are fewer data points in the panel for Austen and H.G. Wells.
-
-quantify how similar and different these sets of word frequencies are
-using a correlation test
 
 ### term freq
 
@@ -913,23 +1021,6 @@ Calculating the total word counts per word and by review type and
 comparing to the total word counts by review type. With these, we can
 get moving on tf-idf.
 
-``` r
-ggplot(review_words, aes(n/total, fill = review_type)) +
-  geom_histogram(show.legend = FALSE) +
-  xlim(NA, 0.0009) +
-  facet_wrap(~review_type, ncol = 2, scales = "free_y")
-```
-
-    `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
-
-    Warning: Removed 1429866 rows containing non-finite outside the scale range
-    (`stat_bin()`).
-
-    Warning: Removed 1 row containing missing values or values outside the scale range
-    (`geom_bar()`).
-
-![](2-data-analysis_files/figure-commonmark/revtoks-freq-1.png)
-
 ### bind_tf_idf() function
 
 find the important words for the content of each document by decreasing
@@ -981,7 +1072,8 @@ review_tf_idf
     # ℹ 1,430,805 more rows
 
 with stop words included there are 6,412,302 total rows with stop words
-excluded it went down to 3,045,610!
+excluded it went down to 3,045,610! After downsampling, it’s down to
+1,430,815!
 
 ``` r
 review_tf_idf |>
@@ -1028,16 +1120,6 @@ review_tf_idf
 ``` r
 write_csv(review_tf_idf, file="../private/reviews_tfidf.csv")
 ```
-
-``` r
-reviews_df |>
-  filter(review_id==161023893)
-```
-
-    # A tibble: 0 × 11
-    # ℹ 11 variables: review_id <dbl>, language <chr>, date <date>,
-    #   review_type <chr>, review <chr>, steam_id <dbl>, tokens <chr>,
-    #   word_count <dbl>, types <chr>, type_count <dbl>, TTR <dbl>
 
 how to quantify what a document is about
 

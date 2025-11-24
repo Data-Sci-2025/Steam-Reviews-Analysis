@@ -32,9 +32,9 @@ Game ranks in Steam are a bit more complicated. There are nine total ranks a gam
 
 There isn't an official source of the exact breakdown of how these ranks are calculated, but people have worked out that it comes down to both the ratio of positive and negative review types as well as total number of reviews. 
 
-For example, a game with 3,000 99% positive reviews will still be ranked lower than a game with 5,000 95% positive reviews. Or a game can be 100% positive, but if it only has up to 50 reviews, it will be stuck in the "Positive" ranking. As far as I've understoon, these calculations are the same for negatively reviewed games. It appears that regardless of number of reviews, if the ratio of positive/negative reviews is in the 40%-60% range, it will be considered "Mixed".
+For example, a game with 3,000 99% positive reviews will still be ranked lower than a game with 5,000 95% positive reviews. Or a game can be 100% positive, but if it has fewer than 50 reviews, it will be stuck in the "Positive" ranking. As far as I've understood, these calculations are the same for negatively reviewed games. It appears that regardless of number of reviews, if the ratio of positive/negative reviews is in the 40%-60% range, it will be considered "Mixed".
 
-I will, at times during my analysis, lump these game rankings together into a simplified three tiers. Positive, mixed, and negative. Just know, that in these moments, the positive and negative options are referring to four smaller categories grouped together for the sake of ease. 
+I will, at times during my analysis, lump these game rankings together into a simplified three tiers; positive, mixed, and negative. Just know, that in these moments, the positive and negative options are referring to four smaller categories grouped together for the sake of ease. 
 
 
 
@@ -70,7 +70,7 @@ full_df |>
 ```
 
 
-My theory here just comes down to popularity. As a game releases and players try it out and review it, it begins to migrate through the ranks of either positive or negative. As new players find out about the game, if it shows already that it's being negatively reviewed, why would they spend money to try it out themselves? I wouldn't! On the other hand, if players see that a game is getting positive reviews, they're more likely try it and, in turn, also positively review it.
+My theory here just comes down to popularity. As a game releases and players try it out and review it, it begins to migrate through the ranks of either positive or negative. As new players find out about the game, if it shows already that it's being negatively reviewed, why would they spend money to try it out themselves? I wouldn't! On the other hand, if players see that a game is getting positive reviews, they're more likely to try it and, in turn, also positively review it.
 
 The negatively reviewed games were very likely largely forgotten to time once they started the descent into the negative review rankings. After an initial flood of bad reviews, feedback fell off. 
 
@@ -119,13 +119,29 @@ merged_games <- reviews_df |>
 
 
 
-## TO DO
-
-
-2. similar toks charts not working why?????
-
-
 ## Getting a Look at the Data
+
+The data we'll be looking at is game reviews for 45 games spread out over 15 years from 2008 to 2024 (no games from 2021 are in the data). To get a feel for what we're looking at, let's take a look.
+
+```{r}
+#| label: game-rank-yr
+simple_games <- games |>
+  #simplify the 9 game ranks into three by combining all positives and negatives
+  mutate(rank = str_replace_all(rank, "\\w+ (\\w)", "\\1")) |>
+  mutate(year_range = cut(year, 
+          breaks=c(0,2011,2014,2017,2020,2024),
+          labels=c('2008-2011','2012-2014','2015-2017','2018-2020','2022-2024')))
+
+ggplot(simple_games, aes(x = year_range, fill=rank)) +
+      geom_bar(position="dodge") +
+      labs(title = "Number of Games per Rank by Year",
+           x = NULL,
+           y = "Count") +
+      geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 2, hjust = 0.5, position = position_dodge(width=.9)) +
+      theme_minimal()
+```
+
+As mentioned above, the positive and negative "ranks" here are 4 ranks each combined. Are games getting better over time? This sample of 45 games seems to suggest it! That's not something I want to conclude from such a small sample size of all Steam games, but it's an interesting look here. 
 
 
 ```{r}
@@ -133,6 +149,39 @@ merged_games <- reviews_df |>
 merged_games2 <- full_df |>
   left_join(games) 
 ```
+
+
+```{r}
+#| label: revs-yr
+games_year <- merged_games |>
+  mutate(year_range = cut(year, 
+            breaks=c(0,2011,2014,2017,2020,2024),
+            labels=c('2008-2011','2012-2014','2015-2017','2018-2020','2022-2024')))
+
+ggplot(games_year, aes(x = year_range, fill=review_type)) +
+      geom_bar(position="dodge") +
+      labs(title = "Number of Reviews by Year (adjusted)",
+           x = "Years",
+           y = "Count") +
+      theme_minimal()
+
+games_year2 <- merged_games2 |>
+  mutate(year_range = cut(year, 
+            breaks=c(0,2011,2014,2017,2020,2024),
+            labels=c('2008-2011','2012-2014','2015-2017','2018-2020','2022-2024')))
+
+ggplot(games_year2, aes(x = year_range, fill=review_type)) +
+      geom_bar(position="dodge") +
+      labs(title = "Number of Reviews by Year (original)",
+           x = "Years",
+           y = "Count") +
+      theme_minimal()
+```
+
+Again, these year divisions contain 8 games, 9 games, 5 games, 11 games, and 12 games each. The number and ratio of negative and positive reviews for games across 15 years seems to align with the chart above. In this data, at least, games got more positive with time!
+
+
+
 
 ```{r}
 #| label: rev2
@@ -225,9 +274,11 @@ Just to get a full scope of the scale (and why I split the data up like I did ab
 
 
 ```{r}
+#| label: revs-by-game
 ggplot(revcount_df, aes(x = reorder(game, -total), y=total)) +
   geom_bar(stat='identity') +
-  theme(axis.text.x = element_blank())
+  theme(axis.text.x = element_blank()) +
+  labs(x="Game", y="Total", title="Total Reviews per Game")
 ```
 
 ### Positive and Negative
@@ -236,17 +287,27 @@ How many reviews of each type are there?
 
 ```{r}
 #| label: plot-reviews
+ggplot(full_df, aes(x=review_type, fill=review_type )) + 
+  geom_bar( width = 0.5) +
+  scale_fill_brewer(palette = "Set2") +
+  geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 3, hjust = 0.5, position = "stack") +
+  theme(legend.position="right") +
+  labs(x="Review Type", y="Count", title="Total Reviews per Type (original)")
+```
+
+```{r}
+#| label: plot-reviews-adj
 ggplot(reviews_df, aes(x=review_type, fill=review_type )) + 
   geom_bar( width = 0.5) +
   scale_fill_brewer(palette = "Set2") +
   geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 3, hjust = 0.5, position = "stack") +
-  theme(legend.position="right")
+  theme(legend.position="right") +
+  labs(x="Review Type", y="Count", title="Total Reviews per Type (adjusted)")
 ```
 
 
-
-
 Let's look at the actual count of reviews per game ranking, simplified down to only positive, negative, and mixed for ease.
+
 
 ```{r}
 #| label: rank-rev-count
@@ -259,8 +320,6 @@ merged_games |>
 
 ```
 
-
-It looks like yes! 
 
 
 
@@ -286,11 +345,23 @@ With word counts per review added, let's take a look!
 summary(reviews_df$word_count)
 ```
 
-So the average review is around 51/52 words long, and the median 17 words. 
-
-TO DO: (maybe look into something about average text lengths online like for blogs etc)
+So the average review (for the full data) is around 51/52 words long, and the median 17 words. 
+Adjusted, that shifts to an average of almost 62 words, and a median of 22. Because we adjusted specifically the positive reviews, and a vast majority of the shortest reviews were all positive, the average lengths are a bit higher.
 
 Let's look a little deeper. 
+
+
+```{r}
+reviews_df |>
+  filter(word_count==1) |>
+  group_by(review_type) |>
+  summarise(total=n())
+
+reviews_df |>
+  filter(word_count>1700) |>
+  group_by(review_type) |>
+  summarise(total=n())
+```
 
 
 ```{r}
@@ -304,11 +375,24 @@ reviews_df |>
 
 There's quite a few one-word reviews! Some of them are pretty reasonable... "Amazing", "Spooky", "Boring", "Unplayable". Short and sweet, gets the point across well enough. Others are a little less obvious. I saw a number of keyboard smash reviews, strings of numbers, I saw one that was just a rabbit emoji. The last one might be a reference I just don't understand.
 
-Looking next at these longest reviews, I was really surprised! A huge majority of these are exactly the same phrase repeated over and over, and those repeated reviews are all for the same game, as well. I have to do some investigation... 
+Looking next at these longest reviews, I was really surprised! A huge majority of these are exactly the same phrase repeated over and over, and those repeated reviews are all for the same game as well. I have to do some investigation... 
+
+```{r}
+#| label: the-end-is
+reviews_df |>
+  filter(review_id==198792433) |>
+  select(review)
+```
+
 
 Checking my game info [here](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/0-gameinfo.csv), I was able to confirm that these repeating reviews are all from "The Stanley Parable: Ultra Deluxe". 
 
 Looking further, I found some more information. ["The end is never"](https://thestanleyparable.fandom.com/wiki/The_End_Is_Never...) is a tagline for the game itself, and appears within the game multiple times as a reference to the inescapable time loop the game's protagonist is stuck in. The phrase also apparently appears on the game's loading screens in a constant loop. 
+
+
+According to [this](https://rebeccagraf-63084.medium.com/how-long-should-book-reviews-be-250187486779) Medium article, somewhere in the 400 word range seems to be considered the "ideal" length for a book review. 100-400 words for maybe a small, personal review, or 400-600 for a professional one. The expectations for video game reviews are not so different.
+
+[This](https://meliorgames.com/best-practices/the-ultimate-guide-to-writing-a-game-review/) guide to writing game reviews covers a lot of factors surrounding the game, deadlines, and expectations. It looks like official game review publishing sites (like IGN, Polygon, etc.) have an ideal length of ~1,000 words for a review. It could just come down to price - buying a video game costs more than buying a book (generally) and players will want to know ahead of time what they're committing to. The guide also acknowledges that user reviews on sites like Steam, like what are being analyzed here, are likely to be shorter. 
 
 
 
@@ -322,11 +406,11 @@ Now to what we came here to look into. Are positive reviews typically longer, or
 ggplot(reviews_df, aes(x=review_type, y = word_count)) + 
   stat_summary(fun = mean, geom = "bar", fill = "skyblue") +
   geom_text(aes(label = after_stat(sprintf("%.2f", y))), stat = "summary", fun = "mean", vjust = 3, hjust=0.5) +
-  ylab("Avg Amount") +
+  labs(y="Word Count", x="Review Type", title="Average Review Length")
   theme(legend.position="right")
 ```
 
-Now that's really interesting! Despite having fewer reviews total, and *all* of the longest reviews we looked at above being positive, negative reviews are still quite a bit longer on average. People must have a lot more to say when they dislike a game than when they like one!
+Now that's really interesting! Despite all of the longest reviews we looked at above being positive, negative reviews are still quite a bit longer on average. People must have a lot more to say when they dislike a game than when they like one!
 
 I wonder if there's a trend in shorter reviews that might be swinging this average one way or the other. 
 
@@ -338,9 +422,15 @@ reviews_df |>
   summarise(word_count = sum(word_count))
 ```
 
-Looks like it's pretty common for positive reviews to be shorter. This could potentially drag down the overall average of positive reviews. However... there are more short positive reviews, but there are also more positive reviews in general, so maybe not.
+Looks like it's pretty common for positive reviews to be shorter. This could potentially drag down the overall average of positive reviews. 
 
-TO DO - fix this once the downsampling is done... 38.7% of all negative reviews are 5 words or shorter, and 74.4% of all positive reviews are. That's quite a big chunk of reviews! 
+38.7% of all negative reviews are 5 words or shorter, and 73.5% of all positive reviews are. That's quite a big chunk of reviews! 
+
+
+
+
+
+
 
 
 NOW look at average review length per game, add that together to look at per game rank too. 
@@ -365,34 +455,25 @@ negrevs <- reviews_df |>
 #| label: pos-neg-dist
 pos <- ggplot(posrevs, aes(x=word_count)) + 
   geom_histogram(binwidth = 50) +
-  scale_y_log10()
+  scale_y_log10() +
+  labs(title="Positive Review Length", x="Review Length", y="Count")
 pos
 
 neg <- ggplot(negrevs, aes(x=word_count)) + 
   geom_histogram(binwidth = 50) +
-  scale_y_log10()
+  scale_y_log10() +
+  labs(title="Negative Review Length", x="Review Length", y="Count")
 neg
 ```
 
-Can I log transform this and then make box or violin plots? 
 
-
-
-
-
-```{r}
-#| label: WC-bplot
-ggplot(reviews_df, aes(x=review_type, y=word_count)) + 
-  geom_boxplot() +
-  scale_y_log10()
-  #geom_jitter(shape=16, position=position_jitter(0.2))
-```
 
 ```{r}
 #| label: WC-vplot
-ggplot(reviews_df, aes(x=review_type, y=word_count)) + 
+ggplot(reviews_df, aes(x=review_type, y=word_count, fill=review_type)) + 
   geom_violin() +
-  scale_y_log10()
+  scale_y_log10() +
+  labs(x="Review Type", y="Word Count", title="Word Count by Review Type")
 ```
 
 
@@ -448,10 +529,16 @@ reviews_df
 idk think about what to put in here - probably just a general summary looking at pos/neg, it will likely mostly be aligned with review length over all, since so many reviews are so short.
 
 
+## Language Choices
+
+Swear word detection??
+
+
+
 
 ## Tf-idf
 
-Calculating Tf-idf for our game reviews. Because they were creating a lot of issues with tokenizing and odd characters, I've excluded emojis and gone simply for text reviews. It's a bummer to lose out on such strong reviews as "one single poop emoji", but needs to be done for ease of processing. For now, at least.
+Calculating Tf-idf for our game reviews. Because they were creating a lot of issues with tokenizing and odd characters, I've excluded emojis and gone simply for text reviews. It's a bummer to lose out on such strong reviews as "one single poop emoji", but it needs to be done for ease of processing. For now, at least.
 
 ```{r}
 #| label: rm-stopwords
@@ -468,15 +555,14 @@ tokens_df
 ```
 
 
-By tokenizing and removing stop words, which in this case also removed all emojis and special characters, we went from around 11 million tokens (from [data cleanup tokenizing](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/1-data-cleanup.md#tokenizing)) down to 3.6 million (from calculating sum(n) on tokens_df).
+By tokenizing and removing stop words, which in this case also removed all emojis and special characters, we went from around 11 million tokens (from [data cleanup tokenizing](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/1-data-cleanup.md#tokenizing)) down to 3.6 million before downsampling, and 1.7 million after (from running sum(n) on tokens_df).
+
 
 The most common word token among these game reviews.... is game! 
 
 Looking through the first few pages of tokens, I wonder if we can pick out some key words of game elements reviewers find important enough to comment on specifically. I see story, gameplay, characters, hours (game length, probably), worth (game price, I bet), puzzles, pretty, money, music, graphics... all in the top 50 words. 
 
 What about top words per review type? 
-
-REDO THIS merge into reviews_df as a new df and do the pos/neg thing by filtering instead. 
 
 
 ```{r}
@@ -488,6 +574,11 @@ pos_toks <- posrevs |>
 pos_toks
 ```
 
+Write out here thoughts about these words
+
+
+
+
 ```{r}
 #| label: neg-topwords
 neg_toks <- negrevs |>
@@ -497,9 +588,11 @@ neg_toks <- negrevs |>
 neg_toks
 ```
 
+Write out thoughts about this one
 
 
-### TF
+
+### Term 
 
 calculate the frequency for each word for the works of Jane Austen, the Brontë sisters, and H.G. Wells by binding the data frames together - RECALCULATE THIS TOO - per review, per review type, recheck activity 9 to make sure that seems right
 
@@ -513,7 +606,21 @@ frequency <- tokens_df |>
 frequency
 ```
 
-This means that 64% of all the words in game reviews is the word game???
+This means that 6.3% of all the words in game reviews is the word game
+
+```{r}
+#| label: rev-types-prop
+posfreq <- pos_toks |>
+  mutate(proportion = n / sum(n)) |>
+  select(-n)
+posfreq
+
+negfreq <- neg_toks |>
+  mutate(proportion = n / sum(n)) |>
+  select(-n)
+negfreq
+```
+
 
 
 ### Plotting
@@ -534,35 +641,6 @@ freq <- bind_rows(mutate(pos_toks, review_type = "Positive"),
 freq
 ```
 
-
-### In progress: similar tokens pos & neg
-
-```{r}
-#| label: similar-toks
-#| eval: false
-ggplot(freq, aes(x = proportion, y = review_type, 
-                      color = abs(proportion))) +
-  geom_abline(color = "gray40", lty = 2) +
-  geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3) +
-  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
-  scale_x_log10(labels = percent_format()) +
-  scale_y_log10(labels = percent_format()) +
-  scale_color_gradient(limits = c(0, 0.001), 
-                       low = "darkslategray4", high = "gray75") +
-  facet_wrap(~review_type, ncol = 2) +
-  theme(legend.position="none") 
-```
-
-+
-  labs(y = "Jane Austen", x = NULL)
-
-
-Words closest to the line have similar frequencies in both samples
-
-Also:
-not all the words are found in all three sets of texts and there are fewer data points in the panel for Austen and H.G. Wells.
-
-quantify how similar and different these sets of word frequencies are using a correlation test
 
 
 ### term freq
@@ -592,13 +670,6 @@ review_words
 Calculating the total word counts per word and by review type and comparing to the total word counts by review type. With these, we can get moving on tf-idf.
 
 
-```{r}
-#| label: revtoks-freq
-ggplot(review_words, aes(n/total, fill = review_type)) +
-  geom_histogram(show.legend = FALSE) +
-  xlim(NA, 0.0009) +
-  facet_wrap(~review_type, ncol = 2, scales = "free_y")
-```
 
 ### bind_tf_idf() function
 
@@ -629,6 +700,7 @@ review_tf_idf
 
 with stop words included there are 6,412,302 total rows
 with stop words excluded it went down to 3,045,610!
+After downsampling, it's down to 1,430,815!
 
 ```{r}
 #| label: high-count-words
@@ -649,22 +721,10 @@ review_tf_idf
 
 
 
-
-
 ```{r}
 #| label: write_tf-idf-csv
 write_csv(review_tf_idf, file="../private/reviews_tfidf.csv")
 ```
-
-
-
-```{r}
-#| label: jim-review
-reviews_df |>
-  filter(review_id==161023893)
-```
-
-
 
 
 

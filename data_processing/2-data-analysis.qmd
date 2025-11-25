@@ -146,6 +146,7 @@ As mentioned above, the positive and negative "ranks" here are 4 ranks each comb
 
 ```{r}
 #| label: merged2
+# merging full size reviews_df to games info
 merged_games2 <- full_df |>
   left_join(games) 
 ```
@@ -182,23 +183,11 @@ Again, these year divisions contain 8 games, 9 games, 5 games, 11 games, and 12 
 
 
 
-
-```{r}
-#| label: rev2
-revcount_df2 <- merged_games2 |>
-  group_by(game) |>
-  summarise(total = n()) |>
-  arrange(desc(total))
-revcount_df2
-```
-
-
-
 ### Reviews per game
  
 ```{r}
-#| label: game-revs-c2
-revcount_df <- merged_games |>
+#| label: rev2
+revcount_df <- merged_games2 |>
   group_by(game) |>
   summarise(total = n()) |>
   arrange(desc(total))
@@ -265,9 +254,9 @@ ggplot(cut5, aes(x = reorder(game, -total), y=total, fill=game)) +
 
 Take care to note the y-axis and how it changes between plots. The games with the fewest reviews are significantly less than the ones with the most. This is because of how the "Positive" and "Negative" categories are calculated, the cutoff point at those ranks is 50 reviews. Any more than that and the game will migrate to a different rank. 
 
-Also please note that the numbers indicated here are not reflective of the actual number of reviews as shown on Steam (documented [here](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/0-gameinfo.csv)), and only reflect the total number of reviews in *this* data set, which has been adjusted above for the sake of comparison.
+Also please note that the numbers indicated here are not reflective of the actual number of reviews as shown on Steam (documented [here](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/0-gameinfo.csv)), and only reflect the total number of reviews in *this* data set. The script used to download would time out on some of the more reviewed games. 
 
-Finally, I've mentioned before that it is the most positively reviewed games that had the most total reviews total, and that is *mostly* true. 
+Finally, I've mentioned before that it is the most positively reviewed games that had the most total reviews total, and that is *mostly* true. Resident Evil 6 is quite high in the total numbers of reviews per game, but is still in the Mixed reviews ranking, lots of opinionated people who can't come to a consensus! Otherwise the top 10 in number of reviews are high in the Steam ranks. The least reviewed games are, of course, those in the plain Positive and Negative ranks, thanks to the limit in those categories being up to 50 reviews. 
 
 
 Just to get a full scope of the scale (and why I split the data up like I did above) here are all the totals in comparison.
@@ -320,7 +309,7 @@ merged_games |>
 
 ```
 
-
+Even after adjusting, Positive ranked games are more reviewed than Negative ones! Some of those games had a 99% ratio of positive reviews, so even after being proportionally downsampled, there are a lot left!
 
 
 
@@ -352,6 +341,7 @@ Let's look a little deeper.
 
 
 ```{r}
+#| label: short-long-counts
 reviews_df |>
   filter(word_count==1) |>
   group_by(review_type) |>
@@ -427,19 +417,63 @@ Looks like it's pretty common for positive reviews to be shorter. This could pot
 38.7% of all negative reviews are 5 words or shorter, and 73.5% of all positive reviews are. That's quite a big chunk of reviews! 
 
 
+Rather than look at the average review length of all 45 games, let's look at maybe the longest 5 and shortest 5, just to see. 
+
+```{r}
+#| label: long-short-cuts
+# recreate merged games so it includes word count
+merged_games <- reviews_df |>
+  left_join(games)
+
+LS_games <- merged_games |>
+  group_by(game) |>
+  summarise(avg = mean(word_count)) |>
+  arrange(desc(avg))
+
+gamerank <- merged_games |> dplyr::select(game,rank)
+
+LS_games <- left_join(LS_games, gamerank)
+
+LScut1 <- LS_games |>
+  distinct(game, .keep_all = TRUE) |>
+  slice(1:5) |>
+  #reorder by total so that the plot legend is in the right order
+  mutate(game = fct_reorder(game, avg, .desc = TRUE))
+
+LScut2 <- LS_games |>
+  distinct(game, .keep_all = TRUE) |>
+  slice(41:45) |>
+  mutate(game = fct_reorder(game, avg, .desc = TRUE))
+```
 
 
+```{r}
+#| label: long-short-bars
+ggplot(LScut1, aes(x = reorder(game, -avg), y=avg, fill=game)) +
+  geom_bar(stat='identity', color="black") + 
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_blank()) +
+  geom_text(aes(label=rank), vjust=2, hjust=1, angle = 70) +
+  labs(x="Game", y = "Avg. Review Length", title="Longest Reviews")
+
+ggplot(LScut2, aes(x = reorder(game, -avg), y=avg, fill=game)) +
+  geom_bar(stat='identity', color="black") + 
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_blank()) +
+  geom_text(aes(label=rank), vjust=2, hjust=1, angle = 70) +
+  labs(x="Game", y = "Avg. Review Length", title="Shortest Reviews")
+
+```
 
 
+It looks like maybe the "people have more to say about games they don't like" theory might be onto something. None of the longest review length averages touch the four positive game ranks. 
 
-
-NOW look at average review length per game, add that together to look at per game rank too. 
 
 
 ### Length Stats
 
 Word length histograms.... A LOT of reviews are all grouped together at the lower end of the spectrum
-DO A LOG TRANSFORMATION TO THEM AND REDO
+
 
 ```{r}
 #| label: pos-neg-revs
@@ -473,9 +507,10 @@ neg
 ggplot(reviews_df, aes(x=review_type, y=word_count, fill=review_type)) + 
   geom_violin() +
   scale_y_log10() +
-  labs(x="Review Type", y="Word Count", title="Word Count by Review Type")
+  labs(x="Review Type", y="Word Count", title="Word Count by Review Type") 
 ```
 
+An interesting visual! The lower length reviews appear in *very* similar proportions in both categories.
 
 
 ## Word Types & Count
@@ -506,6 +541,7 @@ reviews_df <- reviews_df |>
 ```
 
 
+
 ## TTR 
 
 TTR is used to measure the variety of language used in a text. It's not  exactly a measure of the complexity of a document, but can be considered with other factors as an indicator of a writer's language abilities. 
@@ -524,16 +560,51 @@ reviews_df <- reviews_df |>
 reviews_df
 ```
 
+
+
 ### TTR Exploring 
 
-idk think about what to put in here - probably just a general summary looking at pos/neg, it will likely mostly be aligned with review length over all, since so many reviews are so short.
+I've covered how TTR is sensitive to long documents, but it's also the case that it can be sensitive to short documents as well. A 5 word review is unlikely to have many repeated words and will have a very high TTR score, indicating a high rate of language diversity. 
+
+Let's see if we can pinpoint where TTR falls off in this data
 
 
-## Language Choices
+```{r}
+#| label: TTR-line
+ggplot(reviews_df, aes(x=word_count, y=TTR)) +
+  geom_line() +
+  geom_smooth() +
+  lims(x = c(1, 18  00))
+```
 
-Swear word detection??
+This plot looks crazy, but it still does give some idea of where the trend begins to plateau, a good sign of where TTR starts to be affected by the length of the document. At the far end, of course, are those 2000 word reviews that just say "the end is never" over and over again. 
+
+Let's look at reviews in the 300-700 word range to give TTR a good look. 
+
+```{r}
+#| label: midlen-revs
+midlength <- reviews_df |>
+  filter(word_count>300, word_count<700)
+
+midlength
+```
 
 
+```{r}
+summary(midlength$TTR)
+```
+
+```{r}
+midpos <- midlength |>
+  filter(review_type=='POS')
+summary(midpos$TTR)
+
+midneg <- midlength |>
+  filter(review_type=='NEG')
+summary(midneg$TTR)
+```
+
+TO DO - summarize this
 
 
 ## Tf-idf
@@ -562,6 +633,7 @@ The most common word token among these game reviews.... is game!
 
 Looking through the first few pages of tokens, I wonder if we can pick out some key words of game elements reviewers find important enough to comment on specifically. I see story, gameplay, characters, hours (game length, probably), worth (game price, I bet), puzzles, pretty, money, music, graphics... all in the top 50 words. 
 
+
 What about top words per review type? 
 
 
@@ -574,8 +646,8 @@ pos_toks <- posrevs |>
 pos_toks
 ```
 
-Write out here thoughts about these words
-
+Taking a look at the most frequent words in positive reviews can give us a look into what people might write about enjoying specifically! Story, experience, characters, gameplay, puzzle, horror (?!), world, art.... And what they're considering in their reviews! I see worth in there pretty high up, hours
+, unique.
 
 
 
@@ -588,13 +660,15 @@ neg_toks <- negrevs |>
 neg_toks
 ```
 
-Write out thoughts about this one
+What are people writing about in negative reviews? I can pick out at a glance time, bad, money, worst, terrible.
+
+But there are a lot of overlapping words between the two, pretty high up in frequency for both. I came into this project with the suspicion that a classifier would have some more trouble than maybe expected, but this is another nudge in that direction for me. 
+
+Game, play, story, games, fun, and time are in top ten tokens for both positive and negative reviews. That's more than half of those top tokens in common.
 
 
 
-### Term 
-
-calculate the frequency for each word for the works of Jane Austen, the Brontë sisters, and H.G. Wells by binding the data frames together - RECALCULATE THIS TOO - per review, per review type, recheck activity 9 to make sure that seems right
+### Term Frequencies
 
 
 ```{r}
@@ -606,7 +680,7 @@ frequency <- tokens_df |>
 frequency
 ```
 
-This means that 6.3% of all the words in game reviews is the word game
+This means that 6.3% of all the words in game reviews is the word game. 
 
 ```{r}
 #| label: rev-types-prop
@@ -621,9 +695,6 @@ negfreq <- neg_toks |>
 negfreq
 ```
 
-
-
-### Plotting
 
 ```{r}
 #| label: pos-neg-freq
@@ -643,7 +714,7 @@ freq
 
 
 
-### term freq
+### Total Words & Freq
 
 
 ```{r}
@@ -667,28 +738,18 @@ review_words <- review_words |>
 review_words
 ```
 
-Calculating the total word counts per word and by review type and comparing to the total word counts by review type. With these, we can get moving on tf-idf.
+Calculating the total word counts per word and per review. With these, we can get moving on tf-idf.
 
 
 
-### bind_tf_idf() function
+### Bind_tf_idf()
 
-find the important words for the content of each document by decreasing the weight for commonly used words and increasing the weight for words that are not used very much in a collection or corpus of documents
+To re-define tf-idf from our class activity: find the important words for the content of each document (game review for us) by decreasing the weight for commonly used words and increasing the weight for words that are not used very much in a collection or corpus of documents
 
 - which words are the words that define the text?
 
 - what words are common (but not too common)?
 
-bind_tf_idf()
-
-takes a tidy text dataset as input with one row per token (term), per document
-
-  - one column contains the terms/tokens (word)
-  - one column contains the documents (review type)
-  - last necessary column contains the counts, how many times each document contains each term (n)
-  
-  maybe edit to carry in also steam_id I think, just so it's in there.
-  MAYBE do this from the merged games df - but you have to re-merge it because the original is actually merged before the word counts etc have been added in. THEN save the game names and also the rank - simplify that rank in a new column to "pos, mixed, neg" and try that with the classifier. If we can calculate % of pos/neg ratio of reviews per game can we predict the game's rank? 
   
 ```{r}
 #| label: review-tfidf
@@ -700,7 +761,7 @@ review_tf_idf
 
 with stop words included there are 6,412,302 total rows
 with stop words excluded it went down to 3,045,610!
-After downsampling, it's down to 1,430,815!
+After downsampling (and stop words removed), it's down to 1,430,815!
 
 ```{r}
 #| label: high-count-words
@@ -708,6 +769,8 @@ review_tf_idf |>
   arrange(desc(n))
 ```
 
+
+To prep this dataframe for the classifier, let's narrow down to only the columns we know we want.
 
 ```{r}
 #| label: tf-df-final
@@ -725,58 +788,4 @@ review_tf_idf
 #| label: write_tf-idf-csv
 write_csv(review_tf_idf, file="../private/reviews_tfidf.csv")
 ```
-
-
-
-
-
-
-
-how to quantify what a document is about
- 
-tf - term frequency - how frequently a word shows up
-idf - inverse document frequency- how many documents a word appears in (no of docs / no of dccs containing term)
-
-tf-idf: frequency of a term adjusted for how rarely it is used
-
-- intended to measure how important a word is to a document in a collection (or corpus) of documents
-
-
-
-
-Some notes to pay attention to:
-
-idf and thus tf-idf are zero for these extremely common words
-  - words that appear in all six of austen's novels
-  - this decreases the weight for these extremely common words
-  
-idf will be a higher number for words that occur in fewer of the documents in the collection
-
-To take a look at high idf terms:
-
-```{r}
-#| label: rev-high-tfidf
-review_tf_idf %>%
-  select(-total) %>%
-  arrange(desc(tf_idf))
-```
-
-SUMMARY - these are informative in the sense that they are not likley to be replicated, I suppose. Not so much in like. discerning meaning.  
-
-```{r}
-#| label: aust-propnouns
-#| eval: false
-book_tf_idf %>%
-  group_by(book) %>%
-  slice_max(tf_idf, n = 15) %>%
-  ungroup() %>%
-  ggplot(aes(tf_idf, fct_reorder(word, tf_idf), fill = book)) +
-  geom_col(show.legend = FALSE) +
-  facet_wrap(~book, ncol = 2, scales = "free") +
-  labs(x = "tf-idf", y = NULL)
-```
-
-We can conclude: jane austen uses a lot of the same language between her books, and the thing that really distinguishes them is the characters in them and locations.
-
-
 

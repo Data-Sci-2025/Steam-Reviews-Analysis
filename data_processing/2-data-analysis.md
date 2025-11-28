@@ -31,11 +31,11 @@ of reviews.
 
 For example, a game with 3,000 99% positive reviews will still be ranked
 lower than a game with 5,000 95% positive reviews. Or a game can be 100%
-positive, but if it only has fewer than 50 reviews, it will be stuck in
-the “Positive” ranking. As far as I’ve understood, these calculations
-are the same for negatively reviewed games. It appears that regardless
-of number of reviews, if the ratio of positive/negative reviews is in
-the 40%-60% range, it will be considered “Mixed”.
+positive, but if it has fewer than 50 reviews, it will be stuck in the
+“Positive” ranking. As far as I’ve understood, these calculations are
+the same for negatively reviewed games. It appears that regardless of
+number of reviews, if the ratio of positive/negative reviews is in the
+40%-60% range, it will be considered “Mixed”.
 
 I will, at times during my analysis, lump these game rankings together
 into a simplified three tiers; positive, mixed, and negative. Just know,
@@ -109,7 +109,7 @@ of either positive or negative. As new players find out about the game,
 if it shows already that it’s being negatively reviewed, why would they
 spend money to try it out themselves? I wouldn’t! On the other hand, if
 players see that a game is getting positive reviews, they’re more likely
-try it and, in turn, also positively review it.
+to try it and, in turn, also positively review it.
 
 The negatively reviewed games were very likely largely forgotten to time
 once they started the descent into the negative review rankings. After
@@ -204,6 +204,7 @@ such a small sample size of all Steam games, but it’s an interesting
 look here.
 
 ``` r
+# merging full size reviews_df to games info
 merged_games2 <- full_df |>
   left_join(games) 
 ```
@@ -247,12 +248,14 @@ and 12 games each. The number and ratio of negative and positive reviews
 for games across 15 years seems to align with the chart above. In this
 data, at least, games got more positive with time!
 
+### Reviews per game
+
 ``` r
-revcount_df2 <- merged_games2 |>
+revcount_df <- merged_games2 |>
   group_by(game) |>
   summarise(total = n()) |>
   arrange(desc(total))
-revcount_df2
+revcount_df
 ```
 
     # A tibble: 45 × 2
@@ -268,31 +271,6 @@ revcount_df2
      8 The Stanley Parable: Ultra Deluxe 10527
      9 Resident Evil 6                   10525
     10 Ranch Simulator                    9671
-    # ℹ 35 more rows
-
-### Reviews per game
-
-``` r
-revcount_df <- merged_games |>
-  group_by(game) |>
-  summarise(total = n()) |>
-  arrange(desc(total))
-revcount_df
-```
-
-    # A tibble: 45 × 2
-       game                        total
-       <chr>                       <int>
-     1 Outer wilds                  5314
-     2 Resident Evil 6              4884
-     3 Superliminal                 4742
-     4 Night in the Woods           4125
-     5 Ranch Simulator              4010
-     6 Disco Elysium                3925
-     7 Hades                        3825
-     8 Dead Space 2                 3661
-     9 Spacebase DF9                3210
-    10 Amneisa: A Machine for Pigs  3181
     # ℹ 35 more rows
 
 ``` r
@@ -377,11 +355,18 @@ than that and the game will migrate to a different rank.
 Also please note that the numbers indicated here are not reflective of
 the actual number of reviews as shown on Steam (documented
 [here](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/0-gameinfo.csv)),
-and only reflect the total number of reviews in *this* data set, which
-has been adjusted above for the sake of comparison.
+and only reflect the total number of reviews in *this* data set. The
+script used to download would time out on some of the more reviewed
+games.
 
 Finally, I’ve mentioned before that it is the most positively reviewed
 games that had the most total reviews total, and that is *mostly* true.
+Resident Evil 6 is quite high in the total numbers of reviews per game,
+but is still in the Mixed reviews ranking, lots of opinionated people
+who can’t come to a consensus! Otherwise the top 10 in number of reviews
+are high in the Steam ranks. The least reviewed games are, of course,
+those in the plain Positive and Negative ranks, thanks to the limit in
+those categories being up to 50 reviews.
 
 Just to get a full scope of the scale (and why I split the data up like
 I did above) here are all the totals in comparison.
@@ -440,6 +425,10 @@ merged_games |>
     2 Negative 18422
     3 Positive 47613
 
+Even after adjusting, Positive ranked games are more reviewed than
+Negative ones! Some of those games had a 99% ratio of positive reviews,
+so even after being proportionally downsampled, there are a lot left!
+
 ## Word Count
 
 ``` r
@@ -481,10 +470,32 @@ and the median 17 words. Adjusted, that shifts to an average of almost
 positive reviews, and a vast majority of the shortest reviews were all
 positive, the average lengths are a bit higher.
 
-TO DO: (maybe look into something about average text lengths online like
-for blogs etc)
-
 Let’s look a little deeper.
+
+``` r
+reviews_df |>
+  filter(word_count==1) |>
+  group_by(review_type) |>
+  summarise(total=n())
+```
+
+    # A tibble: 2 × 2
+      review_type total
+      <chr>       <int>
+    1 NEG          1218
+    2 POS          3065
+
+``` r
+reviews_df |>
+  filter(word_count>1700) |>
+  group_by(review_type) |>
+  summarise(total=n())
+```
+
+    # A tibble: 1 × 2
+      review_type total
+      <chr>       <int>
+    1 POS            17
 
 ``` r
 reviews_df |>
@@ -567,6 +578,23 @@ times as a reference to the inescapable time loop the game’s protagonist
 is stuck in. The phrase also apparently appears on the game’s loading
 screens in a constant loop.
 
+According to
+[this](https://rebeccagraf-63084.medium.com/how-long-should-book-reviews-be-250187486779)
+Medium article, somewhere in the 400 word range seems to be considered
+the “ideal” length for a book review. 100-400 words for maybe a small,
+personal review, or 400-600 for a professional one. The expectations for
+video game reviews are not so different.
+
+[This](https://meliorgames.com/best-practices/the-ultimate-guide-to-writing-a-game-review/)
+guide to writing game reviews covers a lot of factors surrounding the
+game, deadlines, and expectations. It looks like official game review
+publishing sites (like IGN, Polygon, etc.) have an ideal length of
+~1,000 words for a review. It could just come down to price - buying a
+video game costs more than buying a book (generally) and players will
+want to know ahead of time what they’re committing to. The guide also
+acknowledges that user reviews on sites like Steam, like what are being
+analyzed here, are likely to be shorter.
+
 ### Average Review Length
 
 Now to what we came here to look into. Are positive reviews typically
@@ -590,10 +618,10 @@ ggplot(reviews_df, aes(x=review_type, y = word_count)) +
      @ complete: logi FALSE
      @ validate: logi TRUE
 
-Now that’s really interesting! Despite having fewer reviews total, and
-*all* of the longest reviews we looked at above being positive, negative
-reviews are still quite a bit longer on average. People must have a lot
-more to say when they dislike a game than when they like one!
+Now that’s really interesting! Despite all of the longest reviews we
+looked at above being positive, negative reviews are still quite a bit
+longer on average. People must have a lot more to say when they dislike
+a game than when they like one!
 
 I wonder if there’s a trend in shorter reviews that might be swinging
 this average one way or the other.
@@ -613,20 +641,77 @@ reviews_df |>
 
 Looks like it’s pretty common for positive reviews to be shorter. This
 could potentially drag down the overall average of positive reviews.
-However… there are more short positive reviews, but there are also more
-positive reviews in general, so maybe not.
 
-TO DO - fix this once the downsampling is done… 38.7% of all negative
-reviews are 5 words or shorter, and 74.4% of all positive reviews are.
-That’s quite a big chunk of reviews!
+38.7% of all negative reviews are 5 words or shorter, and 73.5% of all
+positive reviews are. That’s quite a big chunk of reviews!
 
-NOW look at average review length per game, add that together to look at
-per game rank too.
+Rather than look at the average review length of all 45 games, let’s
+look at maybe the longest 5 and shortest 5, just to see.
+
+``` r
+# recreate merged games so it includes word count
+merged_games <- reviews_df |>
+  left_join(games)
+```
+
+    Joining with `by = join_by(steam_id)`
+
+``` r
+LS_games <- merged_games |>
+  group_by(game) |>
+  summarise(avg = mean(word_count)) |>
+  arrange(desc(avg))
+
+gamerank <- merged_games |> dplyr::select(game,rank)
+
+LS_games <- left_join(LS_games, gamerank)
+```
+
+    Joining with `by = join_by(game)`
+
+``` r
+LScut1 <- LS_games |>
+  distinct(game, .keep_all = TRUE) |>
+  slice(1:5) |>
+  #reorder by total so that the plot legend is in the right order
+  mutate(game = fct_reorder(game, avg, .desc = TRUE))
+
+LScut2 <- LS_games |>
+  distinct(game, .keep_all = TRUE) |>
+  slice(41:45) |>
+  mutate(game = fct_reorder(game, avg, .desc = TRUE))
+```
+
+``` r
+ggplot(LScut1, aes(x = reorder(game, -avg), y=avg, fill=game)) +
+  geom_bar(stat='identity', color="black") + 
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_blank()) +
+  geom_text(aes(label=rank), vjust=2, hjust=1, angle = 70) +
+  labs(x="Game", y = "Avg. Review Length", title="Longest Reviews")
+```
+
+![](2-data-analysis_files/figure-commonmark/long-short-bars-1.png)
+
+``` r
+ggplot(LScut2, aes(x = reorder(game, -avg), y=avg, fill=game)) +
+  geom_bar(stat='identity', color="black") + 
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_blank()) +
+  geom_text(aes(label=rank), vjust=2, hjust=1, angle = 70) +
+  labs(x="Game", y = "Avg. Review Length", title="Shortest Reviews")
+```
+
+![](2-data-analysis_files/figure-commonmark/long-short-bars-2.png)
+
+It looks like maybe the “people have more to say about games they don’t
+like” theory might be onto something. None of the longest review length
+averages touch the four positive game ranks.
 
 ### Length Stats
 
 Word length histograms…. A LOT of reviews are all grouped together at
-the lower end of the spectrum DO A LOG TRANSFORMATION TO THEM AND REDO
+the lower end of the spectrum
 
 ``` r
 posrevs <- reviews_df |>
@@ -664,10 +749,13 @@ neg
 ggplot(reviews_df, aes(x=review_type, y=word_count, fill=review_type)) + 
   geom_violin() +
   scale_y_log10() +
-  labs(x="Review Type", y="Word Count", title="Word Count by Review Type")
+  labs(x="Review Type", y="Word Count", title="Word Count by Review Type") 
 ```
 
 ![](2-data-analysis_files/figure-commonmark/WC-vplot-1.png)
+
+An interesting visual! The lower length reviews appear in *very* similar
+proportions in both categories.
 
 ## Word Types & Count
 
@@ -735,13 +823,86 @@ reviews_df
 
 ### TTR Exploring
 
-idk think about what to put in here - probably just a general summary
-looking at pos/neg, it will likely mostly be aligned with review length
-over all, since so many reviews are so short.
+I’ve covered how TTR is sensitive to long documents, but it’s also the
+case that it can be sensitive to short documents as well. A 5 word
+review is unlikely to have many repeated words and will have a very high
+TTR score, indicating a high rate of language diversity.
 
-## Language Choices
+Let’s see if we can pinpoint where TTR falls off in this data
 
-Swear word detection??
+``` r
+ggplot(reviews_df, aes(x=word_count, y=TTR)) +
+  geom_line() +
+  geom_smooth() +
+  lims(x = c(1, 1800))
+```
+
+    `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
+
+    Warning: Removed 13 rows containing non-finite outside the scale range
+    (`stat_smooth()`).
+
+    Warning: Removed 13 rows containing missing values or values outside the scale range
+    (`geom_line()`).
+
+![](2-data-analysis_files/figure-commonmark/TTR-line-1.png)
+
+This plot looks crazy, but it still does give some idea of where the
+trend begins to plateau, a good sign of where TTR starts to be affected
+by the length of the document. At the far end, of course, are those 2000
+word reviews that just say “the end is never” over and over again.
+
+Let’s look at reviews in the 300-700 word range to give TTR a good look.
+
+``` r
+midlength <- reviews_df |>
+  filter(word_count>300, word_count<700)
+
+midlength
+```
+
+    # A tibble: 2,277 × 11
+       review_id language date       review_type review   steam_id tokens word_count
+           <dbl> <chr>    <date>     <chr>       <chr>       <dbl> <chr>       <dbl>
+     1    900822 english  2013-08-11 POS         "I'd lo…   239200 i'd, …        514
+     2    414556 english  2013-08-20 POS         "Amnesi…   239200 amnes…        318
+     3  38339972 english  2017-11-16 POS         "nukes-…   239200 nukes…        653
+     4   9909718 english  2014-03-23 POS         "Amnesi…   239200 amnes…        497
+     5   7352177 english  2013-09-10 POS         "Well, …   239200 well,…        425
+     6  47404462 english  2018-11-09 POS         "Inform…   239200 infor…        668
+     7 168318670 english  2024-05-27 POS         "In def…   239200 in, d…        449
+     8  11079475 english  2014-06-05 POS         "Whethe…   239200 wheth…        346
+     9 186179322 english  NA         POS         "This L…   239200 this,…        405
+    10   8310895 english  2013-11-26 POS         "Amnesi…   239200 amnes…        448
+    # ℹ 2,267 more rows
+    # ℹ 3 more variables: types <chr>, type_count <dbl>, TTR <dbl>
+
+``` r
+summary(midlength$TTR)
+```
+
+        Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    0.003311 0.496479 0.531486 0.527578 0.567376 0.812155 
+
+``` r
+midpos <- midlength |>
+  filter(review_type=='POS')
+summary(midpos$TTR)
+```
+
+        Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    0.003311 0.493451 0.526227 0.516818 0.564740 0.740260 
+
+``` r
+midneg <- midlength |>
+  filter(review_type=='NEG')
+summary(midneg$TTR)
+```
+
+        Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    0.005128 0.497937 0.534737 0.532534 0.568831 0.812155 
+
+TO DO - summarize this
 
 ## Tf-idf
 
@@ -828,7 +989,11 @@ pos_toks
     10 experience  3197
     # ℹ 38,999 more rows
 
-Write out here thoughts about these words
+Taking a look at the most frequent words in positive reviews can give us
+a look into what people might write about enjoying specifically! Story,
+experience, characters, gameplay, puzzle, horror (?!), world, art…. And
+what they’re considering in their reviews! I see worth in there pretty
+high up, hours , unique.
 
 ``` r
 neg_toks <- negrevs |>
@@ -858,14 +1023,19 @@ neg_toks
     10 2      4096
     # ℹ 50,250 more rows
 
-Write out thoughts about this one
+What are people writing about in negative reviews? I can pick out at a
+glance time, bad, money, worst, terrible.
 
-### Term
+But there are a lot of overlapping words between the two, pretty high up
+in frequency for both. I came into this project with the suspicion that
+a classifier would have some more trouble than maybe expected, but this
+is another nudge in that direction for me.
 
-calculate the frequency for each word for the works of Jane Austen, the
-Brontë sisters, and H.G. Wells by binding the data frames together -
-RECALCULATE THIS TOO - per review, per review type, recheck activity 9
-to make sure that seems right
+Game, play, story, games, fun, and time are in top ten tokens for both
+positive and negative reviews. That’s more than half of those top tokens
+in common.
+
+### Term Frequencies
 
 ``` r
 frequency <- tokens_df |>
@@ -890,7 +1060,7 @@ frequency
     10 buy       0.00396
     # ℹ 67,500 more rows
 
-This means that 6.3% of all the words in game reviews is the word game
+This means that 6.3% of all the words in game reviews is the word game.
 
 ``` r
 posfreq <- pos_toks |>
@@ -936,8 +1106,6 @@ negfreq
     10 2        0.00376
     # ℹ 50,250 more rows
 
-### Plotting
-
 ``` r
 freq <- bind_rows(mutate(pos_toks, review_type = "Positive"),
                        mutate(neg_toks, review_type = "Negative")) |> 
@@ -968,7 +1136,7 @@ freq
     10 aaaa  Negative     0.0000199
     # ℹ 109,990 more rows
 
-### term freq
+### Total Words & Freq
 
 ``` r
 review_words <- reviews_df |>
@@ -1017,37 +1185,19 @@ review_words
     10 105382110 POS         game            1    31
     # ℹ 1,430,805 more rows
 
-Calculating the total word counts per word and by review type and
-comparing to the total word counts by review type. With these, we can
-get moving on tf-idf.
+Calculating the total word counts per word and per review. With these,
+we can get moving on tf-idf.
 
-### bind_tf_idf() function
+### Bind_tf_idf()
 
-find the important words for the content of each document by decreasing
-the weight for commonly used words and increasing the weight for words
-that are not used very much in a collection or corpus of documents
+To re-define tf-idf from our class activity: find the important words
+for the content of each document (game review for us) by decreasing the
+weight for commonly used words and increasing the weight for words that
+are not used very much in a collection or corpus of documents
 
 - which words are the words that define the text?
 
 - what words are common (but not too common)?
-
-bind_tf_idf()
-
-takes a tidy text dataset as input with one row per token (term), per
-document
-
-- one column contains the terms/tokens (word)
-- one column contains the documents (review type)
-- last necessary column contains the counts, how many times each
-  document contains each term (n)
-
-maybe edit to carry in also steam_id I think, just so it’s in there.
-MAYBE do this from the merged games df - but you have to re-merge it
-because the original is actually merged before the word counts etc have
-been added in. THEN save the game names and also the rank - simplify
-that rank in a new column to “pos, mixed, neg” and try that with the
-classifier. If we can calculate % of pos/neg ratio of reviews per game
-can we predict the game’s rank?
 
 ``` r
 review_tf_idf <- review_words |>
@@ -1072,8 +1222,8 @@ review_tf_idf
     # ℹ 1,430,805 more rows
 
 with stop words included there are 6,412,302 total rows with stop words
-excluded it went down to 3,045,610! After downsampling, it’s down to
-1,430,815!
+excluded it went down to 3,045,610! After downsampling (and stop words
+removed), it’s down to 1,430,815!
 
 ``` r
 review_tf_idf |>
@@ -1094,6 +1244,9 @@ review_tf_idf |>
      9 117679620 POS         stomp       132   132 1      7.56   7.56
     10  77293859 NEG         crash       128   128 1      4.58   4.58
     # ℹ 1,430,805 more rows
+
+To prep this dataframe for the classifier, let’s narrow down to only the
+columns we know we want.
 
 ``` r
 review_tf_idf <- review_tf_idf |>
@@ -1120,64 +1273,3 @@ review_tf_idf
 ``` r
 write_csv(review_tf_idf, file="../private/reviews_tfidf.csv")
 ```
-
-how to quantify what a document is about
-
-tf - term frequency - how frequently a word shows up idf - inverse
-document frequency- how many documents a word appears in (no of docs /
-no of dccs containing term)
-
-tf-idf: frequency of a term adjusted for how rarely it is used
-
-- intended to measure how important a word is to a document in a
-  collection (or corpus) of documents
-
-Some notes to pay attention to:
-
-idf and thus tf-idf are zero for these extremely common words - words
-that appear in all six of austen’s novels - this decreases the weight
-for these extremely common words
-
-idf will be a higher number for words that occur in fewer of the
-documents in the collection
-
-To take a look at high idf terms:
-
-``` r
-review_tf_idf %>%
-  select(-total) %>%
-  arrange(desc(tf_idf))
-```
-
-    # A tibble: 1,430,815 × 4
-       review_id review_type word              tf_idf
-           <dbl> <chr>       <chr>              <dbl>
-     1  63250890 POS         yesl                11.2
-     2   6702113 POS         猪猡                11.2
-     3 116029011 POS         pigophobia          11.2
-     4  95280179 POS         lliiiiiiiiiiiiiit   11.2
-     5  45025969 POS         dracarys            11.2
-     6   8043124 POS         sissies             11.2
-     7   7400775 POS         sikakone            11.2
-     8  98903683 POS         6ez9                11.2
-     9  64307901 POS         ntm                 11.2
-    10  51974141 POS         asdad               11.2
-    # ℹ 1,430,805 more rows
-
-SUMMARY - these are informative in the sense that they are not likley to
-be replicated, I suppose. Not so much in like. discerning meaning.
-
-``` r
-book_tf_idf %>%
-  group_by(book) %>%
-  slice_max(tf_idf, n = 15) %>%
-  ungroup() %>%
-  ggplot(aes(tf_idf, fct_reorder(word, tf_idf), fill = book)) +
-  geom_col(show.legend = FALSE) +
-  facet_wrap(~book, ncol = 2, scales = "free") +
-  labs(x = "tf-idf", y = NULL)
-```
-
-We can conclude: jane austen uses a lot of the same language between her
-books, and the thing that really distinguishes them is the characters in
-them and locations.

@@ -574,7 +574,7 @@ Let's see if we can pinpoint where TTR falls off in this data
 ggplot(reviews_df, aes(x=word_count, y=TTR)) +
   geom_line() +
   geom_smooth() +
-  lims(x = c(1, 18  00))
+  lims(x = c(1, 1800))
 ```
 
 This plot looks crazy, but it still does give some idea of where the trend begins to plateau, a good sign of where TTR starts to be affected by the length of the document. At the far end, of course, are those 2000 word reviews that just say "the end is never" over and over again. 

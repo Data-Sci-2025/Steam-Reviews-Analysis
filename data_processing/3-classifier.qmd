@@ -10,7 +10,7 @@ library(tidyverse)
 library(caret)
 library(mlbench)
 library(klaR)
-library(naivebayes)
+library(ranger)
 ```
 
 **Note**: Please run [0-data-exploration](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/0-data-exploration.qmd), [1-data-cleanup](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/1-data-cleanup.qmd), and [2-data-analysis](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/2-data-analysis.qmd) first to create the version of the .csv file needed to start here.
@@ -28,10 +28,6 @@ review_tf_idf <- read_csv("../private/reviews_tfidf.csv", show_col_types = FALSE
 ```{r}
 review_tf_idf
 ```
-
-
-Now if I'm going to try to predict 
-
 
 
 
@@ -61,8 +57,45 @@ review_tf_idf |>
 ```
 
 
+## One more cleanup
+
+As was covered toward the end of my analysis notebook, there are many many words that are the same between both review types (the classes our classifier is going to attempt to predict). Because these words appear so commonly in both classes, it gave the classifier a tough time trying to predict a review's class. My first attempt guessed every single review negative. 
+
+After talking with Dan we decided the best move would be to make a custom list of stop words using these highly common and overlapping words (that will have a really low tf-idf value anyway) to break it down into the more distinctive words and maybe get a cleaner prediction.
 
 
+```{r}
+posfreq <- review_tf_idf |>
+  filter(review_type=='POS') |>
+  arrange(tf_idf)
+posfreq
+
+negfreq <- review_tf_idf |>
+  filter(review_type=='NEG') |>
+  arrange(tf_idf)
+negfreq
+```
+
+```{r}
+#| label: stopwords
+mystopwords <- tibble(word = c("game", "10", "2", "3", "play", "1", "4", "5", "time", "fun", "story", "games"))
+```
+
+
+By looking through the first several rows of the dataframe above as well as the top tokens shared that I spotted in my analysis notebook, I've added a list of highly frequent and shared words that wouldn't indicate either POS or NEG review strongly in either direction. 
+
+
+```{r}
+#| label: join-stopwords
+reviews_shortened <- anti_join(review_tf_idf, mystopwords, by="word")
+```
+
+
+```{r}
+reviews_shortened |>
+  group_by(review_type) |>
+  summarise(count=n())
+```
 
 ## Data Setup
 
@@ -74,8 +107,8 @@ Instead, I did a random sampling method of 300,000 rows of data and confirmed af
 
 
 ```{r}
-set.seed(99)
-setup_sample <- sample_n(review_tf_idf, 300000)
+set.seed(14)
+setup_sample <- sample_n(reviews_shortened, 100000)
 
 setup_sample <-setup_sample |>
   rename(WC=total)
@@ -88,6 +121,14 @@ setup_sample |>
   group_by(review_type) |>
   summarise(count=n())
 ```
+
+
+```{r}
+setup_sample <- setup_sample |>
+  mutate(word = str_replace_all(word, "(^\\d.*$)", "i_\\1"))
+```
+
+
 
 Pivot wider so that all the individual words appear as column names, populated below by tf-idf values per review. 
 
@@ -105,11 +146,33 @@ To get rid of them in advance and ease the classification training process, this
 
 ```{r}
 setup_sample <- setup_sample |>
+  dplyr::select(!review_id) |>
+  dplyr::select(!WC)
+```
+
+
+```{r}
+setup_sample$review_type <- as.factor(setup_sample$review_type)
+```
+
+
+
+```{r}
+setup_sample <- setup_sample |>
   purrr::discard(function(x) sum(x != 0) == 1)
 
 ncol(setup_sample)
 ```
 
+
+
+```{r}
+head(setup_sample)
+```
+
+```{r}
+setup_sample <- janitor::clean_names(setup_sample)
+```
 
 
 ## Building a Classifier
@@ -161,34 +224,32 @@ I initially attempted to train on a larger subset of 400,000 samples, but the tr
 
 
 ```{r}
-ctrl <- trainControl(method = "repeatedcv", repeats = 3)
-
-nb_model = train(
-  review_type ~ .- review_id - WC, # Specifying the response variable and the feature variables
-  method = "naive_bayes", # Specifying the model to use
-  data = training, 
-  trControl = ctrl
-)
+rf_model <- ranger(dependent.variable.name = "review_type", 
+                      data = training, 
+                      num.trees = 40, 
+                      mtry = 3,
+                      min.node.size = 3,
+                      importance = "permutation", 
+                      seed = 123,
+                      respect.unordered.factors = "ignore")
 ```
 
 
 
 ## Testing
 
-```{r}
-nb_test <- predict(nb_model, newdata = testing)
-str(nb_test)
-```
 
 ```{r}
-nb_probs <- predict(nb_model, newdata = testing, type = "prob")
-head(nb_probs)
+p.ra <- predict(rf_model, data=testing)
+str(p.ra)
 ```
 
 
 ```{r}
-confusionMatrix(nb_test, as.factor(testing$review_type))
+confusion_matrix <- rf_model$confusion.matrix
+    print(confusion_matrix)
 ```
+
 
 
 

@@ -76,9 +76,25 @@ negfreq <- review_tf_idf |>
 negfreq
 ```
 
+
+```{r}
+summary(review_tf_idf$tf_idf)
+```
+
+```{r}
+reviews_shortened <- review_tf_idf |>
+  filter(tf_idf > .009)
+
+reviews_shortened |>
+  group_by(review_type) |>
+  summarise(count=n())
+```
+
+
+
 ```{r}
 #| label: stopwords
-mystopwords <- tibble(word = c("game", "10", "2", "3", "play", "1", "4", "5", "time", "fun", "story", "games"))
+mystopwords <- tibble(word = c("game", "10", "2", "3", "play", "1", "4", "5", "time", "fun", "story", "games", "buy", "20", "gameplay", "6", "worth", "times", "100", "playing", "played", "30", "world", "9", "recommend", "8", "7"))
 ```
 
 
@@ -105,10 +121,15 @@ Initially I sampled lines 1:400,000 of my data which worked well enough! But whe
 
 Instead, I did a random sampling method of 300,000 rows of data and confirmed afterward that it contained both NEG and POS marked reviews. 
 
+setup_sample <- sample_n(reviews_shortened, 800)
+
+
 
 ```{r}
 set.seed(14)
-setup_sample <- sample_n(reviews_shortened, 100000)
+setup_sample <- reviews_shortened |>
+  group_by(review_type) |>
+  slice_sample(n = 150000)
 
 setup_sample <-setup_sample |>
   rename(WC=total)
@@ -249,9 +270,6 @@ str(p.ra)
 confusion_matrix <- rf_model$confusion.matrix
     print(confusion_matrix)
 ```
-
-
-
 
 
 

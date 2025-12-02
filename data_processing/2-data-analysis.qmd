@@ -541,6 +541,11 @@ reviews_df <- reviews_df |>
 ```
 
 
+```{r}
+#| label: write_reviews_df
+write_csv(reviews_df, file="../private/reviews_emojis.csv")
+```
+
 
 ## TTR 
 
@@ -768,6 +773,14 @@ After downsampling (and stop words removed), it's down to 1,430,815!
 review_tf_idf |>
   arrange(desc(n))
 ```
+
+
+```{r}
+reviews_df |>
+  filter(review_id==76036759)
+```
+
+
 
 
 To prep this dataframe for the classifier, let's narrow down to only the columns we know we want.

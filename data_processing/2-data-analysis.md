@@ -431,6 +431,8 @@ so even after being proportionally downsampled, there are a lot left!
 
 ## Word Count
 
+Word count per review for the downsampled data:
+
 ``` r
 reviews_df <- reviews_df |>
   mutate(word_count = str_count(tokens, '\\,')+1)
@@ -453,6 +455,14 @@ reviews_df
     10  97148560 english  2021-07-08 POS         Fun and…   239200 fun, …         23
     # ℹ 74,834 more rows
 
+Doing the same on the full data set so we can look at the true average
+length of *all* reviews
+
+``` r
+full_df <- full_df |>
+  mutate(word_count = str_count(tokens, '\\,')+1)
+```
+
 ### Review length
 
 With word counts per review added, let’s take a look!
@@ -464,16 +474,21 @@ summary(reviews_df$word_count)
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
        1.00    7.00   22.00   61.75   64.00 2182.00 
 
+``` r
+summary(full_df$word_count)
+```
+
+       Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+       1.00    5.00   17.00   51.59   50.00 2182.00 
+
 So the average review (for the full data) is around 51/52 words long,
 and the median 17 words. Adjusted, that shifts to an average of almost
-62 words, and a median of 22. Because we adjusted specifically the
-positive reviews, and a vast majority of the shortest reviews were all
-positive, the average lengths are a bit higher.
+62 words, and a median of 22.
 
-Let’s look a little deeper.
+Let’s look a little deeper into the slight shift.
 
 ``` r
-reviews_df |>
+full_df |>
   filter(word_count==1) |>
   group_by(review_type) |>
   summarise(total=n())
@@ -483,10 +498,10 @@ reviews_df |>
       review_type total
       <chr>       <int>
     1 NEG          1218
-    2 POS          3065
+    2 POS         12191
 
 ``` r
-reviews_df |>
+full_df |>
   filter(word_count>1700) |>
   group_by(review_type) |>
   summarise(total=n())
@@ -495,53 +510,53 @@ reviews_df |>
     # A tibble: 1 × 2
       review_type total
       <chr>       <int>
-    1 POS            17
+    1 POS            51
+
+A huge amount of positive reviews (8%!) are only one word long. For
+negative reviews that total is 3%. That would certainly explain the dip
+in average length when looking at the full data set!
+
+Let’s take a look at those short and long reviews.
 
 ``` r
-reviews_df |>
+full_df |>
   filter(word_count==1)
 ```
 
-    # A tibble: 4,283 × 8
-       review_id language date       review_type review   steam_id tokens word_count
-           <dbl> <chr>    <date>     <chr>       <chr>       <dbl> <chr>       <dbl>
-     1  41760508 english  2018-03-29 POS         pig        239200 pig             1
-     2  63250890 english  2020-01-10 POS         yesl       239200 yesl            1
-     3  11965806 english  2014-08-03 POS         scary      239200 scary           1
-     4 109579105 english  2022-01-05 POS         nice       239200 nice            1
-     5 185722507 english  NA         POS         pig        239200 pig             1
-     6  42661163 english  2018-05-12 POS         granny     239200 granny          1
-     7  41023366 english  2018-02-24 POS         <3         239200 3               1
-     8 116029011 english  2022-04-26 POS         Pigopho…   239200 pigop…          1
-     9 121846966 english  2022-08-06 POS         Pig        239200 pig             1
-    10 124839213 english  2022-10-02 POS         nice       239200 nice            1
-    # ℹ 4,273 more rows
+    # A tibble: 13,409 × 8
+       review_id language date       review_type review  steam_id tokens  word_count
+           <dbl> <chr>    <date>     <chr>       <chr>      <dbl> <chr>        <dbl>
+     1 201605730 english  2025-07-07 POS         Peak      239200 peak             1
+     2 200743403 english  2025-06-26 NEG         bad       239200 bad              1
+     3 197815403 english  2025-05-21 POS         meh       239200 meh              1
+     4 195500370 english  2025-04-24 POS         Best      239200 best             1
+     5 194075241 english  2025-04-02 POS         Classic   239200 classic          1
+     6 191186015 english  2025-02-26 POS         pig       239200 pig              1
+     7 190284038 english  2025-02-15 POS         oink      239200 oink             1
+     8 190005117 english  2025-02-12 NEG         idk       239200 idk              1
+     9 186869243 english  2025-01-01 NEG         no        239200 no               1
+    10 185722507 english  NA         POS         pig       239200 pig              1
+    # ℹ 13,399 more rows
 
 ``` r
-reviews_df |>
+full_df |>
   filter(word_count>1700)
 ```
 
-    # A tibble: 17 × 8
+    # A tibble: 51 × 8
        review_id language date       review_type review   steam_id tokens word_count
            <dbl> <chr>    <date>     <chr>       <chr>       <dbl> <chr>       <dbl>
      1 169799070 english  2024-06-14 POS         im goin…   632470 im, g…       1980
-     2 187995888 english  2025-01-16 POS         the end…  1703340 the, …       1886
-     3 127151239 english  2022-10-27 POS         end is …  1703340 end, …       1883
-     4 137469776 english  2023-03-29 POS         THE END…  1703340 the, …       1882
-     5 191032150 english  2025-02-24 POS         The end…  1703340 the, …       2182
-     6 198792433 english  2025-06-03 POS         the end…  1703340 the, …       1730
-     7 175693077 english  2024-08-24 POS         The End…  1703340 the, …       1767
-     8 176962359 english  2024-09-13 POS         THE END…  1703340 the, …       1786
-     9 162530627 english  2024-03-09 POS         THE END…  1703340 the, …       1883
-    10 153323876 english  2023-11-10 POS         the end…  1703340 the, …       1882
-    11 196181590 english  2025-05-01 POS         the end…  1703340 the, …       1883
-    12 149084153 english  2023-09-29 POS         The end…  1703340 the, …       1882
-    13 194031541 english  2025-04-02 POS         The end…  1703340 the, …       1883
-    14 176544573 english  2024-09-07 POS         The End…  1703340 the, …       1760
-    15 177839146 english  2024-09-27 POS         The end…  1703340 the, …       1880
-    16 164013386 english  2024-04-02 POS         THE END…  1703340 the, …       1868
-    17 154382656 english  2023-11-25 POS         the end…  1703340 the, …       1882
+     2 202889082 english  2025-07-26 POS         I think…  1703340 i, th…       1876
+     3 198792433 english  2025-06-03 POS         the end…  1703340 the, …       1730
+     4 196181590 english  2025-05-01 POS         the end…  1703340 the, …       1883
+     5 195331550 english  2025-04-21 POS         The end…  1703340 the, …       1883
+     6 194031541 english  2025-04-02 POS         The end…  1703340 the, …       1883
+     7 192702260 english  2025-03-14 POS         THE END…  1703340 the, …       1883
+     8 192121032 english  2025-03-06 POS         The end…  1703340 the, …       1882
+     9 191174046 english  2025-02-25 POS         The End…  1703340 the, …       1880
+    10 191032150 english  2025-02-24 POS         The end…  1703340 the, …       2182
+    # ℹ 41 more rows
 
 There’s quite a few one-word reviews! Some of them are pretty
 reasonable… “Amazing”, “Spooky”, “Boring”, “Unplayable”. Short and
@@ -600,8 +615,10 @@ analyzed here, are likely to be shorter.
 Now to what we came here to look into. Are positive reviews typically
 longer, or negative reviews?
 
+**Note:** These are all calculated on the *full size* data set.
+
 ``` r
-ggplot(reviews_df, aes(x=review_type, y = word_count)) + 
+ggplot(full_df, aes(x=review_type, y = word_count)) + 
   stat_summary(fun = mean, geom = "bar", fill = "skyblue") +
   geom_text(aes(label = after_stat(sprintf("%.2f", y))), stat = "summary", fun = "mean", vjust = 3, hjust=0.5) +
   labs(y="Word Count", x="Review Type", title="Average Review Length")
@@ -627,7 +644,7 @@ I wonder if there’s a trend in shorter reviews that might be swinging
 this average one way or the other.
 
 ``` r
-reviews_df |>
+full_df |>
   group_by(review_type) |>
   filter(word_count<6) |>
   summarise(word_count = sum(word_count))
@@ -637,32 +654,36 @@ reviews_df |>
       review_type word_count
       <chr>            <dbl>
     1 NEG              14475
-    2 POS              27493
+    2 POS             112923
 
 Looks like it’s pretty common for positive reviews to be shorter. This
 could potentially drag down the overall average of positive reviews.
 
-38.7% of all negative reviews are 5 words or shorter, and 73.5% of all
-positive reviews are. That’s quite a big chunk of reviews!
+38.7% of all negative reviews are 5 words or shorter, and 74.4% of all
+positive reviews are. That’s quite a big chunk of reviews! Definitely
+significant enough to make the average length of positive reviews quite
+short.
 
 Rather than look at the average review length of all 45 games, let’s
 look at maybe the longest 5 and shortest 5, just to see.
 
 ``` r
-# recreate merged games so it includes word count
-merged_games <- reviews_df |>
+# recreate merged games2 so it includes word count
+# reminder that merged games 2 is with the full data set
+merged_games2 <- full_df |>
   left_join(games)
 ```
 
     Joining with `by = join_by(steam_id)`
 
 ``` r
-LS_games <- merged_games |>
+LS_games <- merged_games2 |>
   group_by(game) |>
   summarise(avg = mean(word_count)) |>
   arrange(desc(avg))
 
-gamerank <- merged_games |> dplyr::select(game,rank)
+#pull the game steam rankings per title
+gamerank <- merged_games2 |> dplyr::select(game,rank)
 
 LS_games <- left_join(LS_games, gamerank)
 ```
@@ -670,12 +691,14 @@ LS_games <- left_join(LS_games, gamerank)
     Joining with `by = join_by(game)`
 
 ``` r
+# longest reviews 5 games
 LScut1 <- LS_games |>
   distinct(game, .keep_all = TRUE) |>
   slice(1:5) |>
   #reorder by total so that the plot legend is in the right order
   mutate(game = fct_reorder(game, avg, .desc = TRUE))
 
+# shortest reviews 5 games
 LScut2 <- LS_games |>
   distinct(game, .keep_all = TRUE) |>
   slice(41:45) |>
@@ -706,18 +729,28 @@ ggplot(LScut2, aes(x = reorder(game, -avg), y=avg, fill=game)) +
 
 It looks like maybe the “people have more to say about games they don’t
 like” theory might be onto something. None of the longest review length
-averages touch the four positive game ranks.
+averages touch the four positive game ranks. Most of them are Mixed!
+While the mixed ranking is calculated by the ratio of positive to
+negative reviews per game, it’s not a stretch to imagine the people
+reviewing it may also feel mixed and have more to say in response.
+
+Almost all of the games with the shortest reviews are in the positive
+rankings!
 
 ### Length Stats
 
-Word length histograms…. A LOT of reviews are all grouped together at
-the lower end of the spectrum
+Review length histograms…. A LOT of reviews are all grouped together at
+the lower end of the spectrum as we just saw. In the case of positive
+reviews, almost 3/4 of all reviews are 5 words or shorter!
+
+To make the histogram easier to review, a log transformation has been
+used.
 
 ``` r
-posrevs <- reviews_df |>
+posrevs <- full_df |>
   filter(review_type=='POS')
 
-negrevs <- reviews_df |>
+negrevs <- full_df |>
   filter(review_type=='NEG')
 ```
 
@@ -746,7 +779,7 @@ neg
 ![](2-data-analysis_files/figure-commonmark/pos-neg-dist-2.png)
 
 ``` r
-ggplot(reviews_df, aes(x=review_type, y=word_count, fill=review_type)) + 
+ggplot(full_df, aes(x=review_type, y=word_count, fill=review_type)) + 
   geom_violin() +
   scale_y_log10() +
   labs(x="Review Type", y="Word Count", title="Word Count by Review Type") 
@@ -755,7 +788,9 @@ ggplot(reviews_df, aes(x=review_type, y=word_count, fill=review_type)) +
 ![](2-data-analysis_files/figure-commonmark/WC-vplot-1.png)
 
 An interesting visual! The lower length reviews appear in *very* similar
-proportions in both categories.
+proportions in both categories, but more extreme in the positive
+reviews. The higher average review length for negative reviews is
+visible at the widest point.
 
 ## Word Types & Count
 
@@ -794,7 +829,8 @@ mean that no words were repeated in the document.
 
 TTR is very sensitive to document length. Too long, and documents taper
 off. There are only so many content words to be used in a document,
-eventually the highly repetitive function words will outnumber them.
+eventually the highly repetitive function words will catch up or
+potentially outnumber them.
 
 [source](https://medium.com/@rajeswaridepala/empirical-laws-ttr-cc9f826d304d)
 
@@ -902,7 +938,52 @@ summary(midneg$TTR)
         Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
     0.005128 0.497937 0.534737 0.532534 0.568831 0.812155 
 
-TO DO - summarize this
+``` r
+nrow(midpos)
+```
+
+    [1] 718
+
+``` r
+nrow(midneg)
+```
+
+    [1] 1559
+
+First, there are a lot more negative reviews in this midlength selection
+of reviews. Makes sense considering we know negative reviews are
+typically longer. Let’s select a random set of 718 of midlength negative
+reviews and compare a bit more equally.
+
+``` r
+set.seed(60)
+midneg <- midneg |>
+  slice_sample(n = 718)
+
+summary(midpos$TTR)
+```
+
+        Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    0.003311 0.493451 0.526227 0.516818 0.564740 0.740260 
+
+``` r
+summary(midneg$TTR)
+```
+
+       Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    0.01714 0.49851 0.53486 0.53322 0.56956 0.72360 
+
+The average TTR score for reviews in the 300-700 word range is not too
+significantly different for positive vs negative reviews even after
+slicing into equal sample sizes. Positive reviews are just a *bit* lower
+in average in TTR than negative reviews, showing a little bit more
+repetitiveness.
+
+What is interesting, though, is the difference in range of TTR per
+review type. Positive reviews have a difference of 0.736949 and negative
+reviews 0.67371. Still not wildly massive, but it seems that positive
+reviews rule in the extremes even at this midlength point of review
+length, having both the most and least repetitive reviews.
 
 ## Tf-idf
 
@@ -974,20 +1055,20 @@ pos_toks <- posrevs |>
 pos_toks
 ```
 
-    # A tibble: 39,009 × 2
-       word           n
-       <chr>      <int>
-     1 game       40918
-     2 story       7463
-     3 play        6827
-     4 10          5782
-     5 games       5558
-     6 fun         5299
-     7 time        5119
-     8 love        3819
-     9 played      3789
-    10 experience  3197
-    # ℹ 38,999 more rows
+    # A tibble: 83,753 × 2
+       word            n
+       <chr>       <int>
+     1 game       166027
+     2 story       29997
+     3 play        27901
+     4 10          24908
+     5 games       22593
+     6 fun         21449
+     7 time        20943
+     8 love        15525
+     9 played      15437
+    10 experience  13096
+    # ℹ 83,743 more rows
 
 Taking a look at the most frequent words in positive reviews can give us
 a look into what people might write about enjoying specifically! Story,
@@ -1069,20 +1150,20 @@ posfreq <- pos_toks |>
 posfreq
 ```
 
-    # A tibble: 39,009 × 2
+    # A tibble: 83,753 × 2
        word       proportion
        <chr>           <dbl>
-     1 game          0.0660 
-     2 story         0.0120 
+     1 game          0.0657 
+     2 story         0.0119 
      3 play          0.0110 
-     4 10            0.00933
-     5 games         0.00896
-     6 fun           0.00855
-     7 time          0.00826
-     8 love          0.00616
+     4 10            0.00986
+     5 games         0.00895
+     6 fun           0.00849
+     7 time          0.00829
+     8 love          0.00615
      9 played        0.00611
-    10 experience    0.00516
-    # ℹ 38,999 more rows
+    10 experience    0.00519
+    # ℹ 83,743 more rows
 
 ``` r
 negfreq <- neg_toks |>
@@ -1121,20 +1202,20 @@ freq <- bind_rows(mutate(pos_toks, review_type = "Positive"),
 freq
 ```
 
-    # A tibble: 110,000 × 3
+    # A tibble: 162,646 × 3
        word  review_type proportion
        <chr> <chr>            <dbl>
      1 '     Positive     0.000179 
      2 '     Negative     0.0000199
-     3 a     Positive     0.000487 
+     3 a     Positive     0.000609 
      4 a     Negative     0.000776 
-     5 aa    Positive     0.0000256
+     5 aa    Positive     0.0000119
      6 aa    Negative     0.0000398
-     7 aaa   Positive     0.0000513
+     7 aaa   Positive     0.0000239
      8 aaa   Negative     0.0000199
-     9 aaaa  Positive     0.0000256
+     9 aaaa  Positive     0.0000119
     10 aaaa  Negative     0.0000199
-    # ℹ 109,990 more rows
+    # ℹ 162,636 more rows
 
 ### Total Words & Freq
 
@@ -1244,6 +1325,17 @@ review_tf_idf |>
      9 117679620 POS         stomp       132   132 1      7.56   7.56
     10  77293859 NEG         crash       128   128 1      4.58   4.58
     # ℹ 1,430,805 more rows
+
+``` r
+reviews_df |>
+  filter(review_id==76036759)
+```
+
+    # A tibble: 1 × 11
+      review_id language date       review_type review    steam_id tokens word_count
+          <dbl> <chr>    <date>     <chr>       <chr>        <dbl> <chr>       <dbl>
+    1  76036759 english  2020-08-16 NEG         bad bad …    10220 bad, …        227
+    # ℹ 3 more variables: types <chr>, type_count <dbl>, TTR <dbl>
 
 To prep this dataframe for the classifier, let’s narrow down to only the
 columns we know we want.

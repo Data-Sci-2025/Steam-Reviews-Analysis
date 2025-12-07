@@ -11,7 +11,6 @@ library(tidytext)
 library(ggplot2)
 library(tidyr)
 library(scales)
-library(ggplot2)
 library(forcats)
 ```
 
@@ -315,12 +314,22 @@ Even after adjusting, Positive ranked games are more reviewed than Negative ones
 
 ## Word Count
 
+Word count per review for the downsampled data:
+
 ```{r}
 #| label: word-count
 reviews_df <- reviews_df |>
   mutate(word_count = str_count(tokens, '\\,')+1)
 
 reviews_df
+```
+
+
+Doing the same on the full data set so we can look at the true average length of *all* reviews
+
+```{r}
+full_df <- full_df |>
+  mutate(word_count = str_count(tokens, '\\,')+1)
 ```
 
 
@@ -334,32 +343,42 @@ With word counts per review added, let's take a look!
 summary(reviews_df$word_count)
 ```
 
-So the average review (for the full data) is around 51/52 words long, and the median 17 words. 
-Adjusted, that shifts to an average of almost 62 words, and a median of 22. Because we adjusted specifically the positive reviews, and a vast majority of the shortest reviews were all positive, the average lengths are a bit higher.
+```{r}
+#| label: WC-full
+summary(full_df$word_count)
+```
 
-Let's look a little deeper. 
+So the average review (for the full data) is around 51/52 words long, and the median 17 words. 
+Adjusted, that shifts to an average of almost 62 words, and a median of 22. 
+
+Let's look a little deeper into the slight shift. 
 
 
 ```{r}
 #| label: short-long-counts
-reviews_df |>
+full_df |>
   filter(word_count==1) |>
   group_by(review_type) |>
   summarise(total=n())
 
-reviews_df |>
+full_df |>
   filter(word_count>1700) |>
   group_by(review_type) |>
   summarise(total=n())
 ```
 
 
+A huge amount of positive reviews (8%!) are only one word long. For negative reviews that total is 3%. That would certainly explain the dip in average length when looking at the full data set! 
+
+Let's take a look at those short and long reviews.
+
+
 ```{r}
 #| label: WC-low-high
-reviews_df |>
+full_df |>
   filter(word_count==1)
 
-reviews_df |>
+full_df |>
   filter(word_count>1700)
 ```
 
@@ -390,10 +409,12 @@ According to [this](https://rebeccagraf-63084.medium.com/how-long-should-book-re
 
 Now to what we came here to look into. Are positive reviews typically longer, or negative reviews? 
 
+**Note:** These are all calculated on the *full size* data set.
+
 
 ```{r}
 #| label: plot-avg-len
-ggplot(reviews_df, aes(x=review_type, y = word_count)) + 
+ggplot(full_df, aes(x=review_type, y = word_count)) + 
   stat_summary(fun = mean, geom = "bar", fill = "skyblue") +
   geom_text(aes(label = after_stat(sprintf("%.2f", y))), stat = "summary", fun = "mean", vjust = 3, hjust=0.5) +
   labs(y="Word Count", x="Review Type", title="Average Review Length")
@@ -406,7 +427,7 @@ I wonder if there's a trend in shorter reviews that might be swinging this avera
 
 ```{r}
 #| label: rev-type-count
-reviews_df |>
+full_df |>
   group_by(review_type) |>
   filter(word_count<6) |>
   summarise(word_count = sum(word_count))
@@ -414,32 +435,36 @@ reviews_df |>
 
 Looks like it's pretty common for positive reviews to be shorter. This could potentially drag down the overall average of positive reviews. 
 
-38.7% of all negative reviews are 5 words or shorter, and 73.5% of all positive reviews are. That's quite a big chunk of reviews! 
+38.7% of all negative reviews are 5 words or shorter, and 74.4% of all positive reviews are. That's quite a big chunk of reviews! Definitely significant enough to make the average length of positive reviews quite short. 
 
 
 Rather than look at the average review length of all 45 games, let's look at maybe the longest 5 and shortest 5, just to see. 
 
 ```{r}
 #| label: long-short-cuts
-# recreate merged games so it includes word count
-merged_games <- reviews_df |>
+# recreate merged games2 so it includes word count
+# reminder that merged games 2 is with the full data set
+merged_games2 <- full_df |>
   left_join(games)
 
-LS_games <- merged_games |>
+LS_games <- merged_games2 |>
   group_by(game) |>
   summarise(avg = mean(word_count)) |>
   arrange(desc(avg))
 
-gamerank <- merged_games |> dplyr::select(game,rank)
+#pull the game steam rankings per title
+gamerank <- merged_games2 |> dplyr::select(game,rank)
 
 LS_games <- left_join(LS_games, gamerank)
 
+# longest reviews 5 games
 LScut1 <- LS_games |>
   distinct(game, .keep_all = TRUE) |>
   slice(1:5) |>
   #reorder by total so that the plot legend is in the right order
   mutate(game = fct_reorder(game, avg, .desc = TRUE))
 
+# shortest reviews 5 games
 LScut2 <- LS_games |>
   distinct(game, .keep_all = TRUE) |>
   slice(41:45) |>
@@ -466,21 +491,25 @@ ggplot(LScut2, aes(x = reorder(game, -avg), y=avg, fill=game)) +
 ```
 
 
-It looks like maybe the "people have more to say about games they don't like" theory might be onto something. None of the longest review length averages touch the four positive game ranks. 
+It looks like maybe the "people have more to say about games they don't like" theory might be onto something. None of the longest review length averages touch the four positive game ranks. Most of them are Mixed! While the mixed ranking is calculated by the ratio of positive to negative reviews per game, it's not a stretch to imagine the people reviewing it may also feel mixed and have more to say in response. 
+
+Almost all of the games with the shortest reviews are in the positive rankings! 
 
 
 
 ### Length Stats
 
-Word length histograms.... A LOT of reviews are all grouped together at the lower end of the spectrum
+Review length histograms.... A LOT of reviews are all grouped together at the lower end of the spectrum as we just saw. In the case of positive reviews, almost 3/4 of all reviews are 5 words or shorter! 
+
+To make the histogram easier to review, a log transformation has been used.
 
 
 ```{r}
 #| label: pos-neg-revs
-posrevs <- reviews_df |>
+posrevs <- full_df |>
   filter(review_type=='POS')
 
-negrevs <- reviews_df |>
+negrevs <- full_df |>
   filter(review_type=='NEG')
 ```
 
@@ -504,13 +533,13 @@ neg
 
 ```{r}
 #| label: WC-vplot
-ggplot(reviews_df, aes(x=review_type, y=word_count, fill=review_type)) + 
+ggplot(full_df, aes(x=review_type, y=word_count, fill=review_type)) + 
   geom_violin() +
   scale_y_log10() +
   labs(x="Review Type", y="Word Count", title="Word Count by Review Type") 
 ```
 
-An interesting visual! The lower length reviews appear in *very* similar proportions in both categories.
+An interesting visual! The lower length reviews appear in *very* similar proportions in both categories, but more extreme in the positive reviews. The higher average review length for negative reviews is visible at the widest point. 
 
 
 ## Word Types & Count
@@ -541,19 +570,13 @@ reviews_df <- reviews_df |>
 ```
 
 
-```{r}
-#| label: write_reviews_df
-write_csv(reviews_df, file="../private/reviews_emojis.csv")
-```
-
-
 ## TTR 
 
-TTR is used to measure the variety of language used in a text. It's not  exactly a measure of the complexity of a document, but can be considered with other factors as an indicator of a writer's language abilities. 
+TTR is used to measure the variety of language used in a text. It's not exactly a measure of the complexity of a document, but can be considered with other factors as an indicator of a writer's language abilities. 
 
 TTR is measured by dividing the total number of word types (unique words used) by total number of word tokens (all words used). A low score (closer to 0) indicates a highly repetitive document, and a high score (closer to 1) indicates a higher variety or words. A score of 1 would mean that no words were repeated in the document. 
 
-TTR is very sensitive to document length. Too long, and documents taper off. There are only so many content words to be used in a document, eventually the highly repetitive function words will outnumber them. 
+TTR is very sensitive to document length. Too long, and documents taper off. There are only so many content words to be used in a document, eventually the highly repetitive function words will catch up or potentially outnumber them. 
 
 [source](https://medium.com/@rajeswaridepala/empirical-laws-ttr-cc9f826d304d)
 
@@ -608,8 +631,25 @@ midneg <- midlength |>
   filter(review_type=='NEG')
 summary(midneg$TTR)
 ```
+```{r}
+nrow(midpos)
+nrow(midneg)
+```
 
-TO DO - summarize this
+First, there are a lot more negative reviews in this midlength selection of reviews. Makes sense considering we know negative reviews are typically longer. Let's select a random set of 718 of midlength negative reviews and compare a bit more equally.
+
+```{r}
+set.seed(60)
+midneg <- midneg |>
+  slice_sample(n = 718)
+
+summary(midpos$TTR)
+summary(midneg$TTR)
+```
+
+The average TTR score for reviews in the 300-700 word range is not too significantly different for positive vs negative reviews even after slicing into equal sample sizes. Positive reviews are just a *bit* lower in average in TTR than negative reviews, showing a little bit more repetitiveness. 
+
+What is interesting, though, is the difference in range of TTR per review type. Positive reviews have a difference of 0.736949 and negative reviews 0.67371. Still not wildly massive, but it seems that positive reviews rule in the extremes even at this midlength point of review length, having both the most and least repetitive reviews. 
 
 
 ## Tf-idf
@@ -792,8 +832,6 @@ review_tf_idf <- review_tf_idf |>
 
 review_tf_idf
 ```
-
-
 
 
 

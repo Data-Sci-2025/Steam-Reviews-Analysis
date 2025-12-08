@@ -1,11 +1,6 @@
 ---
 title: "2-data-analysis"
 format: gfm
-knitr:
-  opts_chunk:
-    fig.path: "../images/"
-
-
 ---
 
 ```{r}

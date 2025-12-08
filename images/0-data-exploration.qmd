@@ -1,0 +1,263 @@
+---
+title: "data exploration"
+format: gfm
+params:
+  write_df: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+```
+
+## Data Preview & First Looks
+
+```{r}
+#| label: amnesia
+amnesia <- read_csv("../data/amnesia.csv")
+amnesia
+```
+
+
+```{r}
+#| label: deadlyprem
+deadlyprem <- read_csv("../data/deadlyprem.csv")
+deadlyprem
+```
+
+
+First looks show some of the first areas I know I have to work around. I called up two games just to confirm that they both look the same. Both have the same almost metadata-like details at the top that will have to be excluded, and both (and all the rest) of the files have that one odd issue, with the column name being the game's steam id (used to pull the reviews in through the script)
+
+```{r}
+#| label: prem-colnames
+print(colnames(deadlyprem))
+```
+
+## Early Tidying Steps
+
+### colnames
+
+
+```{r}
+#| label: premcols
+deadlyprem <- deadlyprem |>
+  rename(review_id = 1, language = 2, date = 3, review_type = 4, purchased = 5, score = 6, upvotes = 7, review = 8, engtxt = 9) |>
+  filter(language == 'english')
+```
+
+Thinking about future column names! Not yet thinking deeply about what columns I'll ultimately drop, but I'm starting to weigh my options (date, upvotes, engtxt)
+
+Note: Think about how to rename cols using iteration for ease.... the language column name comes from the game url id number used to pull the reviews. 
+
+
+### str replace
+
+
+```{r}
+#| label: pre,-reviews
+deadlyprem |>
+  distinct(review_type)
+```
+
+```{r}
+#| label: prem-replace
+deadlyprem |>
+  mutate(review_type =  str_replace_all(review_type, 
+                c("✅" = "POS",
+                  "❌" = "NEG")))
+```
+
+For now, going with POS and NEG for easy visual differences. I found "positive" and "negative" too messy and similar looking at a glance, I think POS and NEG are easier to quickly tell apart. 
+
+
+## Game Info DFs
+
+I go into some more detail about these in my [projnotes](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/notes_and_info/projnotes.md) file there. All this information comes directly from the Steam app. The app only shows English reviews as a separate metric from all reviews at a certain number of reviews. In those cases, I had to check the total number of English reviews from the csv files individually. 
+
+```{r}
+#| label: overpos
+overpos <- tibble(game = c("Outer wilds", "Stardew Valley", "Hades", "Chants of Sennaar", "The Case of the Golden Idol"), rank = "Overwhelmingly Positive", perc_positive = c("95%", "98%", "98%", "98%", "98%"), year = c("2020", "2016", "2020", "2023", "2022"), total_reviews = c("75,534", "797,573", "264,668", "22,874", "8,107"), eng_reviews = c("45,703", "363,715", "133,152", "10,464", "5,778"), price = c("$25", "$15", "$25", "$20", "$18"),  steam_id = c("753640", "413150", "1145360", "1931770", "1677770"))
+overpos
+
+```
+
+
+```{r}
+#| label: verypos
+verypos <- tibble(game = c("Disco Elysium", "Superliminal", "The Stanley Parable: Ultra Deluxe", "Dead Space 2", "Night in the Woods"), rank = "Very Positive", perc_positive = c("92%", "94%", "94%", "94%", "94%"), year = c("2019", "2020", "2022", "2011", "2017"), total_reviews = c("105,914", "25,549", "30,300", "22,870", "16,570"), eng_reviews = c("52,174", "13,202", "22,192","10,723", "12,697"), price = c("$40", "$20", "$25", "$20", "$20"), steam_id = c("632470", "1049410", "1703340", "47780", "481510"))
+verypos
+```
+
+
+```{r}
+#| label: pos
+pos <- tibble(game = c("Powerful Courses", "Bike Ride 3D", "Tomorrow is my Birthday", "Hyper Space", "Ascending Inferno"), rank = "Positive", perc_positive = c("100%", "100%", "100%", "100%", "100%"), year = c("2023", "2024", "2024", "2024", "2024"), total_reviews = c("49", "49", "48", "33", "48"), eng_reviews = c("37", "43", "42","15", "53"), price = c("$15", "$4", "$3", "$5", "$15"), steam_id = c("2092330", "2607330", "2940020", "2444290", "2442820"))
+pos
+```
+
+
+```{r}
+#| label: mostlypos
+mostlypos <- tibble(game = c("Ranch Simulator", "Resident Evil 6", "Dark Pictures Anthology: Little Hope", "Blair Witch", "Final Fantasy VIII Remastered"), rank = "Mostly Positive", perc_positive = c("80%", "79%", "73%", "78%", "73%"), year = c("2023", "2013", "2020", "2019", "2019"), total_reviews = c("32,194", "41,151", "6,068", "5,898", "4,174"), eng_reviews = c("9,373", "12,266", "2,713","2,761", "2,421"), price = c("$25", "$20", "$20", "$30", "$20"), steam_id = c("1119730", "221040", "1194630", "1092660", "1026680"))
+mostlypos
+```
+
+
+```{r}
+#| label: mixed
+mixed <- tibble(game = c("Deadly Premonition: The Director's Cut", "Silent Hill Homecoming", "Redfall", "Amneisa: A Machine for Pigs", "Vampire: The Masquerade - Coteries of New York"), rank = "Mixed", perc_positive = c("66%", "47%", "41%", "68%", "69%"), year = c("2013", "2008", "2023", "2013", "2019"), total_reviews = c("3,072", "2,379", "2,380", "6,807", "2,113"), eng_reviews = c("1,976", "1,099", "1,629","4,178", "1,266"), price = c("$25", "$40", "$40", "$20", "$20"), steam_id = c("247660", "19000", "1294810", "239200", "1096410"))
+mixed
+```
+
+
+```{r}
+#| label: mostlyneg
+mostlyneg <- tibble(game = c("Roller Coaster Tycoon World", "Urban Empire", "Postal 3", "Towns", "Edge of Space"), rank = "Mostly Negative", perc_positive = c("25%", "34%", "39%", "27%", "32%"), year = c("2016", "2017", "2011", "2012", "2015"), total_reviews = c("3,179", "1,902", "4,328", "2,381", "1,945"), eng_reviews = c("1,944", "892", "1,984","2,058", "2,428"), price = c("$15", "$30", "$6", "$15", "$15"), steam_id = c("282560", "352550", "10220", "221020", "238240"))
+mostlyneg
+```
+
+
+```{r}
+#| label: neg
+neg <- tibble(game = c("Bridge!", "Damned Nation Reborn", "Hazen: The Dark Whispers", "At Home", "Girl with a big SWORD"), rank = "Negative", perc_positive = c("12%", "10%", "20%", "18%", "16%"), year = c("2011", "2015", "2010", "2019", "2018"), total_reviews = c("47", "83", "48", "44", "43"), eng_reviews = c("31", "48", "41","26", "35"), price = c("$5", "$13", "$9", "$5", "$2"), steam_id = c("300160", "345710", "46730", "1048640", "946600"))
+neg
+```
+
+
+```{r}
+#| label: veryneg
+veryneg <- tibble(game = c("Lords of the Black Sun", "Skyscraper Simulator", "Citadels", "Construction Machines 2014", "Bhop Pro"), rank = "Very Negative", perc_positive = c("18%", "14%", "13%", "7%", "17%"), year = c("2014", "2010", "2013", "2014", "2020"), total_reviews = c("328", "266", "490", "239", "244"), eng_reviews = c("300", "479", "276","156", "69"), price = c("$25", "$3", "$15", "$7", "$10"), steam_id = c("246940", "252910", "238870", "252050", "1308950"))
+veryneg
+```
+
+
+
+```{r}
+#| label: overneg
+overneg <- tibble(game = c("Kinetic Void", "Spacebase DF9", "FlatOut 3 Chaos & Destruction", "Command & Conquer 4 Tiberian Twilight", "Superpower 3"), rank = "Overwhelmingly Negative", perc_positive = c("17%", "17%", "17%", "16%", "10%"), year = c("2014", "2014", "2011", "2010", "2022"), total_reviews = c("1,553", "4,313", "4,079", "4,711", "4,713"), eng_reviews = c("1,346", "3,675", "1,606","2,625", "2,626"), price = c("$10", "$10", "$10", "$20", "$30"), steam_id = c("227160", "246090", "201510", "47700", "1563130"))
+overneg
+```
+
+
+
+```{r}
+#| label: gamesdf
+allgames <- bind_rows(overpos, verypos, pos, mostlypos, mixed, mostlyneg, neg, veryneg, overneg)
+allgames
+```
+
+
+```{r}
+#write_csv(allgames, file="0-gameinfo.csv")
+```
+
+
+### Some quick stats
+
+45 total games, how many reviews will I be looking at? 
+
+```{r}
+#| label: reviews-total
+allgames <- allgames |>
+  mutate(total_reviews = (str_replace_all(total_reviews, ",", ""))) |>
+  mutate(total_reviews = as.numeric(total_reviews))
+  
+sum(allgames$total_reviews)
+
+```
+
+```{r}
+#| label: eng-total
+allgames <- allgames |>
+  mutate(eng_reviews = (str_replace_all(eng_reviews, ",", ""))) |>
+  mutate(eng_reviews = eng_reviews |>
+           na_if("NA")) |>
+  mutate(eng_reviews = as.numeric(eng_reviews))
+  
+sum(allgames$eng_reviews, na.rm=TRUE)
+```
+
+I only plan to look at english reviews, but it took some work to transform both columns into something sum-able.
+
+
+## Getting the Data read in
+
+Getting the files read in starts with the list of all the file names in the data file:
+
+
+```{r}
+#| label: list-files
+filenames <- list.files("../data", pattern="*\\.csv$", full.names=TRUE)
+filenames
+```
+
+## Building Function and Dataframe
+
+Because the base .csv files all look the same, but are a bit odd, there are some quirks to deal with in the function. 
+
+1. because column 2 is the game's unique steam ID it prevents them being read in all together, so we have to flatten them into one string with str_flatten
+
+2. renaming those columns as decided earlier
+
+3. because the .csv files also have some meta data already seen above, the review_id, score, and upvotes cols were causing issues. The early rows are <chr> and the later ones are <int> so we have to force it as an int until we ditch that header info altogether. 
+
+
+```{r}
+#| label: df-function
+build_df <- function(x){
+  gamelines <- read_lines(x)
+  flatlines <- str_flatten(gamelines, "\n")
+  games_df <- read_csv(flatlines)
+  steam_id <- games_df |> select(2) |> colnames()
+  games_df <- games_df |> mutate(steam_id = steam_id)
+  games_df <- games_df |>
+    rename(review_id = 1, language = 2, date = 3, review_type = 4, purchased = 5, score = 6, upvotes = 7, review = 8, engtxt = 9) |>
+    filter(language == 'english') |>
+    mutate(review_id = as.integer(review_id)) |> 
+    mutate(score = as.integer(score)) |>
+    mutate(upvotes = as.integer(upvotes))
+}
+```
+
+Using the function, build up the dataframe, map the 45 different steam ID numbers onto 45 different dataframes, and then bind them all together!
+
+```{r}
+#| label: build-df
+games_df <- map((filenames), build_df)|> 
+  bind_rows()
+
+games_df
+```
+
+Just to verify, here they are! 45 different steam ID numbers for 45 different games. Thanks Dan for all the help!!
+
+```{r}
+#| label: id-verify
+games_df |>
+  distinct(steam_id)
+```
+
+
+## Write out reviews_csv
+
+
+```{r}
+#| label: reviews-csv
+#| eval: !expr param$write_df
+if (!dir.exists("../private")) {
+  dir.create("../private")
+  }
+
+write_csv(games_df, file="../private/reviews.csv")
+```
+
+
+## Session Info
+
+```{r}
+#| label: sessioninfo
+sessionInfo()
+```
+
+

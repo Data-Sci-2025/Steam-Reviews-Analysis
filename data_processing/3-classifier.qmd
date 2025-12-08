@@ -129,7 +129,7 @@ Instead, I did a random sampling method of 300,000 rows of data and confirmed af
 
 setup_sample <- sample_n(reviews_shortened, 800)
 
-
+**Note that for rendered .md sampled slice is much smaller than in the .qmd file because rendering kept timing out**
 
 ```{r}
 #| label: sample-slice
@@ -307,10 +307,7 @@ confusion_matrix <- rf_model$confusion.matrix
 
 Here are the results for this classifier when I excluded word count as a variable:
 
-     predicted
-true    NEG   POS
-  NEG 20683     1
-  POS 19520    22
+![](../notes_and_info/Classifier.PNG)
 
 
 

@@ -587,10 +587,10 @@ TTR is very sensitive to document length. Too long, and documents taper off. The
 
 ```{r}
 #| label: TTR
-reviews_df <- reviews_df |>
+full_df <- full_df |>
   mutate(TTR = type_count/word_count)
 
-reviews_df
+full_df
 ```
 
 
@@ -604,7 +604,7 @@ Let's see if we can pinpoint where TTR falls off in this data
 
 ```{r}
 #| label: TTR-line
-ggplot(reviews_df, aes(x=word_count, y=TTR)) +
+ggplot(full_df, aes(x=word_count, y=TTR)) +
   geom_line() +
   geom_smooth() +
   lims(x = c(1, 1800))
@@ -612,12 +612,12 @@ ggplot(reviews_df, aes(x=word_count, y=TTR)) +
 
 This plot looks crazy, but it still does give some idea of where the trend begins to plateau, a good sign of where TTR starts to be affected by the length of the document. At the far end, of course, are those 2000 word reviews that just say "the end is never" over and over again. 
 
-Let's look at reviews in the 300-700 word range to give TTR a good look. 
+Let's look at reviews in the 200-600 word range to give TTR a good look. I selected this length based on the line plot above aiming for a point where the trend wasn't *so* steep nor fully out to a plateau. 
 
 ```{r}
 #| label: midlen-revs
-midlength <- reviews_df |>
-  filter(word_count>300, word_count<700)
+midlength <- full_df |>
+  filter(word_count>200, word_count<600)
 
 midlength
 ```
@@ -641,20 +641,30 @@ nrow(midpos)
 nrow(midneg)
 ```
 
-First, there are a lot more negative reviews in this midlength selection of reviews. Makes sense considering we know negative reviews are typically longer. Let's select a random set of 718 of midlength negative reviews and compare a bit more equally.
+First, there are positive reviews in this midlength selection of reviews. Makes sense considering we know there are so many more positive reviews in the full dataset, which this is made from. As a note, when run on the downsampled dataset, there were much more negative reviews in this midlength selection. I put this up to the fact that we know negative reviews are longer on average.
+
+Let's select a random set of 2,953 of midlength positive reviews and compare a bit more equally.
 
 ```{r}
 set.seed(60)
-midneg <- midneg |>
-  slice_sample(n = 718)
+midpos <- midpos |>
+  slice_sample(n = 2953)
 
+summary(midpos$word_count)
+summary(midneg$word_count)
+```
+
+Just to take a look at the total words being compared here, things look just about as expected! Both review sets run the full span of the length selection. Even here, positive reviews have a shorter average length.
+
+
+```{r}
 summary(midpos$TTR)
 summary(midneg$TTR)
 ```
 
-The average TTR score for reviews in the 300-700 word range is not too significantly different for positive vs negative reviews even after slicing into equal sample sizes. Positive reviews are just a *bit* lower in average in TTR than negative reviews, showing a little bit more repetitiveness. 
+The average TTR score for reviews in the 200-600 word range is not too significantly different for positive vs negative reviews even after slicing into equal sample sizes. Positive reviews are just a *bit* lower in average in TTR than negative reviews, showing a little bit more repetitiveness. 
 
-What is interesting, though, is the difference in range of TTR per review type. Positive reviews have a difference of 0.736949 and negative reviews 0.67371. Still not wildly massive, but it seems that positive reviews rule in the extremes even at this midlength point of review length, having both the most and least repetitive reviews. 
+What is interesting, though, is the difference in range of TTR per review type. Positive reviews have a difference of 0.744454 and negative reviews 0.807027. Negative reviews are more extreme on both the low and high scoring ends of TTR, indicating more variety in how repetitive (or not) negative reviews are. 
 
 
 ## Tf-idf

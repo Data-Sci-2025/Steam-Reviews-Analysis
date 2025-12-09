@@ -195,7 +195,7 @@ ggplot(simple_games, aes(x = year_range, fill=rank)) +
       theme_minimal()
 ```
 
-![](2-data-analysis_files/figure-commonmark/game-rank-yr-1.png)
+![](../images/game-rank-yr-1.png)
 
 As mentioned above, the positive and negative “ranks” here are 4 ranks
 each combined. Are games getting better over time? This sample of 45
@@ -225,7 +225,7 @@ ggplot(games_year, aes(x = year_range, fill=review_type)) +
       theme_minimal()
 ```
 
-![](2-data-analysis_files/figure-commonmark/revs-yr-1.png)
+![](../images/revs-yr-1.png)
 
 ``` r
 games_year2 <- merged_games2 |>
@@ -241,7 +241,7 @@ ggplot(games_year2, aes(x = year_range, fill=review_type)) +
       theme_minimal()
 ```
 
-![](2-data-analysis_files/figure-commonmark/revs-yr-2.png)
+![](../images/revs-yr-2.png)
 
 Again, these year divisions contain 8 games, 9 games, 5 games, 11 games,
 and 12 games each. The number and ratio of negative and positive reviews
@@ -304,7 +304,7 @@ ggplot(cut1, aes(x = reorder(game, -total), y=total, fill=game)) +
   labs(x="Game", y = "No. of Reviews")
 ```
 
-![](2-data-analysis_files/figure-commonmark/revcount-bars-1.png)
+![](../images/revcount-bars-1.png)
 
 ``` r
 ggplot(cut2, aes(x = reorder(game, -total), y=total, fill=game)) +
@@ -314,7 +314,7 @@ ggplot(cut2, aes(x = reorder(game, -total), y=total, fill=game)) +
   labs(x="Game", y = "No. of Reviews")
 ```
 
-![](2-data-analysis_files/figure-commonmark/revcount-bars-2.png)
+![](../images/revcount-bars-2.png)
 
 ``` r
 ggplot(cut3, aes(x = reorder(game, -total), y=total, fill=game)) +
@@ -324,7 +324,7 @@ ggplot(cut3, aes(x = reorder(game, -total), y=total, fill=game)) +
   labs(x="Game", y = "No. of Reviews")
 ```
 
-![](2-data-analysis_files/figure-commonmark/revcount-bars-3.png)
+![](../images/revcount-bars-3.png)
 
 ``` r
 ggplot(cut4, aes(x = reorder(game, -total), y=total, fill=game)) +
@@ -334,7 +334,7 @@ ggplot(cut4, aes(x = reorder(game, -total), y=total, fill=game)) +
   labs(x="Game", y = "No. of Reviews")
 ```
 
-![](2-data-analysis_files/figure-commonmark/revcount-bars-4.png)
+![](../images/revcount-bars-4.png)
 
 ``` r
 ggplot(cut5, aes(x = reorder(game, -total), y=total, fill=game)) +
@@ -344,7 +344,7 @@ ggplot(cut5, aes(x = reorder(game, -total), y=total, fill=game)) +
   labs(x="Game", y = "No. of Reviews")
 ```
 
-![](2-data-analysis_files/figure-commonmark/revcount-bars-5.png)
+![](../images/revcount-bars-5.png)
 
 Take care to note the y-axis and how it changes between plots. The games
 with the fewest reviews are significantly less than the ones with the
@@ -378,7 +378,7 @@ ggplot(revcount_df, aes(x = reorder(game, -total), y=total)) +
   labs(x="Game", y="Total", title="Total Reviews per Game")
 ```
 
-![](2-data-analysis_files/figure-commonmark/revs-by-game-1.png)
+![](../images/revs-by-game-1.png)
 
 ### Positive and Negative
 
@@ -393,7 +393,7 @@ ggplot(full_df, aes(x=review_type, fill=review_type )) +
   labs(x="Review Type", y="Count", title="Total Reviews per Type (original)")
 ```
 
-![](2-data-analysis_files/figure-commonmark/plot-reviews-1.png)
+![](../images/plot-reviews-1.png)
 
 ``` r
 ggplot(reviews_df, aes(x=review_type, fill=review_type )) + 
@@ -404,7 +404,7 @@ ggplot(reviews_df, aes(x=review_type, fill=review_type )) +
   labs(x="Review Type", y="Count", title="Total Reviews per Type (adjusted)")
 ```
 
-![](2-data-analysis_files/figure-commonmark/plot-reviews-adj-1.png)
+![](../images/plot-reviews-adj-1.png)
 
 Let’s look at the actual count of reviews per game ranking, simplified
 down to only positive, negative, and mixed for ease.
@@ -624,7 +624,7 @@ ggplot(full_df, aes(x=review_type, y = word_count)) +
   labs(y="Word Count", x="Review Type", title="Average Review Length")
 ```
 
-![](2-data-analysis_files/figure-commonmark/plot-avg-len-1.png)
+![](../images/plot-avg-len-1.png)
 
 ``` r
   theme(legend.position="right")
@@ -714,7 +714,7 @@ ggplot(LScut1, aes(x = reorder(game, -avg), y=avg, fill=game)) +
   labs(x="Game", y = "Avg. Review Length", title="Longest Reviews")
 ```
 
-![](2-data-analysis_files/figure-commonmark/long-short-bars-1.png)
+![](../images/long-short-bars-1.png)
 
 ``` r
 ggplot(LScut2, aes(x = reorder(game, -avg), y=avg, fill=game)) +
@@ -725,7 +725,7 @@ ggplot(LScut2, aes(x = reorder(game, -avg), y=avg, fill=game)) +
   labs(x="Game", y = "Avg. Review Length", title="Shortest Reviews")
 ```
 
-![](2-data-analysis_files/figure-commonmark/long-short-bars-2.png)
+![](../images/long-short-bars-2.png)
 
 It looks like maybe the “people have more to say about games they don’t
 like” theory might be onto something. None of the longest review length
@@ -764,7 +764,7 @@ pos
 
     Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 
-![](2-data-analysis_files/figure-commonmark/pos-neg-dist-1.png)
+![](../images/pos-neg-dist-1.png)
 
 ``` r
 neg <- ggplot(negrevs, aes(x=word_count)) + 
@@ -776,7 +776,7 @@ neg
 
     Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 
-![](2-data-analysis_files/figure-commonmark/pos-neg-dist-2.png)
+![](../images/pos-neg-dist-2.png)
 
 ``` r
 ggplot(full_df, aes(x=review_type, y=word_count, fill=review_type)) + 
@@ -785,7 +785,7 @@ ggplot(full_df, aes(x=review_type, y=word_count, fill=review_type)) +
   labs(x="Review Type", y="Word Count", title="Word Count by Review Type") 
 ```
 
-![](2-data-analysis_files/figure-commonmark/WC-vplot-1.png)
+![](../images/WC-vplot-1.png)
 
 An interesting visual! The lower length reviews appear in *very* similar
 proportions in both categories, but more extreme in the positive
@@ -807,11 +807,11 @@ remove_dupes <- function(x) {
 
 ``` r
 # get word types by removing duplicates from tokens rows
-reviews_df$types <- sapply(reviews_df$tokens, remove_dupes)
+full_df$types <- sapply(full_df$tokens, remove_dupes)
 ```
 
 ``` r
-reviews_df <- reviews_df |>
+full_df <- full_df |>
   mutate(type_count = str_count(types, '\\,')+1)
 ```
 
@@ -835,26 +835,26 @@ potentially outnumber them.
 [source](https://medium.com/@rajeswaridepala/empirical-laws-ttr-cc9f826d304d)
 
 ``` r
-reviews_df <- reviews_df |>
+full_df <- full_df |>
   mutate(TTR = type_count/word_count)
 
-reviews_df
+full_df
 ```
 
-    # A tibble: 74,844 × 11
+    # A tibble: 189,298 × 11
        review_id language date       review_type review   steam_id tokens word_count
            <dbl> <chr>    <date>     <chr>       <chr>       <dbl> <chr>       <dbl>
-     1 105382110 english  2021-11-07 POS         It has …   239200 it, h…         96
-     2 139344896 english  2023-05-01 POS         Not as …   239200 not, …         36
-     3  20463094 english  NA         POS         It is d…   239200 it, i…         74
-     4 111691944 english  2022-02-06 POS         You can…   239200 you, …         17
-     5  13978711 english  NA         POS         I reall…   239200 i, re…        170
-     6  41760508 english  2018-03-29 POS         pig        239200 pig             1
-     7  11211035 english  2014-06-13 POS         I ALMOS…   239200 i, al…          9
-     8  18200629 english  2015-08-26 POS         The sto…   239200 the, …        121
-     9  36856051 english  2017-10-23 POS         Its Alr…   239200 its, …         18
-    10  97148560 english  2021-07-08 POS         Fun and…   239200 fun, …         23
-    # ℹ 74,834 more rows
+     1 205434212 english  2025-08-29 POS         The atm…   239200 the, …         74
+     2 205407336 english  2025-08-28 NEG         Gamepla…   239200 gamep…          9
+     3 205265837 english  2025-08-27 NEG         So, if …   239200 so, i…        104
+     4 205236599 english  2025-08-26 POS         Eerie s…   239200 eerie…        136
+     5 205099824 english  2025-08-24 NEG         just pl…   239200 just,…          5
+     6 205035565 english  2025-08-23 NEG         This ga…   239200 this,…        110
+     7 205004797 english  2025-08-23 POS         Absolut…   239200 absol…          2
+     8 204962454 english  2025-08-22 POS         Mostly …   239200 mostl…        220
+     9 204909988 english  2025-08-22 NEG         I enjoy…   239200 i, en…         33
+    10 204877346 english  2025-08-21 NEG         Wish I …   239200 wish,…         28
+    # ℹ 189,288 more rows
     # ℹ 3 more variables: types <chr>, type_count <dbl>, TTR <dbl>
 
 ### TTR Exploring
@@ -867,7 +867,7 @@ TTR score, indicating a high rate of language diversity.
 Let’s see if we can pinpoint where TTR falls off in this data
 
 ``` r
-ggplot(reviews_df, aes(x=word_count, y=TTR)) +
+ggplot(full_df, aes(x=word_count, y=TTR)) +
   geom_line() +
   geom_smooth() +
   lims(x = c(1, 1800))
@@ -875,42 +875,44 @@ ggplot(reviews_df, aes(x=word_count, y=TTR)) +
 
     `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
 
-    Warning: Removed 13 rows containing non-finite outside the scale range
+    Warning: Removed 45 rows containing non-finite outside the scale range
     (`stat_smooth()`).
 
-    Warning: Removed 13 rows containing missing values or values outside the scale range
+    Warning: Removed 45 rows containing missing values or values outside the scale range
     (`geom_line()`).
 
-![](2-data-analysis_files/figure-commonmark/TTR-line-1.png)
+![](../images/TTR-line-1.png)
 
 This plot looks crazy, but it still does give some idea of where the
 trend begins to plateau, a good sign of where TTR starts to be affected
 by the length of the document. At the far end, of course, are those 2000
 word reviews that just say “the end is never” over and over again.
 
-Let’s look at reviews in the 300-700 word range to give TTR a good look.
+Let’s look at reviews in the 200-600 word range to give TTR a good look.
+I selected this length based on the line plot above aiming for a point
+where the trend wasn’t *so* steep nor fully out to a plateau.
 
 ``` r
-midlength <- reviews_df |>
-  filter(word_count>300, word_count<700)
+midlength <- full_df |>
+  filter(word_count>200, word_count<600)
 
 midlength
 ```
 
-    # A tibble: 2,277 × 11
+    # A tibble: 8,642 × 11
        review_id language date       review_type review   steam_id tokens word_count
            <dbl> <chr>    <date>     <chr>       <chr>       <dbl> <chr>       <dbl>
-     1    900822 english  2013-08-11 POS         "I'd lo…   239200 i'd, …        514
-     2    414556 english  2013-08-20 POS         "Amnesi…   239200 amnes…        318
-     3  38339972 english  2017-11-16 POS         "nukes-…   239200 nukes…        653
-     4   9909718 english  2014-03-23 POS         "Amnesi…   239200 amnes…        497
-     5   7352177 english  2013-09-10 POS         "Well, …   239200 well,…        425
-     6  47404462 english  2018-11-09 POS         "Inform…   239200 infor…        668
-     7 168318670 english  2024-05-27 POS         "In def…   239200 in, d…        449
-     8  11079475 english  2014-06-05 POS         "Whethe…   239200 wheth…        346
-     9 186179322 english  NA         POS         "This L…   239200 this,…        405
-    10   8310895 english  2013-11-26 POS         "Amnesi…   239200 amnes…        448
-    # ℹ 2,267 more rows
+     1 204962454 english  2025-08-22 POS         "Mostly…   239200 "most…        220
+     2 203057602 english  2025-07-28 NEG         "As a f…   239200 "as, …        251
+     3 202089469 english  2025-07-14 POS         "Amnesi…   239200 "amne…        265
+     4 201991629 english  2025-07-12 POS         "\U0001…   239200 "\U00…        284
+     5 201617818 english  2025-07-07 NEG         "Amnesi…   239200 "amne…        292
+     6 201489917 english  2025-07-05 NEG         "This i…   239200 "this…        221
+     7 199909844 english  2025-06-16 NEG         "I can …   239200 "i, c…        258
+     8 199122889 english  2025-06-06 POS         "Fricti…   239200 "fric…        248
+     9 197607132 english  2025-05-19 NEG         "I woul…   239200 "i, w…        295
+    10 196618113 english  2025-05-07 NEG         "Now th…   239200 "now,…        241
+    # ℹ 8,632 more rows
     # ℹ 3 more variables: types <chr>, type_count <dbl>, TTR <dbl>
 
 ``` r
@@ -918,7 +920,7 @@ summary(midlength$TTR)
 ```
 
         Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-    0.003311 0.496479 0.531486 0.527578 0.567376 0.812155 
+    0.004386 0.529851 0.572727 0.565208 0.611570 0.841270 
 
 ``` r
 midpos <- midlength |>
@@ -927,7 +929,7 @@ summary(midpos$TTR)
 ```
 
         Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-    0.003311 0.493451 0.526227 0.516818 0.564740 0.740260 
+    0.004386 0.528646 0.570776 0.560845 0.610390 0.841270 
 
 ``` r
 midneg <- midlength |>
@@ -936,54 +938,77 @@ summary(midneg$TTR)
 ```
 
         Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-    0.005128 0.497937 0.534737 0.532534 0.568831 0.812155 
+    0.005128 0.535280 0.576923 0.573611 0.613953 0.812155 
 
 ``` r
 nrow(midpos)
 ```
 
-    [1] 718
+    [1] 5689
 
 ``` r
 nrow(midneg)
 ```
 
-    [1] 1559
+    [1] 2953
 
-First, there are a lot more negative reviews in this midlength selection
-of reviews. Makes sense considering we know negative reviews are
-typically longer. Let’s select a random set of 718 of midlength negative
-reviews and compare a bit more equally.
+First, there are positive reviews in this midlength selection of
+reviews. Makes sense considering we know there are so many more positive
+reviews in the full dataset, which this is made from. As a note, when
+run on the downsampled dataset, there were much more negative reviews in
+this midlength selection. I put this up to the fact that we know
+negative reviews are longer on average.
+
+Let’s select a random set of 2,953 of midlength positive reviews and
+compare a bit more equally.
 
 ``` r
 set.seed(60)
-midneg <- midneg |>
-  slice_sample(n = 718)
+midpos <- midpos |>
+  slice_sample(n = 2953)
 
+summary(midpos$word_count)
+```
+
+       Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      201.0   237.0   292.0   318.4   375.0   598.0 
+
+``` r
+summary(midneg$word_count)
+```
+
+       Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      201.0   237.0   294.0   321.1   383.0   599.0 
+
+Just to take a look at the total words being compared here, things look
+just about as expected! Both review sets run the full span of the length
+selection. Even here, positive reviews have a shorter average length.
+
+``` r
 summary(midpos$TTR)
 ```
 
         Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-    0.003311 0.493451 0.526227 0.516818 0.564740 0.740260 
+    0.006601 0.527981 0.571795 0.560591 0.610169 0.751055 
 
 ``` r
 summary(midneg$TTR)
 ```
 
-       Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    0.01714 0.49851 0.53486 0.53322 0.56956 0.72360 
+        Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    0.005128 0.535280 0.576923 0.573611 0.613953 0.812155 
 
-The average TTR score for reviews in the 300-700 word range is not too
+The average TTR score for reviews in the 200-600 word range is not too
 significantly different for positive vs negative reviews even after
 slicing into equal sample sizes. Positive reviews are just a *bit* lower
 in average in TTR than negative reviews, showing a little bit more
 repetitiveness.
 
 What is interesting, though, is the difference in range of TTR per
-review type. Positive reviews have a difference of 0.736949 and negative
-reviews 0.67371. Still not wildly massive, but it seems that positive
-reviews rule in the extremes even at this midlength point of review
-length, having both the most and least repetitive reviews.
+review type. Positive reviews have a difference of 0.744454 and negative
+reviews 0.807027. Negative reviews are more extreme on both the low and
+high scoring ends of TTR, indicating more variety in how repetitive (or
+not) negative reviews are.
 
 ## Tf-idf
 
@@ -1331,11 +1356,10 @@ reviews_df |>
   filter(review_id==76036759)
 ```
 
-    # A tibble: 1 × 11
+    # A tibble: 1 × 8
       review_id language date       review_type review    steam_id tokens word_count
           <dbl> <chr>    <date>     <chr>       <chr>        <dbl> <chr>       <dbl>
     1  76036759 english  2020-08-16 NEG         bad bad …    10220 bad, …        227
-    # ℹ 3 more variables: types <chr>, type_count <dbl>, TTR <dbl>
 
 To prep this dataframe for the classifier, let’s narrow down to only the
 columns we know we want.

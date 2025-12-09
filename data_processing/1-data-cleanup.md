@@ -7,19 +7,7 @@ the write_csv chunk, you should be able to recreate it just fine. You
 may have to adjust the file path to read in for this one.
 
 ``` r
-reviews_df <- read_csv("../private/reviews.csv")
-```
-
-    Rows: 191109 Columns: 10
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (6): language, date, review_type, purchased, review, engtxt
-    dbl (4): review_id, score, upvotes, steam_id
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
+reviews_df <- read_csv("../private/reviews.csv", show_col_types = FALSE)
 reviews_df
 ```
 
@@ -40,6 +28,7 @@ reviews_df
     # ℹ 1 more variable: steam_id <dbl>
 
 ``` r
+# checking for 45 unique games
 reviews_df |>
   distinct(steam_id)
 ```
@@ -522,6 +511,37 @@ just “???????”, just an emoticon, or “…..” etc. Some reviews had no
 text, it turns out, which became an N/A once tokenized, and those have
 been removed now as well.
 
+## One more thing…
+
+When I got started on my analysis notebook, I found some additional
+cleaning up that I needed to do. This mostly was some odd unicode blank
+spaces that were affecting some of my looks at tokens and types,
+especially with emojis. I’m moving that here for the sake of
+cleanliness.
+
+``` r
+reviews_df <- reviews_df |>
+  #rename from the tokenized col from before
+  rename(tokens = merged_text)
+
+reviews_df
+```
+
+    # A tibble: 189,873 × 7
+       review_id language date       review_type review              steam_id tokens
+           <dbl> <chr>    <date>     <chr>       <chr>                  <dbl> <chr> 
+     1 205434212 english  2025-08-29 POS         The atmosphere and…   239200 the, …
+     2 205407336 english  2025-08-28 NEG         Gameplay is lackin…   239200 gamep…
+     3 205265837 english  2025-08-27 NEG         So, if you are hop…   239200 so, i…
+     4 205236599 english  2025-08-26 POS         Eerie suspenseful …   239200 eerie…
+     5 205099824 english  2025-08-24 NEG         just play the 1st …   239200 just,…
+     6 205035565 english  2025-08-23 NEG         This game has good…   239200 this,…
+     7 205004797 english  2025-08-23 POS         Absolute Cinema       239200 absol…
+     8 204962454 english  2025-08-22 POS         Mostly a walking s…   239200 mostl…
+     9 204909988 english  2025-08-22 NEG         I enjoyed the game…   239200 i, en…
+    10 204877346 english  2025-08-21 NEG         Wish I could love …   239200 wish,…
+    # ℹ 189,863 more rows
+
 ## Write out reviews.csv
 
 ``` r
@@ -562,11 +582,11 @@ sessionInfo()
      [5] lattice_0.22-7     hms_1.1.3          digest_0.6.37      magrittr_2.0.4    
      [9] evaluate_1.0.5     grid_4.5.1         timechange_0.3.0   RColorBrewer_1.1-3
     [13] fastmap_1.2.0      jsonlite_2.0.0     Matrix_1.7-3       scales_1.4.0      
-    [17] cli_3.6.5          rlang_1.1.6        crayon_1.5.3       tokenizers_0.3.0  
-    [21] bit64_4.6.0-1      withr_3.0.2        yaml_2.3.10        tools_4.5.1       
-    [25] parallel_4.5.1     tzdb_0.5.0         vctrs_0.6.5        R6_2.6.1          
-    [29] lifecycle_1.0.4    bit_4.6.0          vroom_1.6.6        pkgconfig_2.0.3   
-    [33] pillar_1.11.1      gtable_0.3.6       glue_1.8.0         Rcpp_1.1.0        
-    [37] xfun_0.53          tidyselect_1.2.1   rstudioapi_0.17.1  knitr_1.50        
-    [41] farver_2.1.2       htmltools_0.5.8.1  SnowballC_0.7.1    rmarkdown_2.29    
-    [45] compiler_4.5.1     S7_0.2.0          
+    [17] cli_3.6.5          crayon_1.5.3       rlang_1.1.6        tokenizers_0.3.0  
+    [21] bit64_4.6.0-1      withr_3.0.2        yaml_2.3.10        parallel_4.5.1    
+    [25] tools_4.5.1        tzdb_0.5.0         vctrs_0.6.5        R6_2.6.1          
+    [29] lifecycle_1.0.4    bit_4.6.0          vroom_1.6.6        archive_1.1.12    
+    [33] pkgconfig_2.0.3    pillar_1.11.1      gtable_0.3.6       glue_1.8.0        
+    [37] Rcpp_1.1.0         xfun_0.53          tidyselect_1.2.1   rstudioapi_0.17.1 
+    [41] knitr_1.50         dichromat_2.0-0.1  farver_2.1.2       htmltools_0.5.8.1 
+    [45] SnowballC_0.7.1    rmarkdown_2.29     compiler_4.5.1     S7_0.2.0          

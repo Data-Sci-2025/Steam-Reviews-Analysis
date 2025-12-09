@@ -15,12 +15,14 @@ library(tidytext)
 
 ```{r}
 #| label: readingin
-reviews_df <- read_csv("../private/reviews.csv")
+#| warning: FALSE
+reviews_df <- read_csv("../private/reviews.csv", show_col_types = FALSE)
 reviews_df
 ```
 
 ```{r}
 #| label: game-ids
+# checking for 45 unique games
 reviews_df |>
   distinct(steam_id)
 ```

@@ -4,33 +4,8 @@
 ## Data Preview & First Looks
 
 ``` r
-amnesia <- read_csv("../data/amnesia.csv")
-```
-
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 11545 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (8): 239200, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    dbl (1): ...1
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
+# read in amnesia reviews
+amnesia <- read_csv("../data/amnesia.csv", show_col_types = FALSE)
 amnesia
 ```
 
@@ -50,33 +25,8 @@ amnesia
     # ℹ 11,535 more rows
 
 ``` r
-deadlyprem <- read_csv("../data/deadlyprem.csv")
-```
-
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 4594 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 247660, ...3, ...4, ...5, ...7, Reviews, ...9
-    dbl (2): ...1, ...6
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
+# read in deadly premonition reviews
+deadlyprem <- read_csv("../data/deadlyprem.csv", show_col_types = FALSE)
 deadlyprem
 ```
 
@@ -341,6 +291,7 @@ sum(allgames$total_reviews)
 
 ``` r
 allgames <- allgames |>
+  # remove comma from numbers so R cna do math
   mutate(eng_reviews = (str_replace_all(eng_reviews, ",", ""))) |>
   mutate(eng_reviews = eng_reviews |>
            na_if("NA")) |>
@@ -360,6 +311,7 @@ Getting the files read in starts with the list of all the file names in
 the data file:
 
 ``` r
+# match all files in data folder ending in .csv
 filenames <- list.files("../data", pattern="*\\.csv$", full.names=TRUE)
 filenames
 ```
@@ -406,14 +358,20 @@ are some quirks to deal with in the function.
 
 ``` r
 build_df <- function(x){
+  # grab reviews line by line, flatten into string
   gamelines <- read_lines(x)
   flatlines <- str_flatten(gamelines, "\n")
-  games_df <- read_csv(flatlines)
+  # create df from flattened str
+  games_df <- read_csv(flatlines, show_col_types = FALSE)
+  # grab ubique steam ID to add to new column
   steam_id <- games_df |> select(2) |> colnames()
   games_df <- games_df |> mutate(steam_id = steam_id)
+  #rename all columns to match
   games_df <- games_df |>
     rename(review_id = 1, language = 2, date = 3, review_type = 4, purchased = 5, score = 6, upvotes = 7, review = 8, engtxt = 9) |>
+    # filter to only english reviews
     filter(language == 'english') |>
+    # fix errors caused by inconsistent column classes
     mutate(review_id = as.integer(review_id)) |> 
     mutate(score = as.integer(score)) |>
     mutate(upvotes = as.integer(upvotes))
@@ -427,745 +385,7 @@ together!
 ``` r
 games_df <- map((filenames), build_df)|> 
   bind_rows()
-```
 
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 11545 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (8): 239200, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    dbl (1): ...1
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    Warning: There was 1 warning in `mutate()`.
-    ℹ In argument: `score = as.integer(score)`.
-    Caused by warning:
-    ! NAs introduced by coercion
-
-    New names:
-    Rows: 77 Columns: 9
-    ── Column specification
-    ──────────────────────────────────────────────────────── Delimiter: "," chr
-    (9): ...1, 1048640, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    Rows: 268 Columns: 9
-    ── Column specification
-    ──────────────────────────────────────────────────────── Delimiter: "," chr
-    (9): ...1, 1308950, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    Rows: 71 Columns: 9
-    ── Column specification
-    ──────────────────────────────────────────────────────── Delimiter: "," chr
-    (9): ...1, 946600, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    Rows: 73 Columns: 9
-    ── Column specification
-    ──────────────────────────────────────────────────────── Delimiter: "," chr
-    (9): ...1, 2607330, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    Rows: 73 Columns: 9
-    ── Column specification
-    ──────────────────────────────────────────────────────── Delimiter: "," chr
-    (9): ...1, 2940020, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    Rows: 417 Columns: 9
-    ── Column specification
-    ──────────────────────────────────────────────────────── Delimiter: "," chr
-    (9): ...1, 246940, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 3824 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 1092660, ...3, ...4, ...5, ...7, Reviews, ...9
-    dbl (2): ...1, ...6
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    Rows: 77 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (9): ...1, 300160, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    Rows: 514 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (9): ...1, 238870, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 5836 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 282560, ...3, ...4, ...5, ...7, Reviews, ...9
-    dbl (2): ...1, ...6
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 4735 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 47700, ...3, ...4, ...5, ...7, Reviews, ...9
-    dbl (2): ...1, ...6
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    Rows: 337 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (9): ...1, 252050, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    Rows: 74 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (9): ...1, 2092330, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 4594 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 247660, ...3, ...4, ...5, ...7, Reviews, ...9
-    dbl (2): ...1, ...6
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 26686 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 47780, ...3, ...4, ...5, ...6, Reviews, ...9
-    dbl (2): ...1, ...7
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    Warning: There was 1 warning in `mutate()`.
-    ℹ In argument: `score = as.integer(score)`.
-    Caused by warning:
-    ! NAs introduced by coercion
-
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 27622 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 632470, ...3, ...4, ...5, ...6, Reviews, ...9
-    dbl (2): ...1, ...7
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    Warning: There was 1 warning in `mutate()`.
-    ℹ In argument: `score = as.integer(score)`.
-    Caused by warning:
-    ! NAs introduced by coercion
-
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 2745 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (8): 238240, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    dbl (1): ...1
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 4877 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 1026680, ...3, ...4, ...5, ...7, Reviews, ...9
-    dbl (2): ...1, ...6
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 4103 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 201510, ...3, ...4, ...5, ...7, Reviews, ...9
-    dbl (2): ...1, ...6
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 9116 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (8): 1677770, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    dbl (1): ...1
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    Warning: There was 1 warning in `mutate()`.
-    ℹ In argument: `score = as.integer(score)`.
-    Caused by warning:
-    ! NAs introduced by coercion
-
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 32524 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 1145360, ...3, ...4, ...5, ...6, Reviews, ...9
-    dbl (2): ...1, ...7
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    Warning: There was 1 warning in `mutate()`.
-    ℹ In argument: `score = as.integer(score)`.
-    Caused by warning:
-    ! NAs introduced by coercion
-
-    New names:
-    Rows: 75 Columns: 9
-    ── Column specification
-    ──────────────────────────────────────────────────────── Delimiter: "," chr
-    (9): ...1, 46730, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 3613 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 19000, ...3, ...4, ...5, ...7, Reviews, ...9
-    dbl (2): ...1, ...6
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    Rows: 74 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (9): ...1, 2444290, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    Rows: 81 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (9): ...1, 2442820, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    Rows: 1577 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (9): ...1, 227160, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 9185 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (8): 1194630, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    dbl (1): ...1
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    Warning: There was 1 warning in `mutate()`.
-    ℹ In argument: `score = as.integer(score)`.
-    Caused by warning:
-    ! NAs introduced by coercion
-
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 18926 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (8): 481510, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    dbl (1): ...1
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    Warning: There was 1 warning in `mutate()`.
-    ℹ In argument: `score = as.integer(score)`.
-    Caused by warning:
-    ! NAs introduced by coercion
-
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 35024 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 753640, ...3, ...4, ...5, ...6, Reviews, ...9
-    dbl (2): ...1, ...7
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    Warning: There was 1 warning in `mutate()`.
-    ℹ In argument: `score = as.integer(score)`.
-    Caused by warning:
-    ! NAs introduced by coercion
-
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 5671 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 10220, ...3, ...4, ...5, ...7, Reviews, ...9
-    dbl (2): ...1, ...6
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 35024 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 1119730, ...3, ...4, ...5, ...6, Reviews, ...9
-    dbl (2): ...1, ...7
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    Warning: There was 1 warning in `mutate()`.
-    ℹ In argument: `score = as.integer(score)`.
-    Caused by warning:
-    ! NAs introduced by coercion
-
-    New names:
-    Rows: 107 Columns: 9
-    ── Column specification
-    ──────────────────────────────────────────────────────── Delimiter: "," chr
-    (9): ...1, 345710, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 4591 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 1294810, ...3, ...4, ...5, ...7, Reviews, ...9
-    dbl (2): ...1, ...6
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 32621 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 221040, ...3, ...4, ...5, ...6, Reviews, ...9
-    dbl (2): ...1, ...7
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    Warning: There was 1 warning in `mutate()`.
-    ℹ In argument: `score = as.integer(score)`.
-    Caused by warning:
-    ! NAs introduced by coercion
-
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 14424 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (8): 1931770, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    dbl (1): ...1
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    Warning: There was 1 warning in `mutate()`.
-    ℹ In argument: `score = as.integer(score)`.
-    Caused by warning:
-    ! NAs introduced by coercion
-
-    New names:
-    Rows: 503 Columns: 9
-    ── Column specification
-    ──────────────────────────────────────────────────────── Delimiter: "," chr
-    (9): ...1, 252910, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 4337 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 246090, ...3, ...4, ...5, ...7, Reviews, ...9
-    dbl (2): ...1, ...6
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 16224 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (8): 1703340, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    dbl (1): ...1
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    Warning: There was 1 warning in `mutate()`.
-    ℹ In argument: `score = as.integer(score)`.
-    Caused by warning:
-    ! NAs introduced by coercion
-
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 37619 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 413150, ...3, ...4, ...5, ...6, Reviews, ...9
-    dbl (2): ...1, ...7
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    Warning: There was 1 warning in `mutate()`.
-    ℹ In argument: `score = as.integer(score)`.
-    Caused by warning:
-    ! NAs introduced by coercion
-
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 30841 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (7): 1049410, ...3, ...4, ...5, ...6, Reviews, ...9
-    dbl (2): ...1, ...7
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-    Warning: There was 1 warning in `mutate()`.
-    ℹ In argument: `score = as.integer(score)`.
-    Caused by warning:
-    ! NAs introduced by coercion
-
-    New names:
-    Rows: 1230 Columns: 9
-    ── Column specification
-    ──────────────────────────────────────────────────────── Delimiter: "," chr
-    (9): ...1, 1563130, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-    • `` -> `...1`
-    • `` -> `...3`
-    • `` -> `...4`
-    • `` -> `...5`
-    • `` -> `...6`
-    • `` -> `...7`
-    • `` -> `...9`
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 2830 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (8): 221020, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    dbl (1): ...1
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 2481 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (8): 352550, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    dbl (1): ...1
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    New names:
-
-    Warning: One or more parsing issues, call `problems()` on your data frame for details,
-    e.g.:
-      dat <- vroom(...)
-      problems(dat)
-
-    Rows: 2964 Columns: 9
-    ── Column specification ────────────────────────────────────────────────────────
-    Delimiter: ","
-    chr (8): 1096410, ...3, ...4, ...5, ...6, ...7, Reviews, ...9
-    dbl (1): ...1
-
-    ℹ Use `spec()` to retrieve the full column specification for this data.
-    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
 games_df
 ```
 
@@ -1211,7 +431,11 @@ games_df |>
 ## Write out reviews_csv
 
 ``` r
-#write_csv(games_df, file="../private/reviews.csv")
+if (!dir.exists("../private")) {
+  dir.create("../private")
+  }
+
+write_csv(games_df, file="../private/reviews.csv")
 ```
 
 ## Session Info
@@ -1246,13 +470,14 @@ sessionInfo()
      [9] ggplot2_4.0.0   tidyverse_2.0.0
 
     loaded via a namespace (and not attached):
-     [1] bit_4.6.0          gtable_0.3.6       jsonlite_2.0.0     crayon_1.5.3      
-     [5] compiler_4.5.1     tidyselect_1.2.1   parallel_4.5.1     scales_1.4.0      
-     [9] yaml_2.3.10        fastmap_1.2.0      R6_2.6.1           generics_0.1.4    
-    [13] knitr_1.50         pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0        
-    [17] rlang_1.1.6        utf8_1.2.6         stringi_1.8.7      xfun_0.53         
-    [21] S7_0.2.0           bit64_4.6.0-1      timechange_0.3.0   cli_3.6.5         
-    [25] withr_3.0.2        magrittr_2.0.4     digest_0.6.37      grid_4.5.1        
-    [29] vroom_1.6.6        rstudioapi_0.17.1  hms_1.1.3          lifecycle_1.0.4   
-    [33] vctrs_0.6.5        evaluate_1.0.5     glue_1.8.0         farver_2.1.2      
-    [37] rmarkdown_2.29     tools_4.5.1        pkgconfig_2.0.3    htmltools_0.5.8.1 
+     [1] bit_4.6.0          archive_1.1.12     gtable_0.3.6       jsonlite_2.0.0    
+     [5] crayon_1.5.3       compiler_4.5.1     tidyselect_1.2.1   parallel_4.5.1    
+     [9] dichromat_2.0-0.1  scales_1.4.0       yaml_2.3.10        fastmap_1.2.0     
+    [13] R6_2.6.1           generics_0.1.4     knitr_1.50         pillar_1.11.1     
+    [17] RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.1.6        utf8_1.2.6        
+    [21] stringi_1.8.7      xfun_0.53          S7_0.2.0           bit64_4.6.0-1     
+    [25] timechange_0.3.0   cli_3.6.5          withr_3.0.2        magrittr_2.0.4    
+    [29] digest_0.6.37      grid_4.5.1         vroom_1.6.6        rstudioapi_0.17.1 
+    [33] hms_1.1.3          lifecycle_1.0.4    vctrs_0.6.5        evaluate_1.0.5    
+    [37] glue_1.8.0         farver_2.1.2       rmarkdown_2.29     tools_4.5.1       
+    [41] pkgconfig_2.0.3    htmltools_0.5.8.1 

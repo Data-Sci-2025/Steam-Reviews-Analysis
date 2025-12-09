@@ -15,14 +15,18 @@ library(tidyverse)
 
 ```{r}
 #| label: amnesia
-amnesia <- read_csv("../data/amnesia.csv")
+#| warning: FALSE 
+# read in amnesia reviews
+amnesia <- read_csv("../data/amnesia.csv", show_col_types = FALSE)
 amnesia
 ```
 
 
 ```{r}
 #| label: deadlyprem
-deadlyprem <- read_csv("../data/deadlyprem.csv")
+#| warning: FALSE
+# read in deadly premonition reviews
+deadlyprem <- read_csv("../data/deadlyprem.csv", show_col_types = FALSE)
 deadlyprem
 ```
 
@@ -170,6 +174,7 @@ sum(allgames$total_reviews)
 ```{r}
 #| label: eng-total
 allgames <- allgames |>
+  # remove comma from numbers so R cna do math
   mutate(eng_reviews = (str_replace_all(eng_reviews, ",", ""))) |>
   mutate(eng_reviews = eng_reviews |>
            na_if("NA")) |>
@@ -188,6 +193,7 @@ Getting the files read in starts with the list of all the file names in the data
 
 ```{r}
 #| label: list-files
+# match all files in data folder ending in .csv
 filenames <- list.files("../data", pattern="*\\.csv$", full.names=TRUE)
 filenames
 ```
@@ -206,14 +212,20 @@ Because the base .csv files all look the same, but are a bit odd, there are some
 ```{r}
 #| label: df-function
 build_df <- function(x){
+  # grab reviews line by line, flatten into string
   gamelines <- read_lines(x)
   flatlines <- str_flatten(gamelines, "\n")
-  games_df <- read_csv(flatlines)
+  # create df from flattened str
+  games_df <- read_csv(flatlines, show_col_types = FALSE)
+  # grab ubique steam ID to add to new column
   steam_id <- games_df |> select(2) |> colnames()
   games_df <- games_df |> mutate(steam_id = steam_id)
+  #rename all columns to match
   games_df <- games_df |>
     rename(review_id = 1, language = 2, date = 3, review_type = 4, purchased = 5, score = 6, upvotes = 7, review = 8, engtxt = 9) |>
+    # filter to only english reviews
     filter(language == 'english') |>
+    # fix errors caused by inconsistent column classes
     mutate(review_id = as.integer(review_id)) |> 
     mutate(score = as.integer(score)) |>
     mutate(upvotes = as.integer(upvotes))
@@ -224,6 +236,7 @@ Using the function, build up the dataframe, map the 45 different steam ID number
 
 ```{r}
 #| label: build-df
+#| warning: FALSE
 games_df <- map((filenames), build_df)|> 
   bind_rows()
 
@@ -244,7 +257,7 @@ games_df |>
 
 ```{r}
 #| label: reviews-csv
-#| eval: !expr param$write_df
+#| eval: !expr params$write_df
 if (!dir.exists("../private")) {
   dir.create("../private")
   }

@@ -1081,6 +1081,8 @@ What about top words per review type?
 Before addressing that, let’s check out the shape of the data after
 removing stop words.
 
+### Late Data Overview
+
 ``` r
 posrevs_small <- reviews_df |>
   filter(review_type=='POS')
@@ -1207,23 +1209,72 @@ print(paste(prettyNum(sum(neg_toks$n), big.mark=","), "words in negative review 
 
     [1] "1,088,100 words in negative review tokens after stop word removal"
 
+### Top Words
+
+In the two split dataframes just above, there’s a look at the most
+common words in positive reviews and in negative reviews. The issue is
+that these totals are not very informative in their current states. Six
+of the top ten most common words are the same in both positive and
+negative reviews.
+
+To get a look at the actual most informative common words, I’m going to
+do an additional treatment with a custom stop words list to get rid of
+those highly common words.
+
+``` r
+mystopwords <- tibble(word = c("game", "10", "2", "3", "play", "1", "4", "5", "time", "fun", "story", "games", "buy", "20", "gameplay", "6", "worth", "times", "100", "playing", "played", "30", "world", "9", "recommend", "8", "7", "feel", "lot", "hours", "pretty", "character", "experience", "people", "characters"))
+```
+
+``` r
+pos_toks_simp <- anti_join(pos_toks, mystopwords, by="word")
+pos_toks_simp
+```
+
+    # A tibble: 38,974 × 2
+       word        n
+       <chr>   <int>
+     1 love     3819
+     2 amazing  2584
+     3 puzzle   2120
+     4 space    2051
+     5 puzzles  1936
+     6 horror   1894
+     7 bit      1793
+     8 art      1687
+     9 life     1657
+    10 dead     1491
+    # ℹ 38,964 more rows
+
+``` r
+neg_toks_simp <- anti_join(neg_toks, mystopwords, by="word")
+neg_toks_simp
+```
+
+    # A tibble: 50,225 × 2
+       word         n
+       <chr>    <int>
+     1 bad       6186
+     2 money     4455
+     3 feels     2716
+     4 steam     2693
+     5 boring    2596
+     6 bugs      2450
+     7 access    2282
+     8 worst     2217
+     9 graphics  2124
+    10 review    2121
+    # ℹ 50,215 more rows
+
 Taking a look at the most frequent words in positive reviews can give us
-a look into what people might write about enjoying specifically! Story,
-experience, characters, gameplay, puzzle, horror (?!), world, art…. And
-what they’re considering in their reviews! I see worth in there pretty
-high up, hours , unique.
+a look into what people might write about enjoying specifically! Puzzle,
+horror (?!), art…. And what they’re expressing in their reviews! I see
+worth in there pretty high up, love, amazing, beautiful, unique. And
+Stanley! The Stanley Parable is a very highly reviewed game, people must
+really like the main character.
 
 What are people writing about in negative reviews? I can pick out at a
-glance time, bad, money, worst, terrible.
-
-But there are a lot of overlapping words between the two, pretty high up
-in frequency for both. I came into this project with the suspicion that
-a classifier would have some more trouble than maybe expected, but this
-is another nudge in that direction for me.
-
-Game, play, story, games, fun, and time are in top ten tokens for both
-positive and negative reviews. That’s more than half of those top tokens
-in common.
+glance bad, money, worst, boring. What makes them think these things?
+Bugs, graphics, game access, run (how the game runs), abandoned.
 
 ### Term Frequencies
 

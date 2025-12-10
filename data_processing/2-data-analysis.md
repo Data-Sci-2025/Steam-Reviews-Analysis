@@ -43,7 +43,7 @@ that in these moments, the positive and negative options are referring
 to four smaller categories grouped together for the sake of ease.
 
 ``` r
-# reviews 
+# all reviews 
 full_df <- read_csv("../private/reviews_analyze.csv", show_col_types = FALSE)
 
 # game titles, ranks, etc, we'll need it later
@@ -191,7 +191,6 @@ ggplot(simple_games, aes(x = year_range, fill=rank)) +
       labs(title = "Number of Games per Rank by Year",
            x = NULL,
            y = "Count") +
-      geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 2, hjust = 0.5, position = position_dodge(width=.9)) +
       theme_minimal()
 ```
 
@@ -388,7 +387,6 @@ How many reviews of each type are there?
 ggplot(full_df, aes(x=review_type, fill=review_type )) + 
   geom_bar( width = 0.5) +
   scale_fill_brewer(palette = "Set2") +
-  geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 3, hjust = 0.5, position = "stack") +
   theme(legend.position="right") +
   labs(x="Review Type", y="Count", title="Total Reviews per Type (original)")
 ```
@@ -399,7 +397,6 @@ ggplot(full_df, aes(x=review_type, fill=review_type )) +
 ggplot(reviews_df, aes(x=review_type, fill=review_type )) + 
   geom_bar( width = 0.5) +
   scale_fill_brewer(palette = "Set2") +
-  geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 3, hjust = 0.5, position = "stack") +
   theme(legend.position="right") +
   labs(x="Review Type", y="Count", title="Total Reviews per Type (adjusted)")
 ```
@@ -462,6 +459,20 @@ length of *all* reviews
 full_df <- full_df |>
   mutate(word_count = str_count(tokens, '\\,')+1)
 ```
+
+We know how many reviews we’re looking at here, but how many *words*?
+
+``` r
+print(paste(prettyNum(sum(reviews_df$word_count),big.mark=","), "total words in the downsampled dataset"))
+```
+
+    [1] "4,621,380 total words in the downsampled dataset"
+
+``` r
+print(paste(prettyNum(sum(full_df$word_count), big.mark=","), "total words in the full dataset"))
+```
+
+    [1] "9,765,081 total words in the full dataset"
 
 ### Review length
 
@@ -981,7 +992,7 @@ summary(midneg$word_count)
       201.0   237.0   294.0   321.1   383.0   599.0 
 
 Just to take a look at the total words being compared here, things look
-just about as expected! Both review sets run the full span of the length
+just about as expected! Both review sets span the full length of the
 selection. Even here, positive reviews have a shorter average length.
 
 ``` r
@@ -1010,7 +1021,7 @@ reviews 0.807027. Negative reviews are more extreme on both the low and
 high scoring ends of TTR, indicating more variety in how repetitive (or
 not) negative reviews are.
 
-## Tf-idf
+## TF-IDF
 
 Calculating Tf-idf for our game reviews. Because they were creating a
 lot of issues with tokenizing and odd characters, I’ve excluded emojis
@@ -1067,8 +1078,17 @@ music, graphics… all in the top 50 words.
 
 What about top words per review type?
 
+Before addressing that, let’s check out the shape of the data after
+removing stop words.
+
 ``` r
-pos_toks <- posrevs |>
+posrevs_small <- reviews_df |>
+  filter(review_type=='POS')
+
+negrevs_small <- reviews_df |>
+  filter(review_type=='NEG')
+
+pos_toks <- posrevs_small |>
   unnest_tokens(word, review) |>
   anti_join(stop_words) |>
   count(word, sort = TRUE)
@@ -1080,29 +1100,24 @@ pos_toks <- posrevs |>
 pos_toks
 ```
 
-    # A tibble: 83,753 × 2
-       word            n
-       <chr>       <int>
-     1 game       166027
-     2 story       29997
-     3 play        27901
-     4 10          24908
-     5 games       22593
-     6 fun         21449
-     7 time        20943
-     8 love        15525
-     9 played      15437
-    10 experience  13096
-    # ℹ 83,743 more rows
-
-Taking a look at the most frequent words in positive reviews can give us
-a look into what people might write about enjoying specifically! Story,
-experience, characters, gameplay, puzzle, horror (?!), world, art…. And
-what they’re considering in their reviews! I see worth in there pretty
-high up, hours , unique.
+    # A tibble: 39,009 × 2
+       word           n
+       <chr>      <int>
+     1 game       40918
+     2 story       7463
+     3 play        6827
+     4 10          5782
+     5 games       5558
+     6 fun         5299
+     7 time        5119
+     8 love        3819
+     9 played      3789
+    10 experience  3197
+    # ℹ 38,999 more rows
 
 ``` r
-neg_toks <- negrevs |>
+#| label: neg-topwords
+neg_toks <- negrevs_small |>
   unnest_tokens(word, review) |>
   anti_join(stop_words) |>
   count(word, sort = TRUE)
@@ -1128,6 +1143,75 @@ neg_toks
      9 fun    4337
     10 2      4096
     # ℹ 50,250 more rows
+
+We know from the downsampling done up above in this notebook that the
+number of *reviews* are very close to equal to each other…
+
+``` r
+nrow(posrevs_small)
+```
+
+    [1] 37412
+
+``` r
+nrow(negrevs_small)
+```
+
+    [1] 37432
+
+But what about the number of *words*? Here is the count of all tokens by
+review type in the downsampled dataset.
+
+``` r
+print(paste(prettyNum(sum(posrevs_small$word_count),big.mark=","), "words in positive review tokens before stop word removal"))
+```
+
+    [1] "1,689,784 words in positive review tokens before stop word removal"
+
+``` r
+print(paste(prettyNum(sum(negrevs_small$word_count), big.mark=","), "words in negative review tokens before stop word removal"))
+```
+
+    [1] "2,931,596 words in negative review tokens before stop word removal"
+
+Not equal at all!
+
+So when those are pivoted to a count of all tokens, we find that there
+are not only fewer word tokens, but fewer unique word types as well.
+
+``` r
+nrow(pos_toks)
+```
+
+    [1] 39009
+
+``` r
+nrow(neg_toks)
+```
+
+    [1] 50260
+
+From the downsampled data to the stop word removed data, positive
+reviews lose 1,069,787 tokens and negative reviews lose 1,843,496
+tokens.
+
+``` r
+print(paste(prettyNum(sum(pos_toks$n),big.mark=","), "words in positive review tokens after stop word removal"))
+```
+
+    [1] "619,997 words in positive review tokens after stop word removal"
+
+``` r
+print(paste(prettyNum(sum(neg_toks$n), big.mark=","), "words in negative review tokens after stop word removal"))
+```
+
+    [1] "1,088,100 words in negative review tokens after stop word removal"
+
+Taking a look at the most frequent words in positive reviews can give us
+a look into what people might write about enjoying specifically! Story,
+experience, characters, gameplay, puzzle, horror (?!), world, art…. And
+what they’re considering in their reviews! I see worth in there pretty
+high up, hours , unique.
 
 What are people writing about in negative reviews? I can pick out at a
 glance time, bad, money, worst, terrible.
@@ -1175,20 +1259,20 @@ posfreq <- pos_toks |>
 posfreq
 ```
 
-    # A tibble: 83,753 × 2
+    # A tibble: 39,009 × 2
        word       proportion
        <chr>           <dbl>
-     1 game          0.0657 
-     2 story         0.0119 
+     1 game          0.0660 
+     2 story         0.0120 
      3 play          0.0110 
-     4 10            0.00986
-     5 games         0.00895
-     6 fun           0.00849
-     7 time          0.00829
-     8 love          0.00615
+     4 10            0.00933
+     5 games         0.00896
+     6 fun           0.00855
+     7 time          0.00826
+     8 love          0.00616
      9 played        0.00611
-    10 experience    0.00519
-    # ℹ 83,743 more rows
+    10 experience    0.00516
+    # ℹ 38,999 more rows
 
 ``` r
 negfreq <- neg_toks |>
@@ -1227,20 +1311,20 @@ freq <- bind_rows(mutate(pos_toks, review_type = "Positive"),
 freq
 ```
 
-    # A tibble: 162,646 × 3
+    # A tibble: 110,000 × 3
        word  review_type proportion
        <chr> <chr>            <dbl>
      1 '     Positive     0.000179 
      2 '     Negative     0.0000199
-     3 a     Positive     0.000609 
+     3 a     Positive     0.000487 
      4 a     Negative     0.000776 
-     5 aa    Positive     0.0000119
+     5 aa    Positive     0.0000256
      6 aa    Negative     0.0000398
-     7 aaa   Positive     0.0000239
+     7 aaa   Positive     0.0000513
      8 aaa   Negative     0.0000199
-     9 aaaa  Positive     0.0000119
+     9 aaaa  Positive     0.0000256
     10 aaaa  Negative     0.0000199
-    # ℹ 162,636 more rows
+    # ℹ 109,990 more rows
 
 ### Total Words & Freq
 

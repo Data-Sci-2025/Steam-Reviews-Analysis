@@ -44,7 +44,7 @@ I will, at times during my analysis, lump these game rankings together into a si
 
 ```{r}
 #| label: readingin
-# reviews 
+# all reviews 
 full_df <- read_csv("../private/reviews_analyze.csv", show_col_types = FALSE)
 
 # game titles, ranks, etc, we'll need it later
@@ -141,7 +141,6 @@ ggplot(simple_games, aes(x = year_range, fill=rank)) +
       labs(title = "Number of Games per Rank by Year",
            x = NULL,
            y = "Count") +
-      geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 2, hjust = 0.5, position = position_dodge(width=.9)) +
       theme_minimal()
 ```
 
@@ -283,7 +282,6 @@ How many reviews of each type are there?
 ggplot(full_df, aes(x=review_type, fill=review_type )) + 
   geom_bar( width = 0.5) +
   scale_fill_brewer(palette = "Set2") +
-  geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 3, hjust = 0.5, position = "stack") +
   theme(legend.position="right") +
   labs(x="Review Type", y="Count", title="Total Reviews per Type (original)")
 ```
@@ -293,7 +291,6 @@ ggplot(full_df, aes(x=review_type, fill=review_type )) +
 ggplot(reviews_df, aes(x=review_type, fill=review_type )) + 
   geom_bar( width = 0.5) +
   scale_fill_brewer(palette = "Set2") +
-  geom_text(stat = "count", aes(label = after_stat(count)), size = 3.5, vjust = 3, hjust = 0.5, position = "stack") +
   theme(legend.position="right") +
   labs(x="Review Type", y="Count", title="Total Reviews per Type (adjusted)")
 ```
@@ -333,11 +330,19 @@ reviews_df
 Doing the same on the full data set so we can look at the true average length of *all* reviews
 
 ```{r}
+#| label: full_wc
 full_df <- full_df |>
   mutate(word_count = str_count(tokens, '\\,')+1)
 ```
 
 
+We know how many reviews we're looking at here, but how many *words*?
+
+```{r}
+#| label: tok-stats
+print(paste(prettyNum(sum(reviews_df$word_count),big.mark=","), "total words in the downsampled dataset"))
+print(paste(prettyNum(sum(full_df$word_count), big.mark=","), "total words in the full dataset"))
+```
 
 ### Review length
 
@@ -624,10 +629,12 @@ midlength
 
 
 ```{r}
+#| label: mid-ttr
 summary(midlength$TTR)
 ```
 
 ```{r}
+#| label: ttr-compare
 midpos <- midlength |>
   filter(review_type=='POS')
 summary(midpos$TTR)
@@ -637,6 +644,7 @@ midneg <- midlength |>
 summary(midneg$TTR)
 ```
 ```{r}
+#| label: midlen-count
 nrow(midpos)
 nrow(midneg)
 ```
@@ -646,6 +654,7 @@ First, there are positive reviews in this midlength selection of reviews. Makes 
 Let's select a random set of 2,953 of midlength positive reviews and compare a bit more equally.
 
 ```{r}
+#| label: midlen-sample
 set.seed(60)
 midpos <- midpos |>
   slice_sample(n = 2953)
@@ -654,10 +663,11 @@ summary(midpos$word_count)
 summary(midneg$word_count)
 ```
 
-Just to take a look at the total words being compared here, things look just about as expected! Both review sets run the full span of the length selection. Even here, positive reviews have a shorter average length.
+Just to take a look at the total words being compared here, things look just about as expected! Both review sets span the full length of the selection. Even here, positive reviews have a shorter average length.
 
 
 ```{r}
+#| label: midlen-ttr
 summary(midpos$TTR)
 summary(midneg$TTR)
 ```
@@ -667,7 +677,7 @@ The average TTR score for reviews in the 200-600 word range is not too significa
 What is interesting, though, is the difference in range of TTR per review type. Positive reviews have a difference of 0.744454 and negative reviews 0.807027. Negative reviews are more extreme on both the low and high scoring ends of TTR, indicating more variety in how repetitive (or not) negative reviews are. 
 
 
-## Tf-idf
+## TF-IDF
 
 Calculating Tf-idf for our game reviews. Because they were creating a lot of issues with tokenizing and odd characters, I've excluded emojis and gone simply for text reviews. It's a bummer to lose out on such strong reviews as "one single poop emoji", but it needs to be done for ease of processing. For now, at least.
 
@@ -696,29 +706,78 @@ Looking through the first few pages of tokens, I wonder if we can pick out some 
 
 What about top words per review type? 
 
+Before addressing that, let's check out the shape of the data after removing stop words.
+
 
 ```{r}
-#| label: pos-topwords
-pos_toks <- posrevs |>
+#| label: pos-neg-split
+
+posrevs_small <- reviews_df |>
+  filter(review_type=='POS')
+
+negrevs_small <- reviews_df |>
+  filter(review_type=='NEG')
+
+pos_toks <- posrevs_small |>
   unnest_tokens(word, review) |>
   anti_join(stop_words) |>
   count(word, sort = TRUE)
 pos_toks
-```
 
-Taking a look at the most frequent words in positive reviews can give us a look into what people might write about enjoying specifically! Story, experience, characters, gameplay, puzzle, horror (?!), world, art.... And what they're considering in their reviews! I see worth in there pretty high up, hours
-, unique.
-
-
-
-```{r}
 #| label: neg-topwords
-neg_toks <- negrevs |>
+neg_toks <- negrevs_small |>
   unnest_tokens(word, review) |>
   anti_join(stop_words) |>
   count(word, sort = TRUE)
 neg_toks
 ```
+
+
+We know from the downsampling done up above in this notebook that the number of *reviews* are very close to equal to each other...
+
+
+```{r}
+#| label: downsampled-rows
+nrow(posrevs_small)
+nrow(negrevs_small)
+```
+
+
+But what about the number of *words*? Here is the count of all tokens by review type in the downsampled dataset.
+
+
+```{r}
+#| label: downsampled-toks
+print(paste(prettyNum(sum(posrevs_small$word_count),big.mark=","), "words in positive review tokens before stop word removal"))
+print(paste(prettyNum(sum(negrevs_small$word_count), big.mark=","), "words in negative review tokens before stop word removal"))
+```
+
+Not equal at all! 
+
+So when those are pivoted to a count of all tokens, we find that there are not only fewer word tokens, but fewer unique word types as well. 
+
+
+```{r}
+#| label: stopword-rows
+nrow(pos_toks)
+nrow(neg_toks)
+```
+
+From the downsampled data to the stop word removed data, positive reviews lose 1,069,787 tokens and negative reviews lose 1,843,496 tokens. 
+
+
+```{r}
+#| label: stopword-toks
+print(paste(prettyNum(sum(pos_toks$n),big.mark=","), "words in positive review tokens after stop word removal"))
+print(paste(prettyNum(sum(neg_toks$n), big.mark=","), "words in negative review tokens after stop word removal"))
+```
+
+
+
+
+Taking a look at the most frequent words in positive reviews can give us a look into what people might write about enjoying specifically! Story, experience, characters, gameplay, puzzle, horror (?!), world, art.... And what they're considering in their reviews! I see worth in there pretty high up, hours
+, unique.
+
 
 What are people writing about in negative reviews? I can pick out at a glance time, bad, money, worst, terrible.
 
@@ -831,6 +890,7 @@ review_tf_idf |>
 
 
 ```{r}
+#| label: longreview
 reviews_df |>
   filter(review_id==76036759)
 ```

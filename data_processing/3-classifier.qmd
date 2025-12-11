@@ -106,7 +106,7 @@ setup_sample <- sample_n(reviews_shortened, 800)
 set.seed(14)
 setup_sample <- reviews_shortened |>
   group_by(review_type) |>
-  slice_sample(n = 10000)
+  slice_sample(n = 150000)
 
 setup_sample <-setup_sample |>
   rename(WC=total)

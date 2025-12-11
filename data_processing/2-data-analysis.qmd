@@ -400,7 +400,7 @@ Looking next at these longest reviews, I was really surprised! A huge majority o
 #| label: the-end-is
 reviews_df |>
   filter(review_id==198792433) |>
-  select(review)
+  dplyr::select(review)
 ```
 
 
@@ -802,6 +802,11 @@ Taking a look at the most frequent words in positive reviews can give us a look 
 
 What are people writing about in negative reviews? I can pick out at a glance bad, money, worst, boring. What makes them think these things? Bugs, graphics, game access, run (how the game runs), abandoned. No one likes to see a game published in an unfinished state and never updated.
 
+
+```{r}
+print(paste(prettyNum(sum(pos_toks$n),big.mark=","), "words in positive review tokens after additional stop word removal"))
+print(paste(prettyNum(sum(neg_toks$n), big.mark=","), "words in negative review tokens after additional stop word removal"))
+```
 
 
 ### Term Frequencies

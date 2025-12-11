@@ -64,31 +64,16 @@ review_tf_idf |>
 ```
 
 
+The difference in data here is not necessarily *massive*, but did initially surprise me! The is, until I ran the calculations in this notebook [here](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/2-data-analysis.md#late-data-overview). There are fewer rows marked POS in this smaller dataset because of what we already know: positive reviews are shorter than negative reviews. Simply, there are fewer words marked POS overall.
+
+
+
 ## One more cleanup
 
-As was covered toward the end of my analysis notebook, there are many many words that are the same between both review types (the classes our classifier is going to attempt to predict). Because these words appear so commonly in both classes, it gave the classifier a tough time trying to predict a review's class. My first attempt guessed every single review negative. 
+I removed highly repetitive words at the end of my analysis notebook that appeared very commonly in both positive and negative reviews. I wanted to do this before tf-idf was calculated so that the weights of each word would be calculated accurately. 
 
-After talking with Dan we decided the best move would be to make a custom list of stop words using these highly common and overlapping words (that will have a really low tf-idf value anyway) to break it down into the more distinctive words and maybe get a cleaner prediction.
+To further encourage the classifier to be the best that it can be, I chose to select for words with a higher TF-IDF value to select for the more unique (and therefore more indicative) words.
 
-
-```{r}
-#| label: revsplit
-posfreq <- review_tf_idf |>
-  filter(review_type=='POS') |>
-  arrange(tf_idf)
-posfreq
-
-negfreq <- review_tf_idf |>
-  filter(review_type=='NEG') |>
-  arrange(tf_idf)
-negfreq
-```
-
-
-```{r}
-#| label: tf-idf-sum
-summary(review_tf_idf$tf_idf)
-```
 
 ```{r}
 #| label: filter-revs
@@ -100,29 +85,9 @@ reviews_shortened |>
   summarise(count=n())
 ```
 
+It's ultimately not getting rid of *much* but any little step helps.
 
 
-```{r}
-#| label: stopwords
-mystopwords <- tibble(word = c("game", "10", "2", "3", "play", "1", "4", "5", "time", "fun", "story", "games", "buy", "20", "gameplay", "6", "worth", "times", "100", "playing", "played", "30", "world", "9", "recommend", "8", "7"))
-```
-
-
-By looking through the first several rows of the dataframe above as well as the top tokens shared that I spotted in my analysis notebook, I've added a list of highly frequent and shared words that wouldn't indicate either POS or NEG review strongly in either direction. 
-
-
-```{r}
-#| label: join-stopwords
-reviews_shortened <- anti_join(review_tf_idf, mystopwords, by="word")
-```
-
-
-```{r}
-#| label: new-revcount
-reviews_shortened |>
-  group_by(review_type) |>
-  summarise(count=n())
-```
 
 ## Data Setup
 
@@ -141,7 +106,7 @@ setup_sample <- sample_n(reviews_shortened, 800)
 set.seed(14)
 setup_sample <- reviews_shortened |>
   group_by(review_type) |>
-  slice_sample(n = 150000)
+  slice_sample(n = 10000)
 
 setup_sample <-setup_sample |>
   rename(WC=total)
@@ -309,13 +274,9 @@ Despite all efforts to give my classifier the best chances at being informativel
 confusion_matrix <- rf_model$confusion.matrix
     print(confusion_matrix)
 ```
+When run on the full available size (150,000 rows of each review class) with all words and word count included as a predicting variable, the classifier correctly predicted all 20,734 NEG reviews, but only correctly predicted 24 POS reviews. It incorrectly classified 19,510 POS reviews as NEG
 
-Here are the results for this classifier when I excluded word count as a variable:
-
-![](../notes_and_info/Classifier.PNG)
-
-
-
+When run without word count included as a variable, the classifier correctly predicted 20,733 NEG class reviews and 15 POS class reviews. It incorrectly classified 19,519 POS reviews as NEG, and incorrectly classified 1 single NEG review as POS. 
 
 
 

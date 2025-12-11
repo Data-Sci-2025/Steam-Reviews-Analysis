@@ -20,20 +20,20 @@ review_tf_idf <- read_csv("../private/reviews_tfidf.csv", show_col_types = FALSE
 review_tf_idf
 ```
 
-    # A tibble: 1,430,815 × 5
-       review_id review_type word        total tf_idf
-           <dbl> <chr>       <chr>       <dbl>  <dbl>
-     1 105382110 POS         hide           31 0.398 
-     2 105382110 POS         story          31 0.133 
-     3 105382110 POS         4              31 0.112 
-     4 105382110 POS         aesthetic      31 0.193 
-     5 105382110 POS         basically      31 0.136 
-     6 105382110 POS         beat           31 0.147 
-     7 105382110 POS         button         31 0.154 
-     8 105382110 POS         cool           31 0.119 
-     9 105382110 POS         essentially    31 0.174 
-    10 105382110 POS         game           31 0.0171
-    # ℹ 1,430,805 more rows
+    # A tibble: 1,241,994 × 5
+       review_id review_type word          total tf_idf
+           <dbl> <chr>       <chr>         <dbl>  <dbl>
+     1 105382110 POS         hide             25  0.493
+     2 105382110 POS         aesthetic        25  0.239
+     3 105382110 POS         basically        25  0.169
+     4 105382110 POS         beat             25  0.182
+     5 105382110 POS         button           25  0.191
+     6 105382110 POS         cool             25  0.148
+     7 105382110 POS         essentially      25  0.216
+     8 105382110 POS         haunted          25  0.283
+     9 105382110 POS         house            25  0.197
+    10 105382110 POS         interactivity    25  0.283
+    # ℹ 1,241,984 more rows
 
 ### Remove NA
 
@@ -44,7 +44,7 @@ colSums(is.na(review_tf_idf))
 ```
 
       review_id review_type        word       total      tf_idf 
-              0           0        2007        2007        2007 
+              0           0        4231        4231        4231 
 
 ``` r
 review_tf_idf <- na.omit(review_tf_idf)
@@ -66,73 +66,27 @@ review_tf_idf |>
     # A tibble: 2 × 2
       review_type  count
       <chr>        <int>
-    1 NEG         901027
-    2 POS         527781
+    1 NEG         793792
+    2 POS         443971
+
+The difference in data here is not necessarily *massive*, but did
+initially surprise me! The is, until I ran the calculations in this
+notebook
+[here](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/2-data-analysis.md#late-data-overview).
+There are fewer rows marked POS in this smaller dataset because of what
+we already know: positive reviews are shorter than negative reviews.
+Simply, there are fewer words marked POS overall.
 
 ## One more cleanup
 
-As was covered toward the end of my analysis notebook, there are many
-many words that are the same between both review types (the classes our
-classifier is going to attempt to predict). Because these words appear
-so commonly in both classes, it gave the classifier a tough time trying
-to predict a review’s class. My first attempt guessed every single
-review negative.
+I removed highly repetitive words at the end of my analysis notebook
+that appeared very commonly in both positive and negative reviews. I
+wanted to do this before tf-idf was calculated so that the weights of
+each word would be calculated accurately.
 
-After talking with Dan we decided the best move would be to make a
-custom list of stop words using these highly common and overlapping
-words (that will have a really low tf-idf value anyway) to break it down
-into the more distinctive words and maybe get a cleaner prediction.
-
-``` r
-posfreq <- review_tf_idf |>
-  filter(review_type=='POS') |>
-  arrange(tf_idf)
-posfreq
-```
-
-    # A tibble: 527,781 × 5
-       review_id review_type word  total  tf_idf
-           <dbl> <chr>       <chr> <dbl>   <dbl>
-     1 125061622 POS         game    379 0.00140
-     2 169090094 POS         game    293 0.00181
-     3  78688909 POS         game    230 0.00230
-     4 131377160 POS         10     1001 0.00254
-     5 196639263 POS         game    206 0.00257
-     6 131377160 POS         2      1001 0.00284
-     7 154068333 POS         game    184 0.00288
-     8 180039771 POS         game    180 0.00294
-     9  15055915 POS         time    687 0.00297
-    10  15055915 POS         story   687 0.00300
-    # ℹ 527,771 more rows
-
-``` r
-negfreq <- review_tf_idf |>
-  filter(review_type=='NEG') |>
-  arrange(tf_idf)
-negfreq
-```
-
-    # A tibble: 901,027 × 5
-       review_id review_type word  total   tf_idf
-           <dbl> <chr>       <chr> <dbl>    <dbl>
-     1 144400423 NEG         game    628 0.000843
-     2 168667100 NEG         game    589 0.000899
-     3  12318072 NEG         game    527 0.00100 
-     4 193052341 NEG         game    301 0.00176 
-     5 171917568 NEG         game    293 0.00181 
-     6  84272391 NEG         game    573 0.00185 
-     7  29419899 NEG         10     1366 0.00186 
-     8 107657442 NEG         game    268 0.00198 
-     9  29419899 NEG         2      1366 0.00208 
-    10 163132462 NEG         game    251 0.00211 
-    # ℹ 901,017 more rows
-
-``` r
-summary(review_tf_idf$tf_idf)
-```
-
-         Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-    8.429e-04 4.537e-02 9.950e-02 2.449e-01 2.297e-01 1.122e+01 
+To further encourage the classifier to be the best that it can be, I
+chose to select for words with a higher TF-IDF value to select for the
+more unique (and therefore more indicative) words.
 
 ``` r
 reviews_shortened <- review_tf_idf |>
@@ -146,33 +100,10 @@ reviews_shortened |>
     # A tibble: 2 × 2
       review_type  count
       <chr>        <int>
-    1 NEG         894348
-    2 POS         524953
+    1 NEG         791011
+    2 POS         442880
 
-``` r
-mystopwords <- tibble(word = c("game", "10", "2", "3", "play", "1", "4", "5", "time", "fun", "story", "games", "buy", "20", "gameplay", "6", "worth", "times", "100", "playing", "played", "30", "world", "9", "recommend", "8", "7"))
-```
-
-By looking through the first several rows of the dataframe above as well
-as the top tokens shared that I spotted in my analysis notebook, I’ve
-added a list of highly frequent and shared words that wouldn’t indicate
-either POS or NEG review strongly in either direction.
-
-``` r
-reviews_shortened <- anti_join(review_tf_idf, mystopwords, by="word")
-```
-
-``` r
-reviews_shortened |>
-  group_by(review_type) |>
-  summarise(count=n())
-```
-
-    # A tibble: 2 × 2
-      review_type  count
-      <chr>        <int>
-    1 NEG         810758
-    2 POS         457868
+It’s ultimately not getting rid of *much* but any little step helps.
 
 ## Data Setup
 
@@ -205,18 +136,18 @@ setup_sample
 
     # A tibble: 20,000 × 5
     # Groups:   review_type [2]
-       review_id review_type word           WC tf_idf
-           <dbl> <chr>       <chr>       <dbl>  <dbl>
-     1 137657294 NEG         telling        61 0.0842
-     2  12144347 NEG         care           97 0.0449
-     3  12178556 NEG         purchased      53 0.201 
-     4 135777304 NEG         special        34 0.143 
-     5   7854266 NEG         elements       63 0.0723
-     6  49021712 NEG         sold           29 0.191 
-     7   2152783 NEG         pc             42 0.0910
-     8  16341665 NEG         environment    19 0.268 
-     9 202376910 NEG         exact         123 0.0477
-    10  11398426 NEG         horror         79 0.0431
+       review_id review_type word          WC tf_idf
+           <dbl> <chr>       <chr>      <dbl>  <dbl>
+     1 186153668 NEG         crash        179 0.0256
+     2 129898197 NEG         stanley       34 0.135 
+     3 143230050 NEG         complete      34 0.113 
+     4 102010748 NEG         birkin        27 0.321 
+     5   7748613 NEG         standalone   127 0.0573
+     6  33441116 NEG         switched     164 0.0436
+     7 193049277 NEG         review        47 0.0726
+     8  15232499 NEG         force        114 0.0467
+     9 183653186 NEG         refunded      10 0.557 
+    10  10773061 NEG         bought        38 0.0936
     # ℹ 19,990 more rows
 
 ``` r
@@ -248,7 +179,7 @@ setup_sample <- setup_sample |>
 ncol(setup_sample)
 ```
 
-    [1] 6895
+    [1] 6794
 
 Because of how the classifier works, any word that only appears once in
 any of the reviews (has only one tf-idf value over 0) would be
@@ -287,29 +218,29 @@ setup_sample <- setup_sample |>
 ncol(setup_sample)
 ```
 
-    [1] 2689
+    [1] 2768
 
 ``` r
 head(setup_sample)
 ```
 
-    # A tibble: 6 × 2,689
+    # A tibble: 6 × 2,768
     # Groups:   review_type [1]
-      review_type    WC telling   care purchased special elements  sold    pc
-      <fct>       <dbl>   <dbl>  <dbl>     <dbl>   <dbl>    <dbl> <dbl> <dbl>
-    1 NEG            61  0.0842 0          0       0       0      0         0
-    2 NEG            97  0      0.0449     0       0       0      0         0
-    3 NEG            53  0      0          0.201   0       0      0         0
-    4 NEG            34  0      0          0       0.143   0      0         0
-    5 NEG            63  0      0          0       0       0.0723 0         0
-    6 NEG            29  0      0          0       0       0      0.191     0
-    # ℹ 2,680 more variables: environment <dbl>, exact <dbl>, horror <dbl>,
-    #   ultimate <dbl>, product <dbl>, expected <dbl>, issues <dbl>, slow <dbl>,
-    #   steam <dbl>, helps <dbl>, read <dbl>, sadly <dbl>, die <dbl>,
-    #   disgrace <dbl>, mediocre <dbl>, enemy <dbl>, ah <dbl>, gift <dbl>,
-    #   player <dbl>, double <dbl>, cash <dbl>, humble <dbl>, set <dbl>,
-    #   stick <dbl>, shit <dbl>, issue <dbl>, top <dbl>, piece <dbl>,
-    #   sources <dbl>, dialogue <dbl>, hours <dbl>, requirements <dbl>, …
+      review_type    WC  crash stanley complete birkin standalone review force
+      <fct>       <dbl>  <dbl>   <dbl>    <dbl>  <dbl>      <dbl>  <dbl> <dbl>
+    1 NEG           179 0.0256   0        0      0         0           0     0
+    2 NEG            34 0        0.135    0      0         0           0     0
+    3 NEG            34 0        0        0.113  0         0           0     0
+    4 NEG            27 0        0        0      0.321     0           0     0
+    5 NEG           127 0        0        0      0         0.0573      0     0
+    6 NEG           164 0        0        0      0         0           0     0
+    # ℹ 2,759 more variables: refunded <dbl>, bought <dbl>, pls <dbl>, set <dbl>,
+    #   option <dbl>, poor <dbl>, badly <dbl>, patch <dbl>, cultures <dbl>,
+    #   qtes <dbl>, real <dbl>, giving <dbl>, idea <dbl>, stand <dbl>, money <dbl>,
+    #   role <dbl>, terrible <dbl>, unravel <dbl>, killed <dbl>, found <dbl>,
+    #   tons <dbl>, inventory <dbl>, i_360 <dbl>, refund <dbl>, path <dbl>,
+    #   battles <dbl>, fucking <dbl>, visuals <dbl>, keyboard <dbl>, steam <dbl>,
+    #   keeping <dbl>, anymore <dbl>, aspects <dbl>, weird <dbl>, add <dbl>, …
 
 One last step to help the classifier run and train properly… some small
 elements like apostrophes were causing issues.
@@ -343,25 +274,25 @@ testing  <- setup_sample[-inTrain,]
 nrow(training)
 ```
 
-    [1] 10202
+    [1] 10227
 
 ``` r
 ncol(training)
 ```
 
-    [1] 2689
+    [1] 2768
 
 ``` r
 nrow(testing)
 ```
 
-    [1] 3399
+    [1] 3408
 
 ``` r
 ncol(testing)
 ```
 
-    [1] 2689
+    [1] 2768
 
 ``` r
 training |>
@@ -372,8 +303,8 @@ training |>
     # A tibble: 2 × 2
       review_type count
       <fct>       <int>
-    1 NEG          5300
-    2 POS          4902
+    1 NEG          5331
+    2 POS          4896
 
 The classifier will be trained on 41,000 reviews and tested on close to
 14,000 to see how well it can, by words used in a review, predict if a
@@ -407,8 +338,8 @@ str(p.ra)
     List of 5
      $ predictions              : Factor w/ 2 levels "NEG","POS": 1 1 1 1 1 1 1 1 1 1 ...
      $ num.trees                : num 40
-     $ num.independent.variables: num 2688
-     $ num.samples              : int 3399
+     $ num.independent.variables: num 2767
+     $ num.samples              : int 3408
      $ treetype                 : chr "Classification"
      - attr(*, "class")= chr "ranger.prediction"
 
@@ -429,10 +360,16 @@ confusion_matrix <- rf_model$confusion.matrix
 
          predicted
     true   NEG  POS
-      NEG 5288   12
-      POS 4841   61
+      NEG 5326    5
+      POS 4871   25
 
-Here are the results for this classifier when I excluded word count as a
-variable:
+When run on the full available size (150,000 rows of each review class)
+with all words and word count included as a predicting variable, the
+classifier correctly predicted all 20,734 NEG reviews, but only
+correctly predicted 24 POS reviews. It incorrectly classified 19,510 POS
+reviews as NEG
 
-![](../notes_and_info/Classifier.PNG)
+When run without word count included as a variable, the classifier
+correctly predicted 20,733 NEG class reviews and 15 POS class reviews.
+It incorrectly classified 19,519 POS reviews as NEG, and incorrectly
+classified 1 single NEG review as POS.

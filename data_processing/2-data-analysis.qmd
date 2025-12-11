@@ -789,18 +789,18 @@ mystopwords <- tibble(word = c("game", "10", "2", "3", "play", "1", "4", "5", "t
 
 ```{r}
 #| label: join-stopwords
-pos_toks_simp <- anti_join(pos_toks, mystopwords, by="word")
-pos_toks_simp
+pos_toks <- anti_join(pos_toks, mystopwords, by="word")
+pos_toks
 
-neg_toks_simp <- anti_join(neg_toks, mystopwords, by="word")
-neg_toks_simp
+neg_toks <- anti_join(neg_toks, mystopwords, by="word")
+neg_toks
 ```
 
 
 Taking a look at the most frequent words in positive reviews can give us a look into what people might write about enjoying specifically! Puzzle, horror (?!), art.... And what they're expressing in their reviews! I see worth in there pretty high up, love, amazing, beautiful, unique. And Stanley! The Stanley Parable is a very highly reviewed game, people must really like the main character.
 
 
-What are people writing about in negative reviews? I can pick out at a glance bad, money, worst, boring. What makes them think these things? Bugs, graphics, game access, run (how the game runs), abandoned.
+What are people writing about in negative reviews? I can pick out at a glance bad, money, worst, boring. What makes them think these things? Bugs, graphics, game access, run (how the game runs), abandoned. No one likes to see a game published in an unfinished state and never updated.
 
 
 
@@ -834,15 +834,15 @@ negfreq
 
 ```{r}
 #| label: pos-neg-freq
-freq <- bind_rows(mutate(pos_toks, review_type = "Positive"),
-                       mutate(neg_toks, review_type = "Negative")) |> 
+freq <- bind_rows(mutate(pos_toks, review_type = "POS"),
+                       mutate(neg_toks, review_type = "NEG")) |> 
   mutate(word = str_extract(word, "[a-z']+")) |>
   count(review_type, word) |>
   group_by(review_type) |>
   mutate(proportion = n / sum(n)) |> 
   select(-n) |> 
   pivot_wider(names_from = review_type, values_from = proportion) |>
-  pivot_longer(Positive:Negative,
+  pivot_longer(POS:NEG,
                names_to = "review_type", values_to = "proportion")
 
 freq
@@ -853,11 +853,14 @@ freq
 ### Total Words & Freq
 
 
+Note that I'm removing regular stop words and my custom stop words from the data before calculating tf-df.
+
 ```{r}
 #| label: revtoks-totals
 review_words <- reviews_df |>
   unnest_tokens(word, review) |>
   anti_join(stop_words) |>
+  anti_join(mystopwords) |>
   count(review_id, word, sort = TRUE)
 
 total_words <- review_words |> 
@@ -898,6 +901,7 @@ review_tf_idf
 with stop words included there are 6,412,302 total rows
 with stop words excluded it went down to 3,045,610!
 After downsampling (and stop words removed), it's down to 1,430,815!
+Then, finally, with custom stop words removed, 1,245,550, whew!
 
 ```{r}
 #| label: high-count-words
@@ -912,7 +916,7 @@ reviews_df |>
   filter(review_id==76036759)
 ```
 
-
+You can always count on gamers and their eloquence.
 
 
 To prep this dataframe for the classifier, let's narrow down to only the columns we know we want.

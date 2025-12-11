@@ -1226,8 +1226,8 @@ mystopwords <- tibble(word = c("game", "10", "2", "3", "play", "1", "4", "5", "t
 ```
 
 ``` r
-pos_toks_simp <- anti_join(pos_toks, mystopwords, by="word")
-pos_toks_simp
+pos_toks <- anti_join(pos_toks, mystopwords, by="word")
+pos_toks
 ```
 
     # A tibble: 38,974 × 2
@@ -1246,8 +1246,8 @@ pos_toks_simp
     # ℹ 38,964 more rows
 
 ``` r
-neg_toks_simp <- anti_join(neg_toks, mystopwords, by="word")
-neg_toks_simp
+neg_toks <- anti_join(neg_toks, mystopwords, by="word")
+neg_toks
 ```
 
     # A tibble: 50,225 × 2
@@ -1274,7 +1274,8 @@ really like the main character.
 
 What are people writing about in negative reviews? I can pick out at a
 glance bad, money, worst, boring. What makes them think these things?
-Bugs, graphics, game access, run (how the game runs), abandoned.
+Bugs, graphics, game access, run (how the game runs), abandoned. No one
+likes to see a game published in an unfinished state and never updated.
 
 ### Term Frequencies
 
@@ -1310,20 +1311,20 @@ posfreq <- pos_toks |>
 posfreq
 ```
 
-    # A tibble: 39,009 × 2
-       word       proportion
-       <chr>           <dbl>
-     1 game          0.0660 
-     2 story         0.0120 
-     3 play          0.0110 
-     4 10            0.00933
-     5 games         0.00896
-     6 fun           0.00855
-     7 time          0.00826
-     8 love          0.00616
-     9 played        0.00611
-    10 experience    0.00516
-    # ℹ 38,999 more rows
+    # A tibble: 38,974 × 2
+       word    proportion
+       <chr>        <dbl>
+     1 love       0.00767
+     2 amazing    0.00519
+     3 puzzle     0.00426
+     4 space      0.00412
+     5 puzzles    0.00389
+     6 horror     0.00380
+     7 bit        0.00360
+     8 art        0.00339
+     9 life       0.00333
+    10 dead       0.00299
+    # ℹ 38,964 more rows
 
 ``` r
 negfreq <- neg_toks |>
@@ -1332,60 +1333,65 @@ negfreq <- neg_toks |>
 negfreq
 ```
 
-    # A tibble: 50,260 × 2
-       word  proportion
-       <chr>      <dbl>
-     1 game     0.0616 
-     2 play     0.00802
-     3 time     0.00791
-     4 story    0.00631
-     5 games    0.00624
-     6 bad      0.00569
-     7 buy      0.00507
-     8 money    0.00409
-     9 fun      0.00399
-    10 2        0.00376
-    # ℹ 50,250 more rows
+    # A tibble: 50,225 × 2
+       word     proportion
+       <chr>         <dbl>
+     1 bad         0.00677
+     2 money       0.00488
+     3 feels       0.00297
+     4 steam       0.00295
+     5 boring      0.00284
+     6 bugs        0.00268
+     7 access      0.00250
+     8 worst       0.00243
+     9 graphics    0.00233
+    10 review      0.00232
+    # ℹ 50,215 more rows
 
 ``` r
-freq <- bind_rows(mutate(pos_toks, review_type = "Positive"),
-                       mutate(neg_toks, review_type = "Negative")) |> 
+freq <- bind_rows(mutate(pos_toks, review_type = "POS"),
+                       mutate(neg_toks, review_type = "NEG")) |> 
   mutate(word = str_extract(word, "[a-z']+")) |>
   count(review_type, word) |>
   group_by(review_type) |>
   mutate(proportion = n / sum(n)) |> 
   select(-n) |> 
   pivot_wider(names_from = review_type, values_from = proportion) |>
-  pivot_longer(Positive:Negative,
+  pivot_longer(POS:NEG,
                names_to = "review_type", values_to = "proportion")
 
 freq
 ```
 
-    # A tibble: 110,000 × 3
+    # A tibble: 109,992 × 3
        word  review_type proportion
        <chr> <chr>            <dbl>
-     1 '     Positive     0.000179 
-     2 '     Negative     0.0000199
-     3 a     Positive     0.000487 
-     4 a     Negative     0.000776 
-     5 aa    Positive     0.0000256
-     6 aa    Negative     0.0000398
-     7 aaa   Positive     0.0000513
-     8 aaa   Negative     0.0000199
-     9 aaaa  Positive     0.0000256
-    10 aaaa  Negative     0.0000199
-    # ℹ 109,990 more rows
+     1 '     POS          0.000180 
+     2 '     NEG          0.0000199
+     3 a     POS          0.000488 
+     4 a     NEG          0.000777 
+     5 aa    POS          0.0000257
+     6 aa    NEG          0.0000398
+     7 aaa   POS          0.0000513
+     8 aaa   NEG          0.0000199
+     9 aaaa  POS          0.0000257
+    10 aaaa  NEG          0.0000199
+    # ℹ 109,982 more rows
 
 ### Total Words & Freq
+
+Note that I’m removing regular stop words and my custom stop words from
+the data before calculating tf-df.
 
 ``` r
 review_words <- reviews_df |>
   unnest_tokens(word, review) |>
   anti_join(stop_words) |>
+  anti_join(mystopwords) |>
   count(review_id, word, sort = TRUE)
 ```
 
+    Joining with `by = join_by(word)`
     Joining with `by = join_by(word)`
 
 ``` r
@@ -1411,20 +1417,20 @@ review_words <- review_words |>
 review_words
 ```
 
-    # A tibble: 1,430,815 × 5
-       review_id review_type word            n total
-           <dbl> <chr>       <chr>       <int> <int>
-     1 105382110 POS         hide            2    31
-     2 105382110 POS         story           2    31
-     3 105382110 POS         4               1    31
-     4 105382110 POS         aesthetic       1    31
-     5 105382110 POS         basically       1    31
-     6 105382110 POS         beat            1    31
-     7 105382110 POS         button          1    31
-     8 105382110 POS         cool            1    31
-     9 105382110 POS         essentially     1    31
-    10 105382110 POS         game            1    31
-    # ℹ 1,430,805 more rows
+    # A tibble: 1,241,994 × 5
+       review_id review_type word              n total
+           <dbl> <chr>       <chr>         <int> <int>
+     1 105382110 POS         hide              2    25
+     2 105382110 POS         aesthetic         1    25
+     3 105382110 POS         basically         1    25
+     4 105382110 POS         beat              1    25
+     5 105382110 POS         button            1    25
+     6 105382110 POS         cool              1    25
+     7 105382110 POS         essentially       1    25
+     8 105382110 POS         haunted           1    25
+     9 105382110 POS         house             1    25
+    10 105382110 POS         interactivity     1    25
+    # ℹ 1,241,984 more rows
 
 Calculating the total word counts per word and per review. With these,
 we can get moving on tf-idf.
@@ -1447,36 +1453,37 @@ review_tf_idf <- review_words |>
 review_tf_idf
 ```
 
-    # A tibble: 1,430,815 × 8
-       review_id review_type word            n total     tf   idf tf_idf
-           <dbl> <chr>       <chr>       <int> <int>  <dbl> <dbl>  <dbl>
-     1 105382110 POS         hide            2    31 0.0645 6.17  0.398 
-     2 105382110 POS         story           2    31 0.0645 2.06  0.133 
-     3 105382110 POS         4               1    31 0.0323 3.47  0.112 
-     4 105382110 POS         aesthetic       1    31 0.0323 5.98  0.193 
-     5 105382110 POS         basically       1    31 0.0323 4.23  0.136 
-     6 105382110 POS         beat            1    31 0.0323 4.55  0.147 
-     7 105382110 POS         button          1    31 0.0323 4.76  0.154 
-     8 105382110 POS         cool            1    31 0.0323 3.69  0.119 
-     9 105382110 POS         essentially     1    31 0.0323 5.41  0.174 
-    10 105382110 POS         game            1    31 0.0323 0.529 0.0171
-    # ℹ 1,430,805 more rows
+    # A tibble: 1,241,994 × 8
+       review_id review_type word              n total    tf   idf tf_idf
+           <dbl> <chr>       <chr>         <int> <int> <dbl> <dbl>  <dbl>
+     1 105382110 POS         hide              2    25  0.08  6.17  0.493
+     2 105382110 POS         aesthetic         1    25  0.04  5.98  0.239
+     3 105382110 POS         basically         1    25  0.04  4.23  0.169
+     4 105382110 POS         beat              1    25  0.04  4.55  0.182
+     5 105382110 POS         button            1    25  0.04  4.76  0.191
+     6 105382110 POS         cool              1    25  0.04  3.69  0.148
+     7 105382110 POS         essentially       1    25  0.04  5.41  0.216
+     8 105382110 POS         haunted           1    25  0.04  7.06  0.283
+     9 105382110 POS         house             1    25  0.04  4.92  0.197
+    10 105382110 POS         interactivity     1    25  0.04  7.08  0.283
+    # ℹ 1,241,984 more rows
 
 with stop words included there are 6,412,302 total rows with stop words
 excluded it went down to 3,045,610! After downsampling (and stop words
-removed), it’s down to 1,430,815!
+removed), it’s down to 1,430,815! Then, finally, with custom stop words
+removed, 1,245,550, whew!
 
 ``` r
 review_tf_idf |>
   arrange(desc(n))
 ```
 
-    # A tibble: 1,430,815 × 8
+    # A tibble: 1,241,994 × 8
        review_id review_type word          n total    tf   idf tf_idf
            <dbl> <chr>       <chr>     <int> <int> <dbl> <dbl>  <dbl>
      1 128455542 POS         stanley     604   604 1      4.59   4.59
      2 100586398 NEG         dogshit     390   390 1      6.71   6.71
-     3 107657442 NEG         cum         266   268 0.993  9.28   9.21
+     3 107657442 NEG         cum         266   267 0.996  9.28   9.24
      4  76036759 NEG         bad         226   227 0.996  2.60   2.59
      5 202604268 POS         sebastian   180   180 1      8.45   8.45
      6 158033704 POS         nightmare   171   171 1      5.90   5.90
@@ -1484,7 +1491,7 @@ review_tf_idf |>
      8 101330624 NEG         muito       140   350 0.4    7.82   3.13
      9 117679620 POS         stomp       132   132 1      7.56   7.56
     10  77293859 NEG         crash       128   128 1      4.58   4.58
-    # ℹ 1,430,805 more rows
+    # ℹ 1,241,984 more rows
 
 ``` r
 reviews_df |>
@@ -1496,6 +1503,8 @@ reviews_df |>
           <dbl> <chr>    <date>     <chr>       <chr>        <dbl> <chr>       <dbl>
     1  76036759 english  2020-08-16 NEG         bad bad …    10220 bad, …        227
 
+You can always count on gamers and their eloquence.
+
 To prep this dataframe for the classifier, let’s narrow down to only the
 columns we know we want.
 
@@ -1506,20 +1515,20 @@ review_tf_idf <- review_tf_idf |>
 review_tf_idf
 ```
 
-    # A tibble: 1,430,815 × 5
-       review_id review_type word        total tf_idf
-           <dbl> <chr>       <chr>       <int>  <dbl>
-     1 105382110 POS         hide           31 0.398 
-     2 105382110 POS         story          31 0.133 
-     3 105382110 POS         4              31 0.112 
-     4 105382110 POS         aesthetic      31 0.193 
-     5 105382110 POS         basically      31 0.136 
-     6 105382110 POS         beat           31 0.147 
-     7 105382110 POS         button         31 0.154 
-     8 105382110 POS         cool           31 0.119 
-     9 105382110 POS         essentially    31 0.174 
-    10 105382110 POS         game           31 0.0171
-    # ℹ 1,430,805 more rows
+    # A tibble: 1,241,994 × 5
+       review_id review_type word          total tf_idf
+           <dbl> <chr>       <chr>         <int>  <dbl>
+     1 105382110 POS         hide             25  0.493
+     2 105382110 POS         aesthetic        25  0.239
+     3 105382110 POS         basically        25  0.169
+     4 105382110 POS         beat             25  0.182
+     5 105382110 POS         button           25  0.191
+     6 105382110 POS         cool             25  0.148
+     7 105382110 POS         essentially      25  0.216
+     8 105382110 POS         haunted          25  0.283
+     9 105382110 POS         house            25  0.197
+    10 105382110 POS         interactivity    25  0.283
+    # ℹ 1,241,984 more rows
 
 ``` r
 write_csv(review_tf_idf, file="../private/reviews_tfidf.csv")

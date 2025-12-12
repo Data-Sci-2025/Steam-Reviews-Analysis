@@ -1,6 +1,6 @@
 # Steam Reviews Analysis
-Final project by Ashley Bakaitus
-Linguistic analysis of video game reviews from the digital platform, Steam.
+Final project by Ashley Bakaitus<br>
+Linguistic analysis of video game reviews from the digital platform, Steam.<br>
 December 2025, aeb145@pitt.edu
 
 This research project seeks to explore the language usage in video game reviews of 45 games hosted on Steam. Reviews, written by and for players of these games, can only be positive (rocommended) or negative (not recommended). Is there a notable difference in language used in positive and negative reviews on Steam? If so, how will a classifier perform when trying to discern a review's positivity or negativity on word values alone?

@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>4-stretch-goals</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="4-stretch-goals_files/libs/clipboard/clipboard.min.js"></script>
+<script src="4-stretch-goals_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="4-stretch-goals_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="4-stretch-goals_files/libs/quarto-html/popper.min.js"></script>
+<script src="4-stretch-goals_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="4-stretch-goals_files/libs/quarto-html/anchor.min.js"></script>
+<link href="4-stretch-goals_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="4-stretch-goals_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="4-stretch-goals_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="4-stretch-goals_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="4-stretch-goals_files/libs/bootstrap/bootstrap-bb462d781dde1847d9e3ccf7736099dd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="4-stretch-goals_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<script src="4-stretch-goals_files/libs/jquery-3.5.1/jquery.min.js"></script>
+
+<script src="4-stretch-goals_files/libs/proj4js-2.3.15/proj4.js"></script>
+
+<link href="4-stretch-goals_files/libs/highcharts-9.3.1/css/motion.css" rel="stylesheet">
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/highcharts.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/highcharts-3d.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/highcharts-more.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/stock.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/map.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/data.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/exporting.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/offline-exporting.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/drilldown.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/item-series.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/overlapping-datalabels.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/annotations.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/export-data.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/funnel.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/heatmap.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/treemap.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/sankey.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/dependency-wheel.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/organization.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/solid-gauge.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/streamgraph.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/sunburst.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/vector.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/wordcloud.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/xrange.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/tilemap.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/venn.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/gantt.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/timeline.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/parallel-coordinates.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/bullet.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/coloraxis.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/dumbbell.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/lollipop.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/series-label.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/plugins/motion.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/custom/reset.js"></script>
+
+<script src="4-stretch-goals_files/libs/highcharts-9.3.1/modules/boost.js"></script>
+
+<script src="4-stretch-goals_files/libs/highchart-binding-0.9.4/highchart.js"></script>
+
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">4-stretch-goals</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>These are some aspects of my work that I ultimately decided to move to a sort of “stretch goals” of the project. Elements I was interested in but weren’t necessarily pertinent to the analysis I was focused one. Or, in the case of emojis usage, elements I Was interested in but didn’t strictly have the R know-how to get working exactly how I wanted.</p>
+<p>I also used a specific emoji usage measurement that would not render from a qmd with gfm format, and required that I use html format. Rather than do that to my entire analysis notebook, I decided to isolate the emoji usage details here instead.</p>
+<p><strong>Note</strong>: Please run <a href="https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/0-data-exploration.qmd">0-data-exploration</a> and <a href="https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/1-data-cleanup.qmd">1-data-cleanup</a>. I exported this .csv file from the midpoint of the <a href="https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/2-data-analysis.qmd">2-data-analysis</a> file, after adding word types.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>reviews_df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../private/reviews_emojis.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="reviews-over-time" class="level2">
+<h2 class="anchored" data-anchor-id="reviews-over-time">Reviews over time</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(reviews_df, <span class="fu">aes</span>(<span class="at">x=</span>Date_Published)) <span class="sc">+</span>   <span class="fu">stat_count</span>(<span class="at">geom=</span><span class="st">'line'</span>, <span class="fu">aes</span>(<span class="at">y=</span>..count..))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>I wanted to make a line chart here per game title of the average review count, all overlapping. I couldn’t quite get it working and ran out of time. I would like to see how games in the positive Steam rankings (likely) have some longevity in incoming reviews, while more negative games likely just fall off after a short while.</p>
+</section>
+<section id="emojis" class="level2">
+<h2 class="anchored" data-anchor-id="emojis">Emojis</h2>
+<p>A lot of work went into keeping those emojis, so I want to take a look at them!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>emoji_pattern <span class="ot">&lt;-</span> <span class="st">"[</span><span class="sc">\\</span><span class="st">\U0001F600-</span><span class="sc">\\</span><span class="st">\U0001F64F</span><span class="sc">\\</span><span class="st">\U0001F300-</span><span class="sc">\\</span><span class="st">\U0001F5FF</span><span class="sc">\\</span><span class="st">\U0001F900-</span><span class="sc">\\</span><span class="st">\U0001F9FF</span><span class="sc">\\</span><span class="st">\U00002600-</span><span class="sc">\\</span><span class="st">\U000027BF]"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>emojis <span class="ot">&lt;-</span> reviews_df <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(emoji_pattern, types, <span class="at">perl=</span><span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">types =</span> <span class="fu">str_remove_all</span>(types, <span class="st">"</span><span class="sc">\\</span><span class="st">w|,|'|‘|’</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="st">                                 %|</span><span class="sc">\\</span><span class="st">.|’|</span><span class="sc">\\\036</span><span class="st">|－|❝|❞</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="st">                                 |‑"</span>))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>emojis</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 538 × 10
+   review_id language date       review_type review   steam_id tokens word_count
+       &lt;dbl&gt; &lt;chr&gt;    &lt;date&gt;     &lt;chr&gt;       &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;
+ 1  86350149 english  2021-01-10 POS         "---{Gr…   239200 "grap…        220
+ 2  92149045 english  2021-04-17 POS         "♫ Japa…   239200 "japa…          3
+ 3 179793197 english  2024-10-25 POS         "Amnesi…   239200 "amne…        248
+ 4 173009600 english  2024-07-22 POS         "A mixe…   239200 "a, m…        413
+ 5 145532070 english  2023-08-02 POS         "My fav…   239200 "my, …         11
+ 6 169448060 english  2024-06-10 POS         "\U0001…   239200 "\U00…        158
+ 7 130122458 english  NA         POS         "Great …   239200 "grea…        176
+ 8 100221500 english  2021-08-30 POS         "\U0001…   239200 "\U00…          2
+ 9  71683941 english  2020-05-30 POS         "ー┻┳︻ ξ…   946600 "ー, ┻…         19
+10 149514323 english  2023-10-04 POS         "I play…  1092660 "i, p…        422
+# ℹ 528 more rows
+# ℹ 2 more variables: types &lt;chr&gt;, type_count &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>Only 1,622 of our reviews contain some kind of emoji usage. Not as many as I expected! Note that it’s 528 here because I believe the file was exported on the downsampled data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>remove_dupes <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#split tokens to be iterated over</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  words <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(x, <span class="st">" "</span>)[[<span class="dv">1</span>]]</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#apply the unique() function per row</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  unique_words <span class="ot">&lt;-</span> <span class="fu">unique</span>(words)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#re-collapse into rows</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste</span>(unique_words, <span class="at">collapse =</span> <span class="st">" "</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>emoji_df <span class="ot">&lt;-</span> emojis <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">types =</span> <span class="fu">sapply</span>(emojis<span class="sc">$</span>types, remove_dupes)) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(types, <span class="at">sort=</span><span class="cn">TRUE</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>emoji_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 272 × 2
+   types             n
+   &lt;chr&gt;         &lt;int&gt;
+ 1 " ☐ ☑"           43
+ 2 " \U0001f44d"    35
+ 3 " ☐ ☑ %"         31
+ 4 " ♥"             28
+ 5 "\U0001f44d"     26
+ 6 " ★ ☆"           14
+ 7 " ★"             13
+ 8 " ❤"             10
+ 9 " \U0001f62d"     9
+10 " \U0001f525"     8
+# ℹ 262 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>max_count <span class="ot">&lt;-</span> emoji_df <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(n) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">max</span>()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">hchart</span>(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  emoji_df, </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"bar"</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hcaes</span>(types, n), </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"Count"</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># dataLabels = list(enabled = TRUE, style = list(fontWeight = "normal"))</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_xAxis</span>(</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">min =</span> <span class="dv">0</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">max =</span> <span class="dv">30</span>,</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">scrollbar =</span> <span class="fu">list</span>(<span class="at">enabled =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_yAxis</span>(</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">max =</span> max_count,</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">list</span>(</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">text =</span> <span class="st">"Count"</span>,</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">align =</span> <span class="st">"high"</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_tooltip</span>(</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">headerFormat =</span> <span class="st">"{point.key}"</span>,</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">pointFormat =</span> <span class="st">" {point.y}"</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_size</span>(<span class="at">height =</span> <span class="dv">700</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="htmlwidget-05b8202d170917e49d59" style="width:100%;height:677px;" class="highchart html-widget"></div>
+<script type="application/json" data-for="htmlwidget-05b8202d170917e49d59">{"x":{"hc_opts":{"chart":{"reflow":true,"height":700},"title":{"text":null},"yAxis":{"title":{"text":"Count","align":"high"},"type":"linear","max":43},"credits":{"enabled":false},"exporting":{"enabled":false},"boost":{"enabled":false},"plotOptions":{"series":{"label":{"enabled":false},"turboThreshold":0,"showInLegend":false},"treemap":{"layoutAlgorithm":"squarified"},"scatter":{"marker":{"symbol":"circle"}}},"series":[{"group":"group","data":[{"types":" ☐ ☑","n":43,"y":43,"name":" ☐ ☑"},{"types":" 👍","n":35,"y":35,"name":" 👍"},{"types":" ☐ ☑ %","n":31,"y":31,"name":" ☐ ☑ %"},{"types":" ♥","n":28,"y":28,"name":" ♥"},{"types":"👍","n":26,"y":26,"name":"👍"},{"types":" ★ ☆","n":14,"y":14,"name":" ★ ☆"},{"types":" ★","n":13,"y":13,"name":" ★"},{"types":" ❤","n":10,"y":10,"name":" ❤"},{"types":" 😭","n":9,"y":9,"name":" 😭"},{"types":" 🔥","n":8,"y":8,"name":" 🔥"},{"types":" ♡","n":5,"y":5,"name":" ♡"},{"types":" 🙏","n":4,"y":4,"name":" 🙏"},{"types":"★ ☆ ","n":4,"y":4,"name":"★ ☆ "},{"types":"👎","n":4,"y":4,"name":"👎"},{"types":" 👍🏻","n":3,"y":3,"name":" 👍🏻"},{"types":" 💩","n":3,"y":3,"name":" 💩"},{"types":" 🔲 ✅","n":3,"y":3,"name":" 🔲 ✅"},{"types":" 😉","n":3,"y":3,"name":" 😉"},{"types":" 😍","n":3,"y":3,"name":" 😍"},{"types":" 🤮","n":3,"y":3,"name":" 🤮"},{"types":" % ♥","n":2,"y":2,"name":" % ♥"},{"types":" ☹","n":2,"y":2,"name":" ☹"},{"types":" ✔ ❌","n":2,"y":2,"name":" ✔ ❌"},{"types":" ❞","n":2,"y":2,"name":" ❞"},{"types":" 🐐","n":2,"y":2,"name":" 🐐"},{"types":" 👌","n":2,"y":2,"name":" 👌"},{"types":" 💔","n":2,"y":2,"name":" 💔"},{"types":" 💖","n":2,"y":2,"name":" 💖"},{"types":" 💪","n":2,"y":2,"name":" 💪"},{"types":" 🖕","n":2,"y":2,"name":" 🖕"},{"types":" 🖤","n":2,"y":2,"name":" 🖤"},{"types":" 😁","n":2,"y":2,"name":" 😁"},{"types":" 😂","n":2,"y":2,"name":" 😂"},{"types":" 😆","n":2,"y":2,"name":" 😆"},{"types":" 😊","n":2,"y":2,"name":" 😊"},{"types":" 😐","n":2,"y":2,"name":" 😐"},{"types":" 😔","n":2,"y":2,"name":" 😔"},{"types":" 😞","n":2,"y":2,"name":" 😞"},{"types":" 😢","n":2,"y":2,"name":" 😢"},{"types":" 😥","n":2,"y":2,"name":" 😥"},{"types":" 😫","n":2,"y":2,"name":" 😫"},{"types":" 😳","n":2,"y":2,"name":" 😳"},{"types":" 🙄","n":2,"y":2,"name":" 🙄"},{"types":" 🤢","n":2,"y":2,"name":" 🤢"},{"types":" 🤣","n":2,"y":2,"name":" 🤣"},{"types":"★ ","n":2,"y":2,"name":"★ "},{"types":"♥","n":2,"y":2,"name":"♥"},{"types":"✅  ➖","n":2,"y":2,"name":"✅  ➖"},{"types":"✅  🔳 ❌","n":2,"y":2,"name":"✅  🔳 ❌"},{"types":"✔","n":2,"y":2,"name":"✔"},{"types":"❤","n":2,"y":2,"name":"❤"},{"types":"🐐","n":2,"y":2,"name":"🐐"},{"types":"👍🏻","n":2,"y":2,"name":"👍🏻"},{"types":"💜","n":2,"y":2,"name":"💜"},{"types":" % ⌛ ✨","n":1,"y":1,"name":" % ⌛ ✨"},{"types":" % ☐ ☑","n":1,"y":1,"name":" % ☐ ☑"},{"types":" % 🌾 💖","n":1,"y":1,"name":" % 🌾 💖"},{"types":" % 🎮","n":1,"y":1,"name":" % 🎮"},{"types":" % 🥲","n":1,"y":1,"name":" % 🥲"},{"types":" % 🦊","n":1,"y":1,"name":" % 🦊"},{"types":" ¯ ♥","n":1,"y":1,"name":" ¯ ♥"},{"types":" ˘ ♡","n":1,"y":1,"name":" ˘ ♡"},{"types":" ˘ ✧","n":1,"y":1,"name":" ˘ ✧"},{"types":" • ✧","n":1,"y":1,"name":" • ✧"},{"types":" ™ ★ ☆","n":1,"y":1,"name":" ™ ★ ☆"},{"types":" ™ ♥","n":1,"y":1,"name":" ™ ♥"},{"types":" ≖ ︵ 👎","n":1,"y":1,"name":" ≖ ︵ 👎"},{"types":" ┻ ┳ ︻ ✿ ❛ 『 』","n":1,"y":1,"name":" ┻ ┳ ︻ ✿ ❛ 『 』"},{"types":" ▪ ★","n":1,"y":1,"name":" ▪ ★"},{"types":" ▪ ★ ☆","n":1,"y":1,"name":" ▪ ★ ☆"},{"types":" ◉ ➝","n":1,"y":1,"name":" ◉ ➝"},{"types":" ◞ ‸ ◟ 💧","n":1,"y":1,"name":" ◞ ‸ ◟ 💧"},{"types":" ◼ ✅","n":1,"y":1,"name":" ◼ ✅"},{"types":" ★ ☆ ™","n":1,"y":1,"name":" ★ ☆ ™"},{"types":" ★ ☆ ✅","n":1,"y":1,"name":" ★ ☆ ✅"},{"types":" ☆","n":1,"y":1,"name":" ☆"},{"types":" ☆ ✨","n":1,"y":1,"name":" ☆ ✨"},{"types":" ☐ ☑ ⭐ 💎 💼 ■ □ ®","n":1,"y":1,"name":" ☐ ☑ ⭐ 💎 💼 ■ □ ®"},{"types":" ☐ ☑ 👉","n":1,"y":1,"name":" ☐ ☑ 👉"},{"types":" ☐ 🗹 %","n":1,"y":1,"name":" ☐ 🗹 %"},{"types":" ☑","n":1,"y":1,"name":" ☑"},{"types":" ☑ ▢","n":1,"y":1,"name":" ☑ ▢"},{"types":" ☑ ☐","n":1,"y":1,"name":" ☑ ☐"},{"types":" ☑ ☐ %","n":1,"y":1,"name":" ☑ ☐ %"},{"types":" ☑ ☐ ✎ ☠ ☼","n":1,"y":1,"name":" ☑ ☐ ✎ ☠ ☼"},{"types":" ☺ ☻","n":1,"y":1,"name":" ☺ ☻"},{"types":" ♡ ꒰ ‧ • ꒱","n":1,"y":1,"name":" ♡ ꒰ ‧ • ꒱"},{"types":" ♩ ♪","n":1,"y":1,"name":" ♩ ♪"},{"types":" ♿","n":1,"y":1,"name":" ♿"},{"types":" ⚠","n":1,"y":1,"name":" ⚠"},{"types":" ⚫","n":1,"y":1,"name":" ⚫"},{"types":" ⚰","n":1,"y":1,"name":" ⚰"},{"types":" ✅","n":1,"y":1,"name":" ✅"},{"types":" ✅ ❌","n":1,"y":1,"name":" ✅ ❌"},{"types":" ✅ ❌ 🌟","n":1,"y":1,"name":" ✅ ❌ 🌟"},{"types":" ✋ 🕶","n":1,"y":1,"name":" ✋ 🕶"},{"types":" ✦ ❤","n":1,"y":1,"name":" ✦ ❤"},{"types":" ✧ ˚ ·","n":1,"y":1,"name":" ✧ ˚ ·"},{"types":" ✨","n":1,"y":1,"name":" ✨"},{"types":" ✨ 🌟 ❤ ⭐","n":1,"y":1,"name":" ✨ 🌟 ❤ ⭐"},{"types":" ✪","n":1,"y":1,"name":" ✪"},{"types":" ❄","n":1,"y":1,"name":" ❄"},{"types":" ❤ %","n":1,"y":1,"name":" ❤ %"},{"types":" ❤ ✅ 🔲","n":1,"y":1,"name":" ❤ ✅ 🔲"},{"types":" ❤ ✨","n":1,"y":1,"name":" ❤ ✨"},{"types":" ❤ ❌ %","n":1,"y":1,"name":" ❤ ❌ %"},{"types":" ❤ 😎","n":1,"y":1,"name":" ❤ 😎"},{"types":" ❤ 🧡 💛 💚","n":1,"y":1,"name":" ❤ 🧡 💛 💚"},{"types":" ❤ 🧡 🤍 💗 💜","n":1,"y":1,"name":" ❤ 🧡 🤍 💗 💜"},{"types":" ⭐ ☆ 🔐","n":1,"y":1,"name":" ⭐ ☆ 🔐"},{"types":" ⭐ ✔ ❌ 🧠 🎭 🎨 🎧 🎮 💥","n":1,"y":1,"name":" ⭐ ✔ ❌ 🧠 🎭 🎨 🎧 🎮 💥"},{"types":" ⭐ 🔲 ✅ %","n":1,"y":1,"name":" ⭐ 🔲 ✅ %"},{"types":" ꒳ ✧","n":1,"y":1,"name":" ꒳ ✧"},{"types":" ， 😭","n":1,"y":1,"name":" ， 😭"},{"types":" ･ ♡","n":1,"y":1,"name":" ･ ♡"},{"types":" 🌀 ، 👁 🧩","n":1,"y":1,"name":" 🌀 ، 👁 🧩"},{"types":" 🌌 🌍 🧩 🔭 ⭐","n":1,"y":1,"name":" 🌌 🌍 🧩 🔭 ⭐"},{"types":" 🌗 🌑","n":1,"y":1,"name":" 🌗 🌑"},{"types":" 🌙","n":1,"y":1,"name":" 🌙"},{"types":" 🌟 ⚔ 🔥 ✅ 🚀 💥","n":1,"y":1,"name":" 🌟 ⚔ 🔥 ✅ 🚀 💥"},{"types":" 🌳 🌄 📉 🕹 🔄 🔁 🚜 🔧 ⚠ 💸 ❌ 🖼 🌐 👥 🔉 🔊 ⭐","n":1,"y":1,"name":" 🌳 🌄 📉 🕹 🔄 🔁 🚜 🔧 ⚠ 💸 ❌ 🖼 🌐 👥 🔉 🔊 ⭐"},{"types":" 🍌","n":1,"y":1,"name":" 🍌"},{"types":" 🍏 💖 🐤","n":1,"y":1,"name":" 🍏 💖 🐤"},{"types":" 🍓 💖","n":1,"y":1,"name":" 🍓 💖"},{"types":" 🎩 👔 🚄 🕹 ⌛ 👾 😅 📅 🔄 🔒 💼 🌐 💰 🚀 🤖 🌊 😎","n":1,"y":1,"name":" 🎩 👔 🚄 🕹 ⌛ 👾 😅 📅 🔄 🔒 💼 🌐 💰 🚀 🤖 🌊 😎"},{"types":" 🎯","n":1,"y":1,"name":" 🎯"},{"types":" 🎯 😄","n":1,"y":1,"name":" 🎯 😄"},{"types":" 🏴 ☠","n":1,"y":1,"name":" 🏴 ☠"},{"types":" 🏹","n":1,"y":1,"name":" 🏹"},{"types":" 🐎","n":1,"y":1,"name":" 🐎"},{"types":" 🐕 🦺 🏷 ⭐ 🐶 [ ⚠ 😢 🍖 🦴 💡","n":1,"y":1,"name":" 🐕 🦺 🏷 ⭐ 🐶 [ ⚠ 😢 🍖 🦴 💡"},{"types":" 👀","n":1,"y":1,"name":" 👀"},{"types":" 👁","n":1,"y":1,"name":" 👁"},{"types":" 👇","n":1,"y":1,"name":" 👇"},{"types":" 👈","n":1,"y":1,"name":" 👈"},{"types":" 👌 ☠ 🤣 👍","n":1,"y":1,"name":" 👌 ☠ 🤣 👍"},{"types":" 👌 🔥","n":1,"y":1,"name":" 👌 🔥"},{"types":" 👌🏻","n":1,"y":1,"name":" 👌🏻"},{"types":" 👍 ❤","n":1,"y":1,"name":" 👍 ❤"},{"types":" 👍 🔥","n":1,"y":1,"name":" 👍 🔥"},{"types":" 👍 😔","n":1,"y":1,"name":" 👍 😔"},{"types":" 👍🏿 ½ ° ¾ ¼","n":1,"y":1,"name":" 👍🏿 ½ ° ¾ ¼"},{"types":" 👎","n":1,"y":1,"name":" 👎"},{"types":" 👎 ،","n":1,"y":1,"name":" 👎 ،"},{"types":" 👎 👀 ❌ 🚫","n":1,"y":1,"name":" 👎 👀 ❌ 🚫"},{"types":" 👎 👍 🤷 ♂ [","n":1,"y":1,"name":" 👎 👍 🤷 ♂ ["},{"types":" 👎🏻","n":1,"y":1,"name":" 👎🏻"},{"types":" 💀","n":1,"y":1,"name":" 💀"},{"types":" 💔 ❤","n":1,"y":1,"name":" 💔 ❤"},{"types":" 💔 🙏🏻 😭","n":1,"y":1,"name":" 💔 🙏🏻 😭"},{"types":" 💘","n":1,"y":1,"name":" 💘"},{"types":" 💙","n":1,"y":1,"name":" 💙"},{"types":" 💛 %","n":1,"y":1,"name":" 💛 %"},{"types":" 💜","n":1,"y":1,"name":" 💜"},{"types":" 💜 💙 💚","n":1,"y":1,"name":" 💜 💙 💚"},{"types":" 💞","n":1,"y":1,"name":" 💞"},{"types":" 💢","n":1,"y":1,"name":" 💢"},{"types":" 💤","n":1,"y":1,"name":" 💤"},{"types":" 💥","n":1,"y":1,"name":" 💥"},{"types":" 💪 👍","n":1,"y":1,"name":" 💪 👍"},{"types":" 💬 🖋 🙄 👨","n":1,"y":1,"name":" 💬 🖋 🙄 👨"},{"types":" 💯 😇","n":1,"y":1,"name":" 💯 😇"},{"types":" 💾 🎮 📜 🎭 🕛 % 🎧 ❗ 🔅 ✔ ❌ 🏆 🔗","n":1,"y":1,"name":" 💾 🎮 📜 🎭 🕛 % 🎧 ❗ 🔅 ✔ ❌ 🏆 🔗"},{"types":" 💾 🎮 📜 🕛 % 🎧 ❗ 🔅 ✔ ❌ 🏆 🔗","n":1,"y":1,"name":" 💾 🎮 📜 🕛 % 🎧 ❗ 🔅 ✔ ❌ 🏆 🔗"},{"types":" 💾 🎮 📜 🕛 🎧 ❗ 🔅 ✔ ❌ 🏆 % 🔗","n":1,"y":1,"name":" 💾 🎮 📜 🕛 🎧 ❗ 🔅 ✔ ❌ 🏆 % 🔗"},{"types":" 📖 🎮 🖥 🐞 🎵","n":1,"y":1,"name":" 📖 🎮 🖥 🐞 🎵"},{"types":" 📜 🪶 🜂 🜄 ☉ 🜁 🜃 ☽ ☔","n":1,"y":1,"name":" 📜 🪶 🜂 🜄 ☉ 🜁 🜃 ☽ ☔"},{"types":" 🔊","n":1,"y":1,"name":" 🔊"},{"types":" 🔥 ☐ ☑","n":1,"y":1,"name":" 🔥 ☐ ☑"},{"types":" 🔲 ☑","n":1,"y":1,"name":" 🔲 ☑"},{"types":" 🔲 ☑ ⏰ ½ ⭕","n":1,"y":1,"name":" 🔲 ☑ ⏰ ½ ⭕"},{"types":" 🔲 ✅ %","n":1,"y":1,"name":" 🔲 ✅ %"},{"types":" 🔻","n":1,"y":1,"name":" 🔻"},{"types":" 🖐 😐 🤚","n":1,"y":1,"name":" 🖐 😐 🤚"},{"types":" 🖥","n":1,"y":1,"name":" 🖥"},{"types":" 🗣 🔥 💯 💻 🚁","n":1,"y":1,"name":" 🗣 🔥 💯 💻 🚁"},{"types":" 🗣 🔥 🦅 ‼","n":1,"y":1,"name":" 🗣 🔥 🦅 ‼"},{"types":" 🗿","n":1,"y":1,"name":" 🗿"},{"types":" 😂 👏","n":1,"y":1,"name":" 😂 👏"},{"types":" 😃","n":1,"y":1,"name":" 😃"},{"types":" 😉 « »","n":1,"y":1,"name":" 😉 « »"},{"types":" 😌","n":1,"y":1,"name":" 😌"},{"types":" 😍 🤤","n":1,"y":1,"name":" 😍 🤤"},{"types":" 😎","n":1,"y":1,"name":" 😎"},{"types":" 😔 🤘 🥀","n":1,"y":1,"name":" 😔 🤘 🥀"},{"types":" 😖 😰 😱 😈","n":1,"y":1,"name":" 😖 😰 😱 😈"},{"types":" 😘 😉 👌 🫄","n":1,"y":1,"name":" 😘 😉 👌 🫄"},{"types":" 😡","n":1,"y":1,"name":" 😡"},{"types":" 😡 😠","n":1,"y":1,"name":" 😡 😠"},{"types":" 😤","n":1,"y":1,"name":" 😤"},{"types":" 😨","n":1,"y":1,"name":" 😨"},{"types":" 😩","n":1,"y":1,"name":" 😩"},{"types":" 😬","n":1,"y":1,"name":" 😬"},{"types":" 😭 ✨ 🐥 💖 👀 😂 🍉 🥁 🔥 🌾 💫","n":1,"y":1,"name":" 😭 ✨ 🐥 💖 👀 😂 🍉 🥁 🔥 🌾 💫"},{"types":" 😭 🙏","n":1,"y":1,"name":" 😭 🙏"},{"types":" 😴","n":1,"y":1,"name":" 😴"},{"types":" 😻","n":1,"y":1,"name":" 😻"},{"types":" 🙀","n":1,"y":1,"name":" 🙀"},{"types":" 🙁","n":1,"y":1,"name":" 🙁"},{"types":" 🙂","n":1,"y":1,"name":" 🙂"},{"types":" 🙃 😪 😫 😩","n":1,"y":1,"name":" 🙃 😪 😫 😩"},{"types":" 🙄 💀 🤡 😴 💤","n":1,"y":1,"name":" 🙄 💀 🤡 😴 💤"},{"types":" 🙌🏿","n":1,"y":1,"name":" 🙌🏿"},{"types":" 🙏🏼","n":1,"y":1,"name":" 🙏🏼"},{"types":" 🟩 ⬛ ❤","n":1,"y":1,"name":" 🟩 ⬛ ❤"},{"types":" 🟩 🟥 🎮 %","n":1,"y":1,"name":" 🟩 🟥 🎮 %"},{"types":" 🤌🏼","n":1,"y":1,"name":" 🤌🏼"},{"types":" 🤓 🤣","n":1,"y":1,"name":" 🤓 🤣"},{"types":" 🤠","n":1,"y":1,"name":" 🤠"},{"types":" 🤤","n":1,"y":1,"name":" 🤤"},{"types":" 🤩 💵","n":1,"y":1,"name":" 🤩 💵"},{"types":" 🤯","n":1,"y":1,"name":" 🤯"},{"types":" 🥀","n":1,"y":1,"name":" 🥀"},{"types":" 🥚","n":1,"y":1,"name":" 🥚"},{"types":" 🥟 ◟ 💦","n":1,"y":1,"name":" 🥟 ◟ 💦"},{"types":" 🥰","n":1,"y":1,"name":" 🥰"},{"types":" 🥱","n":1,"y":1,"name":" 🥱"},{"types":" 🥲","n":1,"y":1,"name":" 🥲"},{"types":" 🥹","n":1,"y":1,"name":" 🥹"},{"types":" 🪐 ✨ 🔥 🍡","n":1,"y":1,"name":" 🪐 ✨ 🔥 🍡"},{"types":" 🫵 ✨ ⭐","n":1,"y":1,"name":" 🫵 ✨ ⭐"},{"types":" 🫵 👐","n":1,"y":1,"name":" 🫵 👐"},{"types":"₊ ✩ ‧ ˚  ˵˃ ˂˵ ⊹ ° ❀ ⋆ ࿔ ･","n":1,"y":1,"name":"₊ ✩ ‧ ˚  ˵˃ ˂˵ ⊹ ° ❀ ⋆ ࿔ ･"},{"types":"▶  ✔ ✘","n":1,"y":1,"name":"▶  ✔ ✘"},{"types":"★","n":1,"y":1,"name":"★"},{"types":"★ ½","n":1,"y":1,"name":"★ ½"},{"types":"★ ☆  %","n":1,"y":1,"name":"★ ☆  %"},{"types":"☆ ","n":1,"y":1,"name":"☆ "},{"types":"☭","n":1,"y":1,"name":"☭"},{"types":"☰ ☠  ☑ ☒","n":1,"y":1,"name":"☰ ☠  ☑ ☒"},{"types":"♎  □ ■ 🙵 ♏ ⍓","n":1,"y":1,"name":"♎  □ ■ 🙵 ♏ ⍓"},{"types":"♡","n":1,"y":1,"name":"♡"},{"types":"⚖  ✔ ❌ % 🏅 🔎 ➜ 💎 🔊 🕘 ⚠ 👍 🔔 🤝","n":1,"y":1,"name":"⚖  ✔ ❌ % 🏅 🔎 ➜ 💎 🔊 🕘 ⚠ 👍 🔔 🤝"},{"types":"⚖  ✔ ❌ % 🔎 ➜ 🕘 🔊 ⚠ 💎 👍 🔔 🤝","n":1,"y":1,"name":"⚖  ✔ ❌ % 🔎 ➜ 🕘 🔊 ⚠ 💎 👍 🔔 🤝"},{"types":"⚠ ","n":1,"y":1,"name":"⚠ "},{"types":"⚡ 🦉 🍇 ⚔  🌊 ❤ 🏹 ❄","n":1,"y":1,"name":"⚡ 🦉 🍇 ⚔  🌊 ❤ 🏹 ❄"},{"types":"✅  ⭐ 🌾 💛 🌿","n":1,"y":1,"name":"✅  ⭐ 🌾 💛 🌿"},{"types":"✧","n":1,"y":1,"name":"✧"},{"types":"⭐  ☆","n":1,"y":1,"name":"⭐  ☆"},{"types":"【  】 ➥","n":1,"y":1,"name":"【  】 ➥"},{"types":"🌟 ","n":1,"y":1,"name":"🌟 "},{"types":"🌟  🚀","n":1,"y":1,"name":"🌟  🚀"},{"types":"🌸  💮 🖼 ⚔ 🕹 🎮 🔊 🎶 👪 💻 🎲 ☠ 🎰 📚 🕰 ✔ 🐞 ⚠ 🔁 💲 ✍🏻 🧬 ♻ 📝","n":1,"y":1,"name":"🌸  💮 🖼 ⚔ 🕹 🎮 🔊 🎶 👪 💻 🎲 ☠ 🎰 📚 🕰 ✔ 🐞 ⚠ 🔁 💲 ✍🏻 🧬 ♻ 📝"},{"types":"🌻 ","n":1,"y":1,"name":"🌻 "},{"types":"🍄 🚀","n":1,"y":1,"name":"🍄 🚀"},{"types":"🎂","n":1,"y":1,"name":"🎂"},{"types":"🎨  ™","n":1,"y":1,"name":"🎨  ™"},{"types":"🐄  🚜 ⭐","n":1,"y":1,"name":"🐄  🚜 ⭐"},{"types":"🐊 ","n":1,"y":1,"name":"🐊 "},{"types":"🐔 ","n":1,"y":1,"name":"🐔 "},{"types":"🐷 👍","n":1,"y":1,"name":"🐷 👍"},{"types":"🐺 ❄  ™ 🎮 🚀 🌌 🔬 🛸 🔧 🧟 ♂ ⚙ 🔊 🎶 💀 🎭 💔 🎬 🌡 💥 🥶 💙","n":1,"y":1,"name":"🐺 ❄  ™ 🎮 🚀 🌌 🔬 🛸 🔧 🧟 ♂ ⚙ 🔊 🎶 💀 🎭 💔 🎬 🌡 💥 🥶 💙"},{"types":"👨 🌾","n":1,"y":1,"name":"👨 🌾"},{"types":"👩 🦽","n":1,"y":1,"name":"👩 🦽"},{"types":"💔","n":1,"y":1,"name":"💔"},{"types":"💔 ","n":1,"y":1,"name":"💔 "},{"types":"💙 ","n":1,"y":1,"name":"💙 "},{"types":"💩","n":1,"y":1,"name":"💩"},{"types":"💪 🇱🇻","n":1,"y":1,"name":"💪 🇱🇻"},{"types":"🔥  📊 🗳 🔳 🔲 🕹 🔉 🔊 🎭 👩🏻 🤝 🧑🏽 👩🏼 🖥 🎯 ⏲ 💰 🛠 🔐 🎞 🎉 🤼 📦 🤖 🎮 % 🧠 ⏳ 🌌 🧧 🌞 💭 🏆 ╦ ╬ ╣ ╩","n":1,"y":1,"name":"🔥  📊 🗳 🔳 🔲 🕹 🔉 🔊 🎭 👩🏻 🤝 🧑🏽 👩🏼 🖥 🎯 ⏲ 💰 🛠 🔐 🎞 🎉 🤼 📦 🤖 🎮 % 🧠 ⏳ 🌌 🧧 🌞 💭 🏆 ╦ ╬ ╣ ╩"},{"types":"🔵  🔴","n":1,"y":1,"name":"🔵  🔴"},{"types":"🕊","n":1,"y":1,"name":"🕊"},{"types":"🗝 ","n":1,"y":1,"name":"🗝 "},{"types":"😍","n":1,"y":1,"name":"😍"},{"types":"🚀  🌌 📖 🧠","n":1,"y":1,"name":"🚀  🌌 📖 🧠"},{"types":"🤗","n":1,"y":1,"name":"🤗"},{"types":"🤯","n":1,"y":1,"name":"🤯"},{"types":"🥙","n":1,"y":1,"name":"🥙"},{"types":"🥰","n":1,"y":1,"name":"🥰"},{"types":"🧑 ⚔  🎶 🧪 ❌ 👍","n":1,"y":1,"name":"🧑 ⚔  🎶 🧪 ❌ 👍"},{"types":"🧑 💻","n":1,"y":1,"name":"🧑 💻"},{"types":"🧙","n":1,"y":1,"name":"🧙"}],"type":"bar","name":"Count"}],"xAxis":{"type":"category","title":{"text":"types"},"min":0,"max":30,"scrollbar":{"enabled":true}},"tooltip":{"headerFormat":"{point.key}","pointFormat":" {point.y}"}},"theme":{"chart":{"backgroundColor":"transparent"},"colors":["#7cb5ec","#434348","#90ed7d","#f7a35c","#8085e9","#f15c80","#e4d354","#2b908f","#f45b5b","#91e8e1"]},"conf_opts":{"global":{"Date":null,"VMLRadialGradientURL":"http =//code.highcharts.com/list(version)/gfx/vml-radial-gradient.png","canvasToolsURL":"http =//code.highcharts.com/list(version)/modules/canvas-tools.js","getTimezoneOffset":null,"timezoneOffset":0,"useUTC":true},"lang":{"contextButtonTitle":"Chart context menu","decimalPoint":".","downloadCSV":"Download CSV","downloadJPEG":"Download JPEG image","downloadPDF":"Download PDF document","downloadPNG":"Download PNG image","downloadSVG":"Download SVG vector image","downloadXLS":"Download XLS","drillUpText":"◁ Back to {series.name}","exitFullscreen":"Exit from full screen","exportData":{"annotationHeader":"Annotations","categoryDatetimeHeader":"DateTime","categoryHeader":"Category"},"hideData":"Hide data table","invalidDate":null,"loading":"Loading...","months":["January","February","March","April","May","June","July","August","September","October","November","December"],"noData":"No data to display","numericSymbolMagnitude":1000,"numericSymbols":["k","M","G","T","P","E"],"printChart":"Print chart","resetZoom":"Reset zoom","resetZoomTitle":"Reset zoom level 1:1","shortMonths":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"shortWeekdays":["Sat","Sun","Mon","Tue","Wed","Thu","Fri"],"thousandsSep":" ","viewData":"View data table","viewFullscreen":"View in full screen","weekdays":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]}},"type":"chart","fonts":[],"debug":false},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>Cool <a href="https://jkunst.com/blog/posts/2021-01-10-using-emoji-with-highcharterhighcharts/">source</a> for the emoji finding &amp; charting code. However there were still too many errors for my taste in how the emojis were splitting up. Thumbs up appears twice for some reason, emojis are appearing in combination with each other…. It would take some more serious treatment (and time) to get this looking how I want it to look.</p>
+</section>
+<section id="language-choices" class="level2">
+<h2 class="anchored" data-anchor-id="language-choices">Language Choices</h2>
+<p>I wanted to use the <a href="https://towardsdatascience.com/how-to-catch-profanity-with-r-4a21e024d4db/">sentimentr</a> package which comes loaded with multiple profanity lexicons to detect foul language throughout these reviews! How common is swearing in reviews? Is it more common in negative reviews than positive? What kind of swears are people using?</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

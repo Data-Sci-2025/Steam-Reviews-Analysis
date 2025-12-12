@@ -1,6 +1,9 @@
 ---
 title: "4-stretch-goals"
 format: html
+knitr:
+  opts_chunk:
+    fig.path: "../images/"
 ---
 
 These are some aspects of my work that I ultimately decided to move to a sort of "stretch goals" of the project. Elements I was interested in but weren't necessarily pertinent to the analysis I was focused one. Or, in the case of emojis usage, elements I Was interested in but didn't strictly have the R know-how to get working exactly how I wanted. 
@@ -14,29 +17,28 @@ library(tidyverse)
 library(tidytext)
 library(ggplot2)
 library(highcharter)
-library(palmerpenguins)
 library(tidyr)
 library(scales)
-library(ggplot2)
 ```
 
-**Note**: Please run [0-data-exploration](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/0-data-exploration.qmd) and [1-data-cleanup](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/1-data-cleanup.qmd) first to create the version of the .csv file needed to start here.
+**Note**: Please run [0-data-exploration](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/0-data-exploration.qmd) and [1-data-cleanup](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/1-data-cleanup.qmd). I exported this .csv file from the midpoint of the [2-data-analysis](https://github.com/Data-Sci-2025/Steam-Reviews-Analysis/blob/main/data_processing/2-data-analysis.qmd) file, after adding word types.
 
 
 ```{r}
 #| label: readingin
-reviews_df <- read_csv("../private/reviews_analyze.csv", show_col_types = FALSE)
+reviews_df <- read_csv("../private/reviews_emojis.csv", show_col_types = FALSE)
 ```
 
 
-### Reviews over time
+## Reviews over time
 
 ```{r}
+#| label: failed-plot
 #| eval: false
-ggplot(dat, aes(x=Date_Published)) +   stat_count(geom='line', aes(y=..count..))
+ggplot(reviews_df, aes(x=Date_Published)) +   stat_count(geom='line', aes(y=..count..))
 ```
 
-
+I wanted to make a line chart here per game title of the average review count, all overlapping. I couldn't quite get it working and ran out of time. I would like to see how games in the positive Steam rankings (likely) have some longevity in incoming reviews, while more negative games likely just fall off after a short while. 
 
 
 
@@ -63,6 +65,22 @@ emojis
 
 
 Only 1,622 of our reviews contain some kind of emoji usage. Not as many as I expected!
+Note that it's 528 here because I believe the file was exported on the downsampled data. 
+
+```{r}
+#| label: GetTypes
+remove_dupes <- function(x) {
+  #split tokens to be iterated over
+  words <- strsplit(x, " ")[[1]]
+  #apply the unique() function per row
+  unique_words <- unique(words)
+  #re-collapse into rows
+  paste(unique_words, collapse = " ")
+}
+```
+
+
+(sorry that these don't look beautiful in the .md render, the highcharter graph below won't render unless the format is html)
 
 
 ```{r}
@@ -77,7 +95,6 @@ emoji_df
 
 ```{r}
 #| label: plot-emoji
-#| eval: FALSE
 max_count <- emoji_df |>
   pull(n) |>
   max()
@@ -110,13 +127,13 @@ hchart(
 ```
 
 
-Cool [source](https://jkunst.com/blog/posts/2021-01-10-using-emoji-with-highcharterhighcharts/) for the emoji finding & charting code.
+Cool [source](https://jkunst.com/blog/posts/2021-01-10-using-emoji-with-highcharterhighcharts/) for the emoji finding & charting code. However there were still too many errors for my taste in how the emojis were splitting up. Thumbs up appears twice for some reason, emojis are appearing in combination with each other.... It would take some more serious treatment (and time) to get this looking how I want it to look. 
 
 
 
 ## Language Choices
 
-Swear word detection??
+I wanted to use the [sentimentr](https://towardsdatascience.com/how-to-catch-profanity-with-r-4a21e024d4db/) package which comes loaded with multiple profanity lexicons to detect foul language throughout these reviews! How common is swearing in reviews? Is it more common in negative reviews than positive? What kind of swears are people using? 
 
 
 

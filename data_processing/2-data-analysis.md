@@ -584,7 +584,7 @@ do some investigation…
 ``` r
 reviews_df |>
   filter(review_id==198792433) |>
-  select(review)
+  dplyr::select(review)
 ```
 
     # A tibble: 1 × 1
@@ -717,26 +717,31 @@ LScut2 <- LS_games |>
 ```
 
 ``` r
-ggplot(LScut1, aes(x = reorder(game, -avg), y=avg, fill=game)) +
+ggplot(LScut1, aes(x = reorder(game, -avg), y=avg, fill=rank)) +
   geom_bar(stat='identity', color="black") + 
   scale_fill_brewer(palette = "Set3") +
   theme(axis.text.x = element_blank()) +
-  geom_text(aes(label=rank), vjust=2, hjust=1, angle = 70) +
   labs(x="Game", y = "Avg. Review Length", title="Longest Reviews")
 ```
 
 ![](../images/long-short-bars-1.png)
 
 ``` r
-ggplot(LScut2, aes(x = reorder(game, -avg), y=avg, fill=game)) +
+ggplot(LScut2, aes(x = reorder(game, -avg), y=avg, fill=rank)) +
   geom_bar(stat='identity', color="black") + 
-  scale_fill_brewer(palette = "Set3") +
+  scale_fill_brewer(palette = "Pastel1") +
   theme(axis.text.x = element_blank()) +
-  geom_text(aes(label=rank), vjust=2, hjust=1, angle = 70) +
   labs(x="Game", y = "Avg. Review Length", title="Shortest Reviews")
 ```
 
 ![](../images/long-short-bars-2.png)
+
+For reference, the longest reviewed games are:<br> Urban Empire,
+Vampire: The Masquerade - Coteries of New York, Hazen: The Dark
+Whispers, Redfall, and Deadly Premonition: The Director’s Cut.
+
+The games with the shortest reviews are:<br> Hades, Powerful Courses,
+Bike Ride 3D, Stardew Valley, and Bhop Pro.
 
 It looks like maybe the “people have more to say about games they don’t
 like” theory might be onto something. None of the longest review length
@@ -1276,6 +1281,18 @@ What are people writing about in negative reviews? I can pick out at a
 glance bad, money, worst, boring. What makes them think these things?
 Bugs, graphics, game access, run (how the game runs), abandoned. No one
 likes to see a game published in an unfinished state and never updated.
+
+``` r
+print(paste(prettyNum(sum(pos_toks$n),big.mark=","), "words in positive review tokens after additional stop word removal"))
+```
+
+    [1] "498,153 words in positive review tokens after additional stop word removal"
+
+``` r
+print(paste(prettyNum(sum(neg_toks$n), big.mark=","), "words in negative review tokens after additional stop word removal"))
+```
+
+    [1] "913,265 words in negative review tokens after additional stop word removal"
 
 ### Term Frequencies
 
